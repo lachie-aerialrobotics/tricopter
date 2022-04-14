@@ -42,7 +42,7 @@
   <node name="Path_follower" pkg="tricopter" type="Path_follower.py" required="true" output="screen"/>
 
   <!-- DELTA -->
-  <include file="$(find delta_manipulator)/launch/Fly_with_delta.launch">
+  <include file="$(find delta_manipulator)/launch/Fly_with_delta.launch"/>
   <!-- <node name="Stabilizer" pkg="delta_manipulator" type="Stabilisation.py" required="true" output="screen"/>
   <node name="Delta_inv_kinematics" pkg="delta_manipulator" type="Inverse_kinematics.py" required="true" output="screen"/>
   <node name="Force_kinematics" pkg="delta_manipulator" type="Force_kinematics.py" required="true" output="screen"/>
