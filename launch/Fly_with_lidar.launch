@@ -27,12 +27,13 @@
     <arg name="sensor_hostname" value="$(arg sensor_hostname)" />
     <arg name="metadata" value="$(arg metadata)" />
     <arg name="lidar_mode" value="$(arg lidar_mode)" />
-  </include>
+  </include>  
+  <node name="Lidar_msg_stamper" pkg="tricopter" type="lidar_stamper.py" required="true" output="screen"/>
+  <node name="Lidar_msg_converter" pkg="tricopter" type="Lidar_msg_converter.py" required="true" output="screen"/>
   <include file="$(find aloam_velodyne)/launch/aloam_velodyne_OS1-64.launch"/>
   <!-- <include file="$(find robot_localization)/launch/ukf_ouster_imu.launch"/> -->
   <!-- <include file="$(find lio_sam)/launch/run.launch"/> -->  
-  <node name="Lidar_msg_stamper" pkg="tricopter" type="lidar_stamper.py" required="true" output="screen"/>
-  <node name="Lidar_msg_converter" pkg="tricopter" type="Lidar_msg_converter.py" required="true" output="screen"/>
+
 
   <!-- VICON -->
   <!-- <include file="$(find mocap_vicon)/launch/vicon.launch" />
