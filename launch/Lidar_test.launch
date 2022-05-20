@@ -60,6 +60,6 @@
   <node pkg="tf2_ros" type="static_transform_publisher" name="transform_body2sensor" args="0 0 0 0 0 0 1 body os_sensor" />
 
   <include file="$(find fast_lio)/launch/mapping_ouster64.launch"/>
-  <include file="$(find aloam_velodyne)/launch/fastlio_ouster64.launch"/>
+  <!-- <include file="$(find aloam_velodyne)/launch/fastlio_ouster64.launch"/> -->
   </launch>
   
