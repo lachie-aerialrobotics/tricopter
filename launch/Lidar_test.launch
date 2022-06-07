@@ -59,6 +59,7 @@
   <!-- <include file="$(find lio_sam)/launch/run.launch"/> -->
   <node pkg="tf2_ros" type="static_transform_publisher" name="transform_body2sensor" args="0.13732 0 0.069 0 0 0 1 body os_sensor" />
   <node pkg="tf2_ros" type="static_transform_publisher" name="transform_body2base_link" args="0 0 0 0 0 0 1 body base_link" />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="transform_base_link2vision_estimate" args="0 0 0 0 0 0 1 base_link vision_estimate" />
   <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2odom" args="0 0 0 0 0 0 1 map odom" />
   <node pkg="tf2_ros" type="static_transform_publisher" name="transform_odom2camera_init" args="0 0 0 0 0 0 1 odom camera_init" />
 
