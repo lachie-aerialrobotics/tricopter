@@ -41,3 +41,7 @@ manipulator:
   servo/ctrl_table/torque2current_unit:       2.69            #taken from XH540 control table
   servo/read_positions:                       false                   
 
+mavros:
+  vision_pose/tf/listen: true
+  vision_pose/tf/rate_limit: 20.0
+
