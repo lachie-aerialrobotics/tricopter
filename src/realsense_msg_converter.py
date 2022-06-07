@@ -39,9 +39,9 @@ class Converter:
             self.mavros_pose_pub.publish(mavros_pose_msg)
             rospy.loginfo_once("tf published :)")
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            rospy.logwarn_once("Waiting for tf data from realsense")
+            rospy.logwarn_once("Waiting for tf data")
 
 if __name__ == '__main__': #initialise node
-    rospy.init_node('realsense_msg_converter', anonymous=True)
+    rospy.init_node('tf_msg_converter', anonymous=True)
     c = Converter()
     rospy.spin()
