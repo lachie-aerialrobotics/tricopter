@@ -9,7 +9,7 @@ class Converter:
         rate = 20.0
 
         #Publish pose
-        self.mavros_pose_pub= rospy.Publisher('/mavros/vision_pose/pose', PoseStamped, queue_size=1, tcp_nodelay=True)
+        self.mavros_pose_pub= rospy.Publisher('/mavros/mocap/pose', PoseStamped, queue_size=1, tcp_nodelay=True)
         
         #Subscribe to transform
         self.tfBuffer = tf2_ros.Buffer()
