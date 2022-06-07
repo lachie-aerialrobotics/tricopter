@@ -6,7 +6,7 @@ from geometry_msgs.msg import PoseStamped, TransformStamped
 #script converts vicon tf to mavros pose
 class Converter:
     def __init__(self):   
-        rate = 20.0
+        rate = rospy.get_param("/rate")
 
         #Publish pose
         self.mavros_pose_pub= rospy.Publisher('/mavros/vision_pose/pose', PoseStamped, queue_size=1, tcp_nodelay=True)
