@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- Simulated Hex+delta arm -->
+<launch>
+  <arg name="sim" default="true"/>
+  <arg name="viz" default = "true"/>
+
+  <group if="$(arg sim)">
+    <include file="$(find tricopter)/launch/spawn_gazebo.launch"/>
+  </group>
+
+  <group if="$(arg viz)">
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find tricopter)/rviz/AAM.rviz"/>
+  </group>
+  
+  <include file="$(find geometric_controller)/launch/geometric_controller.launch"/>
+  <node name="trajectory_follower" pkg="tricopter" type="trajectory_follower.py" required="true" output="screen"/>
+  <include file="$(find tricopter)/launch/stabilisation.launch"/>
+</launch>
