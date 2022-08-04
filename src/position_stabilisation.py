@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-from ast import Sub
 import rospy
 import numpy as np
 import tf2_ros
+
 from tf2_geometry_msgs import PoseStamped
 from tf.transformations import quaternion_multiply, quaternion_conjugate
 from message_filters import ApproximateTimeSynchronizer, Subscriber
@@ -45,18 +45,19 @@ class positionStabilisation:
         OD_w = np.asarray([sub_drone_pose.pose.position.x, sub_drone_pose.pose.position.y, sub_drone_pose.pose.position.z])
         #measured drone base_link orientation in world frame
         w_q_d = np.asarray([sub_drone_pose.pose.orientation.x, sub_drone_pose.pose.orientation.y, sub_drone_pose.pose.orientation.z, sub_drone_pose.pose.orientation.w])
+
+        b_q_d = quaternion_conjugate(self.d_q_b)
+        p_q_w = quaternion_conjugate(w_q_p)
         
-        w_q_b = quaternion_multiply(w_q_d, self.d_q_b) #rotation from world frame to stewart_base frame
-        b_q_w = quaternion_conjugate(w_q_b) #rotation from stewart_base frame to world_frame
-        b_q_p = quaternion_multiply(b_q_w, w_q_p) #rotation from base_frame to platform_frame
-
-        DB_w = quaternion_rotation(self.DB_d, w_q_d) #drone base_link to stewart_base in world frame
-
-        PT_w = quaternion_rotation(self.PT_p, w_q_p) #tooltip vector in world frame
-        BP_w = OT_w - OD_w - DB_w - PT_w #stewart_base to platform vector in world frame
-
-        BP_b = quaternion_rotation(BP_w, b_q_w) #stewart_base to platform vector in stewart_base frame
+        d_q_w = quaternion_conjugate(w_q_d)
+        # can definitely make this line more efficient but it works :p
+        b_q_p = quaternion_multiply(quaternion_multiply(w_q_p, quaternion_multiply(b_q_d, d_q_w)), self.d_q_b)
         
+        BT_d = -self.DB_d + quaternion_rotation(OT_w - OD_w, d_q_w)
+        BP_b = quaternion_rotation(BT_d, b_q_d) - quaternion_rotation(self.PT_p, b_q_p)
+        
+        
+    
         #fill in pose msg and publish
         platform_pose = PoseStamped()
         platform_pose.header.frame_id = 'stewart_base'

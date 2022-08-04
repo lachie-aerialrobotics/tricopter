@@ -11,6 +11,9 @@ Panels:
         - /Pose1
         - /Pose2
         - /Pose3
+        - /Pose4
+        - /TwistStamped1
+        - /TwistStamped2
       Splitter Ratio: 0.5
     Tree Height: 830
   - Class: rviz/Selection
@@ -80,6 +83,8 @@ Visualization Manager:
           Value: true
         tooltip:
           Value: true
+        workspace_center:
+          Value: true
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
@@ -95,6 +100,8 @@ Visualization Manager:
               platform:
                 tooltip:
                   {}
+              workspace_center:
+                {}
           map_ned:
             {}
       Update Interval: 0
@@ -104,7 +111,7 @@ Visualization Manager:
       Axes Radius: 0.009999999776482582
       Class: rviz/Pose
       Color: 255; 25; 0
-      Enabled: true
+      Enabled: false
       Head Length: 0.30000001192092896
       Head Radius: 0.10000000149011612
       Name: Pose
@@ -114,7 +121,7 @@ Visualization Manager:
       Shape: Axes
       Topic: /tooltip_setpoint/pose
       Unreliable: false
-      Value: true
+      Value: false
     - Alpha: 1
       Axes Length: 1
       Axes Radius: 0.0010000000474974513
@@ -147,6 +154,52 @@ Visualization Manager:
       Topic: /reference/pose
       Unreliable: false
       Value: true
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.05000000074505806
+      Class: rviz/Pose
+      Color: 32; 74; 135
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Pose
+      Queue Size: 10
+      Shaft Length: 1
+      Shaft Radius: 0.05000000074505806
+      Shape: Axes
+      Topic: /platform_setpoint/pose
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Angular Arrow Scale: 2
+      Angular Color: 204; 204; 51
+      Arrow Width: 0.5
+      Class: rviz/TwistStamped
+      Enabled: true
+      Hide Small Values: true
+      History Length: 1
+      Linear Arrow Scale: 2
+      Linear Color: 204; 51; 51
+      Name: TwistStamped
+      Queue Size: 10
+      Topic: /mavros/local_position/velocity_local
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Angular Arrow Scale: 2
+      Angular Color: 204; 204; 51
+      Arrow Width: 0.5
+      Class: rviz/TwistStamped
+      Enabled: true
+      Hide Small Values: false
+      History Length: 1
+      Linear Arrow Scale: 2
+      Linear Color: 204; 51; 51
+      Name: TwistStamped
+      Queue Size: 10
+      Topic: /platform_setpoint/velocity
+      Unreliable: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -175,7 +228,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.5291831493377686
+      Distance: 6.808012008666992
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -183,17 +236,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 0.41849684715270996
-        Y: 0.09912106394767761
-        Z: 0.8899658918380737
+        X: 0.7370787858963013
+        Y: -0.01872096210718155
+        Z: 2.10935378074646
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.309797078371048
+      Pitch: 0.19979631900787354
       Target Frame: <Fixed Frame>
-      Yaw: 4.873597621917725
+      Yaw: 1.871781587600708
     Saved: ~
 Window Geometry:
   Displays:
@@ -211,5 +264,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 2264
-  X: 77
+  X: 306
   Y: 54
