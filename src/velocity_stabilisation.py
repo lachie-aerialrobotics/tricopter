@@ -1,11 +1,9 @@
 #!/usr/bin/env python
-from ast import Sub
-from gettext import translation
 import rospy
 import numpy as np
 import tf2_ros
-from geometry_msgs.msg import PoseStamped, TwistStamped
-from tf.transformations import quaternion_from_euler, quaternion_multiply, quaternion_conjugate
+from geometry_msgs.msg import TwistStamped
+from tf.transformations import quaternion_multiply, quaternion_conjugate
 from message_filters import ApproximateTimeSynchronizer, Subscriber
 
 #code to generate end-effector setpoints accounting for random drone perturbations
@@ -46,13 +44,13 @@ class velocityStabilisation:
 
             V_t_w = -V_d_w - np.cross(DT_w, Omega_d_w) + V_sp
 
-            Omega_t_w = -Omega_d_w + Omega_sp 
+            # Omega_t_w = -Omega_d_w + Omega_sp 
     
             w_q_b = np.asarray([w_tf_b.transform.rotation.x, w_tf_b.transform.rotation.y, w_tf_b.transform.rotation.z, w_tf_b.transform.rotation.w])
 
             V_t_p = quaternion_rotation(V_t_w, quaternion_conjugate(w_q_b))
-            Omega_t_p = quaternion_rotation(Omega_t_w, quaternion_conjugate(w_q_b))
-            
+            # Omega_t_p = quaternion_rotation(Omega_t_w, quaternion_conjugate(w_q_b))
+            Omega_t_p = np.asarray([0.0, 0.0, 0.0])
             
             platform_twist = TwistStamped()
             platform_twist.header.frame_id = 'stewart_base'

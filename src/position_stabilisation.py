@@ -55,8 +55,6 @@ class positionStabilisation:
         
         BT_d = -self.DB_d + quaternion_rotation(OT_w - OD_w, d_q_w)
         BP_b = quaternion_rotation(BT_d, b_q_d) - quaternion_rotation(self.PT_p, b_q_p)
-        
-        
     
         #fill in pose msg and publish
         platform_pose = PoseStamped()
