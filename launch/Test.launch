@@ -23,9 +23,9 @@
       <arg name="Kp_z" default="12.0" />
       <arg name="Kv_x" default="2.0"/>
       <arg name="Kv_y" default="2.0"/>
-      <arg name="Kv_z" default="2.0"/>
-      <arg name="normalizedthrust_constant" default="0.01"/> <!-- map thrust in N to [0,1] -->
-      <arg name="normalizedthrust_offset" default="0.25"/>
+      <arg name="Kv_z" default="20.0"/>
+      <arg name="normalizedthrust_constant" default="0.011"/> <!-- map thrust in N to [0,1] -->
+      <arg name="normalizedthrust_offset" default="0.227"/>
       <arg name="attctrl_constant" default="0.5"/>
     </include>
 
