@@ -22,8 +22,9 @@
     </include> 
 
     <!-- <arg name="fcu_url" default="/dev/ttyTHS2:921600" /> -->
-    <!-- <arg name="fcu_url" default="/dev/ttyUSB0:921600" />
-    <arg name="gcs_url" default="udp-b://127.0.0.1:14555@14550" />
+    <arg name="fcu_url" default="/dev/ttyUSB0:1000000" />
+    <!-- <arg name="gcs_url" default="udp-b://127.0.0.1:14555@14550" /> -->
+    <arg name="gcs_url" default="udp://@192.168.0.192" />
     <arg name="tgt_system" default="1" />
     <arg name="tgt_component" default="1" />
     <arg name="log_output" default="screen" />
@@ -37,7 +38,7 @@
       <arg name="log_output" value="$(arg log_output)" /> -->
       <!--arg name="fcu_protocol" value="$(arg fcu_protocol)" /-->
       <!--arg name="respawn_mavros" default="$(arg respawn_mavros)" /-->
-    <!-- </include> -->
+    </include>
 
   <!-- <node name="Lidar_msg_stamper" pkg="tricopter" type="lidar_stamper.py" required="true" output="screen"/> -->
   <!-- <node name="Lidar_msg_converter" pkg="tricopter" type="Lidar_msg_converter.py" required="true" output="screen"/> -->
