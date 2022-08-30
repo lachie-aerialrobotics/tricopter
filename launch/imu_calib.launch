@@ -62,7 +62,7 @@
   <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2odom" args="0 0 0 0 0 0 1 map odom" />
   <node pkg="tf2_ros" type="static_transform_publisher" name="transform_odom2camera_init" args="0 0 0 0 0 0 1 odom camera_init" />
 
-  <include file="$(find lidar_imu_init)/launch/ouster.launch"/>
+  <!-- <include file="$(find lidar_imu_init)/launch/ouster.launch"/> -->
   <!-- <include file="$(find aloam_velodyne)/launch/fastlio_ouster64.launch"/>
     <arg name="fcu_url" default="/dev/ttyTHS2:921600" />
     <arg name="gcs_url" default="udp://@192.168.0.192" />
