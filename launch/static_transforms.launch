@@ -5,4 +5,5 @@
     <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="transform_base_link2vision_estimate" args="0 0 0 0 0 0 1 base_link vision_estimate" /> -->
     <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2odom" args="0 0 0 0 0 0 1 map odom" />
     <node pkg="tf2_ros" type="static_transform_publisher" name="transform_odom2camera_init" args="0 0 0 0 0 0 1 odom camera_init" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_odom2camera_init" args="0 0 0 0 0 0 1 base_link vision_estimate" />
 </launch>
