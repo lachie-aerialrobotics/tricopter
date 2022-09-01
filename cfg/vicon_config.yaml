@@ -1,0 +1,4 @@
+vicon:
+    model_list:                                         [hexacopter]
+    server_address:                                     "192.168.1.50"
+    publish_tf:                                         true
