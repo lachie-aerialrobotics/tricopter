@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
-    <rosparam>
-        /mavros/vision_pose/tf/listen: true
-    </rosparam>
     <include file="$(find tricopter)/launch/ouster_node.launch"/>
     <include file="$(find tricopter)/launch/mavros_node.launch"/>
     <include file="$(find tricopter)/launch/static_transforms.launch"/>
@@ -12,5 +9,9 @@
     <!-- <include file="$(find lio_sam)/launch/run.launch"/> -->
 
     <include file="$(find tricopter)/launch/vicon_node.launch"/>
+    <rosparam>
+        /mavros/vision_pose/tf/listen: true
+    </rosparam>
+    
 </launch>
   
