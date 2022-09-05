@@ -18,14 +18,11 @@ class Commander():
         self.drone_path_sub = rospy.Subscriber('/path/drone', Path, self.path_cb, tcp_nodelay=True)
         self.local_pos_pub = rospy.Publisher('/mavros/setpoint_position/local', PoseStamped, tcp_nodelay=True, queue_size=10)
  
- 
         self.takeoff()
 
         rospy.sleep(10)
-        self.landing()
-
         
-
+        self.land()
 
         
     def state_cb(self, state):
@@ -44,10 +41,9 @@ class Commander():
             
         while not self.mavros_state.mode == "OFFBOARD":
             rate.sleep()
-        
         rospy.loginfo("FLYING!")
 
-    def landing(self):
+    def land(self):
         rospy.loginfo("LANDING!")
         rospy.wait_for_service('/mavros/cmd/land')
         try:
