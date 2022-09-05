@@ -7,7 +7,7 @@ from sensor_msgs.msg import Joy
 from nav_msgs.msg import Path
 
 from dynamic_reconfigure.server import Server
-from delta_manipulator.cfg import JoystickConfig
+from tricopter.cfg import JoystickConfig
 
 #script generates trajectory setpoints with joystick inputs
 

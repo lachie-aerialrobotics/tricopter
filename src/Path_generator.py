@@ -6,7 +6,7 @@ from geometry_msgs.msg import PoseStamped
 from nav_msgs.msg import Path
 
 from dynamic_reconfigure.server import Server
-from delta_manipulator.cfg import TrajectoryConfig
+from tricopter.cfg import TrajectoryConfig
 
 def config_callback(config, level): 
     rospy.loginfo("Calculating new trajectory.....")
