@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <!-- Simulated Hex+delta arm -->
 <launch>
-    <rosparam file="$(find tricopter)/cfg/Hex_config.yaml" />
 
     <arg name="viz" default = "true"/>
 
