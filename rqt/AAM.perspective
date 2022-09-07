@@ -274,7 +274,7 @@
                   "type": "repr"
                 },
                 "selected_nodes": {
-                  "repr": "['/pathGenerator']",
+                  "repr": "['/pathFollower']",
                   "type": "repr"
                 },
                 "splitter": {
