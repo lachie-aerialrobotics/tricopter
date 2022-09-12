@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <include file="$(find tricopter)/launch/ouster_node.launch"/>
+    <include file="$(find tricopter)/launch/mavros_node.launch"/>
+    <include file="$(find tricopter)/launch/static_transforms.launch"/>
+
+    <include file="$(find fast_lio_localization)/launch/localization_ouster64.launch">
+        <arg name="MAP" value="/home/xavier02/catkin_ws/src/FAST_LIO_LOCALIZATION/PCD/5.pcd" />
+    </include>
+    <rosparam>
+        /mavros/vision_pose/tf/listen: true
+    </rosparam>
+    <!-- <include file="$(find aloam_velodyne)/launch/aloam_velodyne_OS1-64.launch"/> !-->
+    <!-- <include file="$(find lio_sam)/launch/run.launch"/> -->
+
+    <!-- <include file="$(find tricopter)/launch/vicon_node.launch"/> -->
+    <rosparam file="$(find tricopter)/cfg/Hex_config.yaml" />
+    <node name="pathFollower" pkg="tricopter" type="Path_follower.py" required="true" output="screen"/> 
+</launch>
+  
