@@ -3,6 +3,6 @@
     <node pkg="tf2_ros" type="static_transform_publisher" name="transform_body2sensor" args="0.19 0 0.069 0 0 0 1 body os_sensor" />
     <node pkg="tf2_ros" type="static_transform_publisher" name="transform_body2base_link" args="0 0 0 0 0 0 1 body base_link" />
     <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2odom" args="0 0 0 0 0 0 1 map odom" />
-    <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="transform_odom2camera_init" args="0 0 0 0 0 0 1 odom camera_init" /> -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_odom2camera_init" args="0 0 0 0 0 0 1 odom camera_init" />
     <node pkg="tf2_ros" type="static_transform_publisher" name="transform_body2vision" args="0 0 0 0 0 0 1 body vision_estimate" />
 </launch>
