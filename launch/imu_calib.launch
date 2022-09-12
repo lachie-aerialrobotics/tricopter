@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
   <include file="$(find tricopter)/launch/ouster_node.launch"/>
-  <include file="$(find tricopter)/launch/mavros_node.launch"/>
-  <node pkg="mavros" type="mavcmd" name="freq_up_imu_data_raw" args="long 511 105 10000 0 0 0 0 0" />
-  <node pkg="mavros" type="mavcmd" name="freq_up_imu_data" args="long 511 31 10000 0 0 0 0 0" />
-  
-  <include file="$(find lidar_imu_init)/launch/ouster.launch"/>
-  
+  <include file="$(find tricopter)/launch/mavros_node.launch"/>  
 </launch>
