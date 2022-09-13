@@ -9,6 +9,7 @@
     </include>
     <rosparam>
         /mavros/vision_pose/tf/listen: true
+        /pcd_save/pcd_save_en: false
     </rosparam>
     <!-- <include file="$(find aloam_velodyne)/launch/aloam_velodyne_OS1-64.launch"/> !-->
     <!-- <include file="$(find lio_sam)/launch/run.launch"/> -->
@@ -17,4 +18,3 @@
     <rosparam file="$(find tricopter)/cfg/Hex_config.yaml" />
     <node name="pathFollower" pkg="tricopter" type="Path_follower.py" required="true" output="screen"/> 
 </launch>
-  
