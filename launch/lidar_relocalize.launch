@@ -15,7 +15,7 @@
     <!-- <include file="$(find aloam_velodyne)/launch/aloam_velodyne_OS1-64.launch"/> !-->
     <!-- <include file="$(find lio_sam)/launch/run.launch"/> -->
 
-    <!-- <include file="$(find tricopter)/launch/vicon_node.launch"/> -->
+    <include file="$(find tricopter)/launch/vicon_node.launch"/>
     <rosparam file="$(find tricopter)/cfg/Hex_config.yaml" />
     <node name="pathFollower" pkg="tricopter" type="Path_follower.py" required="true" output="screen"/> 
 </launch>
