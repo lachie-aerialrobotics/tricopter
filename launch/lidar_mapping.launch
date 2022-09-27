@@ -4,6 +4,6 @@
   <include file="$(find tricopter)/launch/livox_node.launch"/> 
   <include file="$(find tricopter)/launch/mavros_node.launch"/>  
 
-  <include file="$(find fast_lio)/launch/mapping_avia.launch"/>
+  <!-- <include file="$(find fast_lio)/launch/mapping_avia.launch"/> -->
 
 </launch>

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
-    <include file="$(find livox_ros_driver)/launch/livox_lidar_msg.launch">
+    <include file="$(find livox_ros_driver)/launch/livox_lidar_rviz.launch">
         <arg name="bd_list" value="3JEDK1F001SR891" />
+        <arg name="rosbag_enable" value="false" />
+        <arg name="rviz_enable" default="false"/>
+
     </include>
 </launch>
   
