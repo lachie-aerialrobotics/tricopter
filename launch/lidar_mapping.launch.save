@@ -4,16 +4,8 @@
   <include file="$(find tricopter)/launch/livox_node.launch"/> 
   <include file="$(find tricopter)/launch/mavros_node.launch"/>  
 
-  <include file="$(find fast_lio)/launch/mapping_avia.launch"/>
+  	<include file="$(find fast_lio)/launch/mapping_avia.launch">
+		<param name="max_iteration" type="int" value="3" />		
+	</include>
   <!-- <include file="$(find aloam_velodyne)/launch/aloam_fast_lio.launch"/> -->
-    
-    <include file="$(find tricopter)/launch/static_transforms.launch"/>
-
-  
-    <rosparam>
-        /mavros/vision_pose/tf/listen: true
-        /mavros/vision_pose/tf/rate_limit: 100.0
-        /pcd_save/pcd_save_en: false
-    </rosparam>
-
 </launch>

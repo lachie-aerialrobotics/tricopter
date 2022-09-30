@@ -3,8 +3,8 @@
     <include file="$(find livox_ros_driver)/launch/livox_lidar_msg.launch">
         <arg name="bd_list" value="3JEDK1F001SR891" />
         <arg name="rosbag_enable" value="false" />
-        <arg name="rviz_enable" default="false"/>
-
+        <arg name="rviz_enable" value="false"/>
+	<arg name="publish_freq" value="100"/>
     </include>
 </launch>
   
