@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
-  <!-- <include file="$(find tricopter)/launch/ouster_node.launch"/> -->
-  <include file="$(find tricopter)/launch/livox_node.launch"/> 
-  <include file="$(find tricopter)/launch/mavros_node.launch"/>  
-
-  <include file="$(find fast_lio)/launch/mapping_avia.launch"/>
-  <!-- <include file="$(find aloam_velodyne)/launch/aloam_fast_lio.launch"/> -->
-    
+    <!-- <include file="$(find tricopter)/launch/ouster_node.launch"/> -->
+    <include file="$(find tricopter)/launch/livox_node.launch"/> 
+    <include file="$(find tricopter)/launch/mavros_node.launch"/>  
     <include file="$(find tricopter)/launch/static_transforms.launch"/>
-
-  
+    <include file="$(find fast_lio)/launch/mapping_avia.launch"/>
+    <!-- <include file="$(find aloam_velodyne)/launch/aloam_fast_lio.launch"/> -->
     <rosparam>
         /mavros/vision_pose/tf/listen: true
         /mavros/vision_pose/tf/frame_id: 'map'
-        /mavros/vision_pose/tf/child_frame_id: 'base_link'
-        /mavros/vision_pose/tf/rate_limit: 100.0
+        /mavros/vision_pose/tf/child_frame_id: 'body'
+        /mavros/vision_pose/tf/rate_limit: 100
     </rosparam>
 
 </launch>
