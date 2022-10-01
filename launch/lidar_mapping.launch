@@ -13,7 +13,6 @@
     <rosparam>
         /mavros/vision_pose/tf/listen: true
         /mavros/vision_pose/tf/rate_limit: 100.0
-        /pcd_save/pcd_save_en: false
     </rosparam>
 
 </launch>
