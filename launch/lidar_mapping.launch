@@ -6,6 +6,6 @@
     <include file="$(find tricopter)/launch/static_transforms.launch"/>
     <include file="$(find fast_lio)/launch/mapping_avia.launch"/>
     <!-- <include file="$(find aloam_velodyne)/launch/aloam_fast_lio.launch"/> -->
-    <remap from="/Odometry" to="/mavros/odometry/odom"/>
+    <remap to="/Odometry" from="/mavros/odometry/odom"/>
 
 </launch>
