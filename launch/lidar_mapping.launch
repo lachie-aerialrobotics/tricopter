@@ -11,6 +11,7 @@
         /mavros/vision_pose/tf/frame_id: 'map'
         /mavros/vision_pose/tf/child_frame_id: 'body'
         /mavros/vision_pose/tf/rate_limit: 100
+        /mavros/vision_speed/listen_twist: false
     </rosparam>
 
 </launch>
