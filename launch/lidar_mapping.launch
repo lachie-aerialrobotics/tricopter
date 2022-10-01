@@ -10,8 +10,8 @@
         /mavros/vision_pose/tf/listen: true
         /mavros/vision_pose/tf/frame_id: 'camera_init'
         /mavros/vision_pose/tf/child_frame_id: 'body'
-        /mavros/vision_pose/tf/rate_limit: 100
-        /mavros/vision_speed/listen_twist: false
+        <!-- /mavros/vision_pose/tf/rate_limit: 100 -->
+        <!-- /mavros/vision_speed/listen_twist: false -->
     </rosparam>
 
 </launch>
