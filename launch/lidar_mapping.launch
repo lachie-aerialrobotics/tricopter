@@ -6,4 +6,9 @@
     <include file="$(find tricopter)/launch/static_transforms.launch"/>
     <include file="$(find fast_lio)/launch/mapping_avia.launch"/>
     <!-- <include file="$(find aloam_velodyne)/launch/aloam_fast_lio.launch"/> -->
+    <rosparam>
+        /mavros/vision_pose/tf/listen: true
+        /mavros/vision_pose/tf/frame_id: map
+        /mavros/vision_pose/tf/frame_id: base_link
+    </rosparam>
 </launch>
