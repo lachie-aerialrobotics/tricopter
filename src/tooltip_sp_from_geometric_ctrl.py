@@ -62,6 +62,7 @@ class trajectoryFollower:
     def reference_cb(self, event):
         DT_d = tf2_geometry_msgs.do_transform_vector3(self.tip_offset, self.DB_tf) #transform tooltip offset to pose relative to base
         DT_d = np.asarray([DT_d.vector.x, DT_d.vector.y, DT_d.vector.z]) + np.asarray([self.DB_tf.transform.translation.x, self.DB_tf.transform.translation.y, self.DB_tf.transform.translation.z])
+        d_q_b = np.asarray([self.DB_tf.transform.rotation.x, self.DB_tf.transform.rotation.y, self.DB_tf.transform.rotation.z, self.DB_tf.transform.rotation.w])
         q_yaw = quaternion_from_euler(0, 0, self.drone_yaw_sp)
 
         OD_w = np.asarray([self.drone_pos_sp.x, self.drone_pos_sp.y, self.drone_pos_sp.z])

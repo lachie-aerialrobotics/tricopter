@@ -16,6 +16,14 @@
     <param name="reference_type" value="2" />
   </node>
 
+  <rosparam>
+    /mavros/local_position/tf/send: true
+    /mavros/local_position/tf/frame_id: camera_init
+    /mavros/local_position/tf/child_frame_id: base_link
+  </rosparam>
+
+  <include file="$(find tricopter)/launch/stabilisation.launch"/>
+
   <include file="$(find tricopter)/launch/static_transforms.launch"/>
 
   <node name="tooltip_sp_gen" pkg="tricopter" type="tooltip_sp_from_geometric_ctrl.py" required="true" output="screen"/>

@@ -43,16 +43,6 @@
     <include file="$(find tricopter)/launch/spawn_gazebo.launch"/>
   </group>
 
-  <!-- MAVROS -->
-      <!-- MAVROS configs -->
-      <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
-      <arg name="respawn_mavros" default="false"/>
-  <include file="$(find mavros)/launch/px4.launch">
-    <arg name="gcs_url" value=""/>
-    <arg name="fcu_url" value="$(arg fcu_url)"/>
-    <arg name="respawn_mavros" value="$(arg respawn_mavros)"/>
-  </include>
-
   <group if="$(arg viz)">
     <!-- <node type="rviz" name="rviz" pkg="rviz" args="-d $(find tricopter)/rviz/AAM.rviz"/> -->
     <node name = "my_rqt_dashboard" pkg = "rqt_gui" type = "rqt_gui" respawn = "false" output = "screen" args = "--perspective-file $(find tricopter)/rqt/AAM.perspective"/>
