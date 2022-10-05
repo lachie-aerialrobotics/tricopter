@@ -4,7 +4,7 @@
         /mavros/vision_pose/tf/listen: true
         /mavros/vision_pose/tf/frame_id: map
         /mavros/vision_pose/tf/child_frame_id: base_link
-        /mavros/vision_pose/tf/rate_limit: 100
+        <!-- /mavros/vision_pose/tf/rate_limit: 100 -->
     </rosparam>
     <include file="$(find tricopter)/launch/ouster_node.launch"/>
     <!-- <include file="$(find tricopter)/launch/livox_node.launch"/>  -->
@@ -13,4 +13,10 @@
     <!-- <include file="$(find fast_lio)/launch/mapping_avia.launch"/> -->
     <include file="$(find fast_lio)/launch/mapping_ouster64.launch"/>
     <include file="$(find delta_2)/launch/stabilise.launch"/>
+    <rosparam>
+        /mavros/vision_pose/tf/listen: true
+        /mavros/vision_pose/tf/frame_id: map
+        /mavros/vision_pose/tf/child_frame_id: base_link
+        <!-- /mavros/vision_pose/tf/rate_limit: 100 -->
+    </rosparam>
 </launch>
