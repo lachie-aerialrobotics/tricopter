@@ -5,7 +5,7 @@
   <include file="$(find tricopter)/launch/mavros_node.launch"/>  
 
 
-  <!-- <include file="$(find lidar_imu_init)/launch/ouster.launch"/> -->
-  <include file="$(find lidar_imu_init)/launch/livox_avia.launch"/>
+  <include file="$(find lidar_imu_init)/launch/ouster.launch"/>
+  <!-- <include file="$(find lidar_imu_init)/launch/livox_avia.launch"/> -->
 
 </launch>

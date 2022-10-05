@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
-    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_body2sensor" args="0.19 0 0.069 0 0 0 1 body os_sensor" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_body2sensor" args="0.13 0 0.069 0 0 0 1 body os_sensor" />
     <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2camera_init" args="0 0 0 0 0 0 1 map camera_init" />
     <node pkg="tf2_ros" type="static_transform_publisher" name="transform_odom2camera_init" args="0 0 0 0 0 0 1 camera_init odom" />
     <node pkg="tf2_ros" type="static_transform_publisher" name="transform_base2body" args="0 0 0 0 0 0 1 body base_link" />
