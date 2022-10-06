@@ -32,4 +32,12 @@
             <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2camera_init" args="0 0 0 0 0 0 map camera_init" />       
         </group>
     </group>
+
+    <rosparam>
+        /pcd_save/pcd_save_en: false
+        /mavros/vision_pose/tf/listen: true
+        /mavros/vision_pose/tf/frame_id: map
+        /mavros/vision_pose/tf/child_frame_id: base_link
+        /mavros/vision_pose/tf/rate_limit: 100
+    </rosparam>
 </launch>
