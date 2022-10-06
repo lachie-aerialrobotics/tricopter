@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>   
     <arg name="lidar_type" default = "livox"/>
-    <arg name="relocalise" default = "false"/>
+    <arg name="relocalize" default = "false"/>
     <arg name="map" value = "$(env HOME)/scans/scans.pcd"/>
 
     <include file="$(find tricopter)/launch/static_transforms.launch"/> 
@@ -15,7 +15,7 @@
                 <arg name="map" value="$(arg map)" />
             </include>
         </group>
-        <group unless="$(arg relocalise)">
+        <group unless="$(arg relocalize)">
             <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2camera_init" args="0 0 0 0 0 0 map camera_init" />       
         </group>
     </group>
