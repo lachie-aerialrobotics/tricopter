@@ -4,14 +4,21 @@
     <arg name="relocalize" default = "false"/>
     <arg name="map" value = "$(env HOME)/scans/scans.pcd"/>
 
-    <include file="$(find tricopter)/launch/static_transforms.launch"/> 
+    <include file="$(find tricopter)/launch/static_transforms.launch"/>
+    <rosparam>
+        /pcd_save/pcd_save_en: false
+        /mavros/vision_pose/tf/listen: true
+        /mavros/vision_pose/tf/frame_id: map
+        /mavros/vision_pose/tf/child_frame_id: base_link
+        /mavros/vision_pose/tf/rate_limit: 100
+    </rosparam> 
     <include file="$(find tricopter)/launch/mavros_node.launch"/>
 
     <rosparam>
-        /relocalize/map_voxel_size: 0.4
-        /relocalize/scan_voxel_size: 0.1
-        /relocalize/freq: 0.5
-        /relocalize/localization_threshold: 0.97
+        /relocalize/map_voxel_size: 0.2
+        /relocalize/scan_voxel_size: 0.05
+        /relocalize/freq: 0.2
+        /relocalize/localization_threshold: 0.99
         /relocalize/FOV_max: 20
     </rosparam>
 
