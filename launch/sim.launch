@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <!-- Simulated Hex+delta arm -->
 <launch>
-  <rosparam file="$(find tricopter)/cfg/Hex_config.yaml" />
-
   <arg name="viz" default = "false"/>
   
   <param name="model_name" value="Hex_delta"/>
@@ -22,7 +20,9 @@
     /mavros/local_position/tf/child_frame_id: base_link
   </rosparam>
 
-  <include file="$(find tricopter)/launch/stabilisation.launch"/>
+  <include file="$(find delta_2)/launch/stabilise.launch">
+    <arg name="sim" value="true"/>
+  </include>
 
   <include file="$(find tricopter)/launch/static_transforms.launch"/>
 
