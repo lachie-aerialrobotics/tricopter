@@ -8,26 +8,27 @@
     <include file="$(find tricopter)/launch/mavros_node.launch"/>
 
     <group if="$(eval lidar_type == 'livox')">
-        <include file="$(find tricopter)/launch/livox_node.launch"/> 
-        <include file="$(find fast_lio)/launch/mapping_avia.launch"/>
+        <include file="$(find tricopter)/launch/livox_node.launch"/>   
         <group if="$(arg relocalize)">
             <include file="$(find fast_lio_localization)/launch/localization_avia.launch">
                 <arg name="map" value="$(arg map)" />
             </include>
         </group>
         <group unless="$(arg relocalize)">
+            <include file="$(find fast_lio)/launch/mapping_avia.launch"/>
             <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2camera_init" args="0 0 0 0 0 0 map camera_init" />       
         </group>
     </group>
     <group if="$(eval lidar_type == 'ouster')">
         <include file="$(find tricopter)/launch/ouster_node.launch"/>
-        <include file="$(find fast_lio)/launch/mapping_ouster64.launch"/>
+        
         <group if="$(arg relocalize)">
             <include file="$(find fast_lio_localization)/launch/localization_ouster64.launch">
                 <arg name="map" value="$(arg map)" />
             </include>
         </group>
         <group unless="$(arg relocalize)">
+            <include file="$(find fast_lio)/launch/mapping_ouster64.launch"/>
             <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2camera_init" args="0 0 0 0 0 0 map camera_init" />       
         </group>
     </group>
