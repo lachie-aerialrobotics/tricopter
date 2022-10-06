@@ -27,7 +27,7 @@
                 <arg name="map" value="$(arg map)" />
             </include>
         </group>
-        <group unless="$(arg relocalise)">
+        <group unless="$(arg relocalize)">
             <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2camera_init" args="0 0 0 0 0 0 map camera_init" />       
         </group>
     </group>
