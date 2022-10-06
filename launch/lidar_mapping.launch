@@ -5,11 +5,11 @@
     <include file="$(find tricopter)/launch/static_transforms.launch"/> 
     <include file="$(find tricopter)/launch/mavros_node.launch"/>
     
-    <group if="$(eval arg lidar_type == 'livox')">
+    <group if="$(eval lidar_type == 'livox')">
         <include file="$(find tricopter)/launch/livox_node.launch"/> 
         <include file="$(find fast_lio)/launch/mapping_avia.launch"/>
       </group>
-      <group if="$(eval arg lidar_type == 'ouster')">
+      <group if="$(eval lidar_type == 'ouster')">
         <include file="$(find tricopter)/launch/ouster_node.launch"/>
         <include file="$(find fast_lio)/launch/mapping_ouster64.launch"/>
       </group>
