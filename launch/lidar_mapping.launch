@@ -10,9 +10,16 @@
         /mavros/vision_pose/tf/listen: true
         /mavros/vision_pose/tf/frame_id: map
         /mavros/vision_pose/tf/child_frame_id: base_link
-        /mavros/vision_pose/tf/rate_limit: 100
+        <!-- /mavros/vision_pose/tf/rate_limit: 100 -->
     </rosparam> 
     <include file="$(find tricopter)/launch/mavros_node.launch"/>
+    <rosparam>
+        /pcd_save/pcd_save_en: false
+        /mavros/vision_pose/tf/listen: true
+        /mavros/vision_pose/tf/frame_id: map
+        /mavros/vision_pose/tf/child_frame_id: base_link
+        <!-- /mavros/vision_pose/tf/rate_limit: 100 -->
+    </rosparam>
 
     <rosparam>
         /relocalize/map_voxel_size: 0.2
@@ -54,11 +61,5 @@
         </group>
     </group>
 
-    <rosparam>
-        /pcd_save/pcd_save_en: false
-        /mavros/vision_pose/tf/listen: true
-        /mavros/vision_pose/tf/frame_id: map
-        /mavros/vision_pose/tf/child_frame_id: base_link
-        /mavros/vision_pose/tf/rate_limit: 100
-    </rosparam>
+
 </launch>
