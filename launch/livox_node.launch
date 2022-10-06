@@ -4,7 +4,7 @@
         <arg name="bd_list" value="3JEDK1F001SR891" />
         <arg name="rosbag_enable" value="false" />
         <arg name="rviz_enable" value="false"/>
-	<arg name="publish_freq" value="100"/>
+	<arg name="publish_freq" value="10"/>
     </include>
 </launch>
   
