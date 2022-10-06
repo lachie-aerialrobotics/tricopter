@@ -12,7 +12,7 @@
     <include file="$(find tricopter)/launch/static_transforms.launch"/>
     <include file="$(find fast_lio)/launch/mapping_avia.launch"/>
     <!-- <include file="$(find fast_lio)/launch/mapping_ouster64.launch"/> -->
-    <include file="$(find delta_2)/launch/stabilise.launch"/>
+    <!-- <include file="$(find delta_2)/launch/stabilise.launch"/> -->
     <rosparam>
         /mavros/vision_pose/tf/listen: true
         /mavros/vision_pose/tf/frame_id: map
