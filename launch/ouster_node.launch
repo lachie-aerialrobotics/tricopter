@@ -19,4 +19,3 @@
         <arg name="udp_profile_lidar" default="" doc="lidar packet profile: LEGACY, RNG19_RFL8_SIG16_NIR16_DUAL"/>
     </include> 
 </launch>
-  

@@ -1,0 +1,5 @@
+string frame_id
+string transformed_frame_id
+trajectory_msgs/MultiDOFJointTrajectory toolpath_trajectory
+---
+trajectory_msgs/MultiDOFJointTrajectory toolpath_trajectory

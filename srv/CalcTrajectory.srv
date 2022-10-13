@@ -1,4 +1,0 @@
-string trajectory_type
-string frame_id
----
-trajectory_msgs/MultiDOFJointTrajectory trajectory

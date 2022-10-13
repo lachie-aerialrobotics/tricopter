@@ -14,7 +14,7 @@ class trajectoryFollower:
     tip_offset = Vector3Stamped()
     tip_offset.vector.x = 0.0
     tip_offset.vector.y = 0.0
-    tip_offset.vector.z = 0.4
+    tip_offset.vector.z = 0.25
     drone_yaw_sp = 0.0
 
     target_msg = FlatTarget()
