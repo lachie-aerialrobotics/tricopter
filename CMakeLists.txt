@@ -72,6 +72,7 @@ add_service_files(
    droneTrajectory.srv
    transformTrajectory.srv
    TOPPRATrajectory.srv
+   fetchPoses.srv
 #   Service1.srv
 #   Service2.srv
 )

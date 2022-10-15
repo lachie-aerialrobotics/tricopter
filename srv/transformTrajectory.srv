@@ -1,5 +1,5 @@
 string frame_id
 string transformed_frame_id
-trajectory_msgs/MultiDOFJointTrajectory toolpath_trajectory
+geometry_msgs/PoseArray poses
 ---
-trajectory_msgs/MultiDOFJointTrajectory toolpath_trajectory
+geometry_msgs/PoseArray poses_transformed

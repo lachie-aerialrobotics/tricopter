@@ -1,0 +1,39 @@
+waypoints:
+
+  n_layers: 5                                   # total number of layers (hint: max layer_index + 1)
+
+  layer0:                                       # start at layer0 and count up from there
+    point0: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]      # start at point0 and count up, number of points per layer does not need to be the same
+    point1: [1.0, 0.0, 0.0, 0.0, 0.0, 0.0]      # format is [x, y, z, roll, pitch, yaw] - units [(m), (m), (m), (degrees), (degrees), (degrees)]
+    point2: [1.0, 1.0, 0.0, 0.0, 0.0, 0.0]      # leave angles as 0.0 for a normal print -> mess with yaw and pitch to do funky stuff
+    point3: [0.0, 1.0, 0.0, 0.0, 0.0, 0.0]
+    point4: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+  layer1:
+    point0: [0.0, 0.0, 0.2, 0.0, 0.0, 0.0]
+    point1: [1.0, 0.0, 0.2, 0.0, 0.0, 0.0]
+    point2: [1.0, 1.0, 0.2, 0.0, 0.0, 0.0]
+    point3: [0.0, 1.0, 0.2, 0.0, 0.0, 0.0]
+    point4: [0.0, 0.0, 0.2, 0.0, 0.0, 0.0]
+
+  layer2:
+    point0: [0.0, 0.0, 0.4, 0.0, 0.0, 0.0]
+    point1: [1.0, 0.0, 0.4, 0.0, 0.0, 0.0]
+    point2: [1.0, 1.0, 0.4, 0.0, 0.0, 0.0]
+    point3: [0.0, 1.0, 0.4, 0.0, 0.0, 0.0]
+    point4: [0.0, 0.0, 0.4, 0.0, 0.0, 0.0]
+
+  layer3:
+    point0: [0.0, 0.0, 0.6, 0.0, 0.0, 0.0]
+    point1: [1.0, 0.0, 0.6, 0.0, 0.0, 0.0]
+    point2: [1.0, 1.0, 0.6, 0.0, 0.0, 0.0]
+    point3: [0.0, 1.0, 0.6, 0.0, 0.0, 0.0]
+    point4: [0.0, 0.0, 0.6, 0.0, 0.0, 0.0]
+
+  layer4:
+    point0: [0.0, 0.0, 0.8, 0.0, 0.0, 0.0]
+    point1: [1.0, 0.0, 0.8, 0.0, 0.0, 0.0]
+    point2: [1.0, 1.0, 0.8, 0.0, 0.0, 0.0]
+    point3: [0.0, 1.0, 0.8, 0.0, 0.0, 0.0]
+    point4: [0.0, 0.0, 0.8, 0.0, 0.0, 0.0]
+  

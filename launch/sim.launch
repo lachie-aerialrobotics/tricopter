@@ -4,8 +4,8 @@
   <arg name="viz" default = "false"/>
   
   <param name="model_name" value="Hex_delta"/>
-  <rosparam file="$(find tricopter)/cfg/trajectory_point.yaml" />
-  <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="0 0 0 0 0 0 map print_origin" />
+  
+  <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="2 0 3 0 -1.6 0 map printing_plane" />
 
   <include file="$(find tricopter)/launch/geometric_controller.launch"/>
   <!-- <node pkg="trajectory_publisher" type="trajectory_publisher" name="trajectory_publisher" output="screen">
@@ -28,8 +28,9 @@
   <include file="$(find tricopter)/launch/static_transforms.launch"/>
 
   <!-- <node name="tooltip_sp_gen" pkg="tricopter" type="tooltip_sp_from_geometric_ctrl.py" required="true" output="screen"/> -->
+  <node name="trajectory_services" pkg="tricopter" type="trajectory_services.py" required="true" output="screen"/> 
   <node name="print_manager" pkg="tricopter" type="print_manager.py" required="true" output="screen"/>  
-  
+  <rosparam file="$(find tricopter)/cfg/trajectory_points.yaml" />
   <include file="$(find tricopter)/launch/spawn_gazebo.launch"/>
 
   <group if="$(arg viz)">
