@@ -1,4 +1,3 @@
-string frame_id
 string transformed_frame_id
 geometry_msgs/PoseArray poses
 ---

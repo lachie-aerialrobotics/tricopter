@@ -5,7 +5,8 @@
   
   <param name="model_name" value="Hex_delta"/>
   
-  <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="2 0 3 0 -1.6 0 map printing_plane" />
+  <!-- todo: include base_link to stewart_base transform here:-->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="2 2 3 1.570796 0 1.570796 map printing_plane" />
 
   <include file="$(find tricopter)/launch/geometric_controller.launch"/>
   <!-- <node pkg="trajectory_publisher" type="trajectory_publisher" name="trajectory_publisher" output="screen">

@@ -9,6 +9,8 @@ Panels:
         - /Path1
         - /Path2
         - /Pose1
+        - /Path4
+        - /Pose2
       Splitter Ratio: 0.5
     Tree Height: 1211
   - Class: rviz/Selection
@@ -127,7 +129,7 @@ Visualization Manager:
           Value: true
         platform:
           Value: true
-        print_origin:
+        printing_plane:
           Value: true
         stewart_base:
           Value: true
@@ -147,7 +149,7 @@ Visualization Manager:
         map:
           map_ned:
             {}
-          print_origin:
+          printing_plane:
             {}
       Update Interval: 0
       Value: true
@@ -156,7 +158,7 @@ Visualization Manager:
       Axes Radius: 0.10000000149011612
       Class: rviz/Pose
       Color: 255; 25; 0
-      Enabled: false
+      Enabled: true
       Head Length: 0.30000001192092896
       Head Radius: 0.10000000149011612
       Name: Pose
@@ -166,7 +168,7 @@ Visualization Manager:
       Shape: Axes
       Topic: /reference/pose
       Unreliable: false
-      Value: false
+      Value: true
     - Alpha: 1
       Buffer Length: 1
       Class: rviz/Path
@@ -189,6 +191,46 @@ Visualization Manager:
       Shaft Diameter: 0.10000000149011612
       Shaft Length: 0.10000000149011612
       Topic: /viz/print
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 204; 41; 204
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
+      Line Style: Lines
+      Line Width: 0.10000000149011612
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Queue Size: 1
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
+      Topic: /viz/transitionpath
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz/Pose
+      Color: 255; 25; 0
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Pose
+      Queue Size: 10
+      Shaft Length: 1
+      Shaft Radius: 0.05000000074505806
+      Shape: Axes
+      Topic: /tooltip_setpoint/pose
       Unreliable: false
       Value: true
   Enabled: true
@@ -219,7 +261,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 9.687795639038086
+      Distance: 7.481935501098633
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -227,17 +269,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -0.3849664628505707
-        Y: 0.7078239321708679
-        Z: 0.7089841365814209
+        X: 1.429266095161438
+        Y: 0.6959742903709412
+        Z: 1.0436238050460815
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.4047973155975342
+      Pitch: 0.09479698538780212
       Target Frame: <Fixed Frame>
-      Yaw: 4.8785810470581055
+      Yaw: 3.098595142364502
     Saved: ~
 Window Geometry:
   Displays:
@@ -256,4 +298,4 @@ Window Geometry:
     collapsed: false
   Width: 2578
   X: 150
-  Y: 490
+  Y: 365

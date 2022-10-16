@@ -53,7 +53,7 @@ def handle_fetch_poses(req):
                 pose = Pose()
                 pose.position.x = point[0]
                 pose.position.y = point[1]
-                pose.position.z = point[2]
+                pose.position.z = -point[2] #z axis is reversed to match manipulator sign convention
                 q = quaternion_from_euler(point[3], point[4], point[5])
                 pose.orientation.x = q[0]
                 pose.orientation.y = q[1]
@@ -78,44 +78,18 @@ def handle_drone_trajectory(req):
     drone_frame = req.drone_body_frame_id
     tip_frame = req.tooltip_frame_id
 
+    # get tf from drone frame to tooltip frame
     tfBuffer = tf2_ros.Buffer()
     tfListener = tf2_ros.TransformListener(tfBuffer)
-    tf = tfBuffer.lookup_transform(drone_frame, tip_frame, time=rospy.Time.now(), timeout=rospy.Duration(5))
-
-    drone_position_offset_local = Transform()
-    drone_position_offset_local.translation.x = -tf.transform.translation.x
-    drone_position_offset_local.translation.y = -tf.transform.translation.y
-    drone_position_offset_local.translation.z = -tf.transform.translation.z
-    drone_position_offset_local.rotation.x = 0
-
-    drone_position_offset_local.rotation.y = 0
-    drone_position_offset_local.rotation.z = 0
-    drone_position_offset_local.rotation.w = 1
+    tf = tfBuffer.lookup_transform(tip_frame, drone_frame, time=rospy.Time.now(), timeout=rospy.Duration(5))
 
     resp = droneTrajectoryResponse()
     resp.drone_trajectory = MultiDOFJointTrajectory()
-    resp.drone_trajectory.header.frame_id = req.tip_traj.header.frame_id
+    resp.drone_trajectory.header.frame_id = tip_traj.header.frame_id
     resp.drone_trajectory.header.stamp = rospy.Time.now()
 
     for i in range(len(tip_traj.points)):
-        curr_tip_transform = Transform()
-        curr_tip_transform = tip_traj.points[i].transforms[0]
-
-        yaw_transform = Transform()
-        #extract the yaw angle from the rotation setpoint
-        (roll, pitch, yaw) = euler_from_quaternion([curr_tip_transform.rotation.x,
-                                                    curr_tip_transform.rotation.y,
-                                                    curr_tip_transform.rotation.z,
-                                                    curr_tip_transform.rotation.w])
-        yaw_q = quaternion_from_euler(0.0, 0.0, yaw)
-        yaw_transform.rotation.x = yaw_q[0]
-        yaw_transform.rotation.y = yaw_q[1]
-        yaw_transform.rotation.z = yaw_q[2]
-        yaw_transform.rotation.w = yaw_q[3]
-
-        drone_position_offset_world = do_transform_transform(drone_position_offset_local, yaw_transform)
-
-        drone_transform = do_transform_transform(curr_tip_transform, drone_position_offset_world)
+        drone_transform = do_transform_transform(tf, tip_traj.points[i].transforms[0])
 
         drone_trajectory_point = MultiDOFJointTrajectoryPoint()
         drone_trajectory_point.time_from_start = tip_traj.points[i].time_from_start
@@ -123,6 +97,7 @@ def handle_drone_trajectory(req):
         drone_trajectory_point.velocities.append(tip_traj.points[i].velocities[0])
         drone_trajectory_point.accelerations.append(tip_traj.points[i].accelerations[0])
         resp.drone_trajectory.points.append(drone_trajectory_point)
+
     rospy.loginfo("Trajectory ready")
     return resp
 
@@ -130,7 +105,7 @@ def handle_transform_trajectory(req):
     # service takes a set of desired toolpath poses and transforms 
     # to the printing surface in the drone's frame of reference.
 
-    frame_id_init = req.frame_id
+    frame_id_init = req.poses.header.frame_id
     frame_id_new = req.transformed_frame_id
     poses = req.poses
     
@@ -138,7 +113,7 @@ def handle_transform_trajectory(req):
     
     tfBuffer = tf2_ros.Buffer()
     tfListener = tf2_ros.TransformListener(tfBuffer)
-    tf = tfBuffer.lookup_transform(frame_id_init, frame_id_new, time=rospy.Time.now(), timeout=rospy.Duration(5))
+    tf = tfBuffer.lookup_transform(frame_id_new, frame_id_init, time=rospy.Time.now(), timeout=rospy.Duration(5))
 
     resp = transformTrajectoryResponse()
 
@@ -157,7 +132,7 @@ def handle_transform_trajectory(req):
     
 
 def handle_TOPPRA_trajectory(req):
-    # service generates a smooth, interpolated, time-optimal trajectory from an array of poses using TOPPRA
+    # service generates a smooth, interpolated, time-optimal trajectory from an array of poses using TOPPRA package
 
     num_poses = len(req.poses.poses)
     
