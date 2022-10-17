@@ -29,7 +29,7 @@ def handle_fetch_poses(req):
     #       point0: [x, y, z, roll, pitch, yaw]
     #       ...
 
-    rospy.loginfo("Fetching poses from .yaml file")
+    # rospy.loginfo("Fetching poses from .yaml file")
     param_list = rospy.get_param_names()
     
     poses = PoseArray()
@@ -66,7 +66,7 @@ def handle_fetch_poses(req):
 
     resp = fetchPosesResponse()
     resp.poses = poses
-    rospy.loginfo("Poses returned")
+    # rospy.loginfo("Poses returned")
     return resp
 
 def handle_drone_trajectory(req):

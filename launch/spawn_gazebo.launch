@@ -52,4 +52,10 @@
         <arg name="fcu_url" value="$(arg fcu_url)"/>
         <arg name="respawn_mavros" value="$(arg respawn_mavros)"/>
     </include>
+
+    <rosparam>
+        /mavros/local_position/tf/send: true
+        /mavros/local_position/tf/frame_id: camera_init
+        /mavros/local_position/tf/child_frame_id: base_link
+    </rosparam>
 </launch>
