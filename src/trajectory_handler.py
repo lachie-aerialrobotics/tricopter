@@ -1,16 +1,18 @@
 #! /usr/bin/env python3
 
 import rospy
-from geometry_msgs.msg import Pose, PoseArray, PoseStamped, TwistStamped
+from geometry_msgs.msg import PoseArray, PoseStamped, TwistStamped
+from nav_msgs.msg import Path
 from tricopter.srv import *
+from viz_functions import *
 
 class trajectoryHandler:
-    def __init__(self):
-        self.frequency = 1
-        self.max_vel = 0
-        self.max_acc = 0
-        self.max_yawrate = 0
-        self.max_yawrate_dot = 0
+    def __init__(self, frequency, max_vel, max_acc, max_yawrate, max_yawrate_dot):
+        self.frequency = frequency
+        self.max_vel = max_vel
+        self.max_acc = max_acc
+        self.max_yawrate = max_yawrate
+        self.max_yawrate_dot = max_yawrate_dot
         
         self.world_frame_id = "map"
         self.drone_frame_id = "base_link"
@@ -18,19 +20,26 @@ class trajectoryHandler:
         self.print_frame_id = "printing_plane"
         self.waypoint_prefix = "waypoints"
 
-        self._point_count = 0      
+        self._point_count = 0     
+
+        # publishers for visualisation only
+        self.pub_toolpath_viz = rospy.Publisher('/viz/toolpath', Path, queue_size=1)
+        self.pub_dronepath_viz = rospy.Publisher('/viz/dronepath', Path, queue_size=1)
+        self.pub_transitionpath_viz = rospy.Publisher('/viz/transitionpath', Path, queue_size=1)
+        self.pub_print_viz = rospy.Publisher('/viz/print', Path, queue_size=1) 
+
+        # publish print when object is instantiated
+        publish_viz_print(self.pub_print_viz)
 
     def follow(self, trajectory):
         if self._point_count < len(trajectory.points):
             pose = PoseStamped()
             velocity = TwistStamped()
             acceleration = TwistStamped() 
-
             pose.header.stamp = rospy.Time.now()
             pose.header.frame_id = trajectory.header.frame_id
             velocity.header = pose.header
             acceleration.header = pose.header
-
             pose.pose.position = trajectory.points[self._point_count].transforms[0].translation
             pose.pose.orientation = trajectory.points[self._point_count].transforms[0].rotation
             velocity.twist = trajectory.points[self._point_count].velocities[0]
@@ -43,27 +52,19 @@ class trajectoryHandler:
             acceleration = TwistStamped()
             complete = True
             self._point_count = 0
-
         return pose, velocity, acceleration, complete
 
     def generate_transition(self, start_pose, end_pose):
         if start_pose.header.frame_id != end_pose.header.frame_id:
             rospy.logerr("Cannot interpolate between poses in different reference frames.")
         else:
-            # mid_pose_1 = Pose()
-            # mid_pose_1.position.x = start_pose.pose.position.x
-            # mid_pose_1.position.y = start_pose.pose.position.y
-            # mid_pose_1.position.z = end_pose.pose.position.z
-            # mid_pose_1.orientation = start_pose.pose.orientation
-
             poses = PoseArray()
             poses.header.stamp = rospy.Time.now()
             poses.header.frame_id = start_pose.header.frame_id
             poses.poses.append(start_pose.pose)
-            # poses.poses.append(mid_pose_1)
             poses.poses.append(end_pose.pose)
-
             trajectory = self._TOPPRA_interpolation(poses)
+            publish_viz_trajectory(trajectory, self.pub_transitionpath_viz)
             return trajectory
 
     def generate_print_layer(self, layer_number):
@@ -71,6 +72,8 @@ class trajectoryHandler:
         print_waypoints_transformed = self._transform_trajectory(print_waypoints)
         tooltip_trajectory = self._TOPPRA_interpolation(print_waypoints_transformed)
         drone_trajectory = self._offset_drone_trajectory(tooltip_trajectory)
+        publish_viz_trajectory(drone_trajectory, self.pub_dronepath_viz)
+        publish_viz_trajectory(tooltip_trajectory, self.pub_toolpath_viz)
         return drone_trajectory, tooltip_trajectory
 
     def get_print_start_pose(self, trajectory):
