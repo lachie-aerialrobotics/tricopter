@@ -1,6 +1,5 @@
 #! /usr/bin/env python3
 
-from ast import Mult
 import rospy
 from geometry_msgs.msg import PoseArray, PoseStamped, TwistStamped
 from nav_msgs.msg import Path
@@ -32,8 +31,8 @@ class trajectoryHandler:
         self._pub_transitionpath_viz = rospy.Publisher('/viz/transitionpath', Path, queue_size=1)
         self._pub_print_viz = rospy.Publisher('/viz/print', Path, queue_size=1) 
 
-        # publish print when object is instantiated
-        publish_viz_print(self._pub_print_viz)
+        # publish print visualisation periodically
+        rospy.Timer(rospy.Duration(5.0), self._viz_timer_cb, reset=True)
 
     def follow_print_trajectory(self):
         drone_pose = PoseStamped()
@@ -159,3 +158,6 @@ class trajectoryHandler:
         request.toolpath_trajectory = trajectory
         response = get_traj(request)
         return response.drone_trajectory
+
+    def _viz_timer_cb(self):
+        publish_viz_print(self._pub_print_viz)
