@@ -41,7 +41,7 @@ def handle_fetch_poses(req):
 
     points = list(filter(lambda k: str(req.prefix) in k, param_list))
     
-    points = list(filter(lambda k: ("/layer" + str(req.layer_number)) in k, points))
+    points = list(filter(lambda k: ("/layer" + str(req.layer_number)+"/") in k, points))
 
     if not points:
         rospy.logwarn("No waypoints found - please check .yaml file") 

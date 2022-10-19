@@ -1,8 +1,10 @@
 #! /usr/bin/env python3
 
+from ast import Mult
 import rospy
-from geometry_msgs.msg import PoseArray, PoseStamped, TwistStamped
+from geometry_msgs.msg import Pose, Twist, PoseArray, PoseStamped, TwistStamped, Transform
 from nav_msgs.msg import Path
+from trajectory_msgs.msg import MultiDOFJointTrajectory, MultiDOFJointTrajectoryPoint
 from tricopter.srv import *
 from viz_functions import *
 
@@ -24,24 +26,31 @@ class trajectoryHandler:
         self._drone_trajectory = MultiDOFJointTrajectory()
         self._tooltip_trajectory = MultiDOFJointTrajectory()
         self._transition_trajectory = MultiDOFJointTrajectory()
+        self.loiter_point = PoseStamped()
+        self.loiter_point.header.frame_id = self.world_frame_id
+
+        self._n_layers = rospy.get_param(str(self.waypoint_prefix)+'/n_layers')
 
         # publishers for visualisation only
         self._pub_toolpath_viz = rospy.Publisher('/viz/toolpath', Path, queue_size=1)
         self._pub_dronepath_viz = rospy.Publisher('/viz/dronepath', Path, queue_size=1)
         self._pub_transitionpath_viz = rospy.Publisher('/viz/transitionpath', Path, queue_size=1)
         self._pub_print_viz = rospy.Publisher('/viz/print', Path, queue_size=1) 
+        self._pub_loiter_viz = rospy.Publisher('/viz/loiter_point', PoseStamped, queue_size=1) 
 
         # publish print visualisation periodically
         rospy.Timer(rospy.Duration(5.0), self._viz_timer_cb, reset=True)
 
     def follow_print_trajectory(self):
-        drone_pose = PoseStamped()
-        drone_velocity = TwistStamped()
-        drone_acceleration = TwistStamped()
+        header = self._drone_trajectory.header
+
+        drone_pose = PoseStamped(header=header)
+        drone_velocity = TwistStamped(header=header)
+        drone_acceleration = TwistStamped(header=header)
         
-        tooltip_pose = PoseStamped()
-        tooltip_velocity = TwistStamped()
-        tooltip_acceleration = TwistStamped()
+        tooltip_pose = PoseStamped(header=header)
+        tooltip_velocity = TwistStamped(header=header)
+        tooltip_acceleration = TwistStamped(header=header)
 
         if self._point_count < len(self._drone_trajectory.points):   
             drone_pose, drone_velocity, drone_acceleration = self._read_trajectory(self._drone_trajectory, self._point_count)
@@ -51,15 +60,16 @@ class trajectoryHandler:
         else: 
             complete = True
             self._point_count = 0
-            self._drone_trajectory = MultiDOFJointTrajectory() #reset trajectory so it can't be repeated by accident
-            self._tooltip_trajectory = MultiDOFJointTrajectory()
             
         return drone_pose, drone_velocity, drone_acceleration, tooltip_pose, tooltip_velocity, tooltip_acceleration, complete
 
     def follow_transition_trajectory(self):
-        drone_pose = PoseStamped()
-        drone_velocity = TwistStamped()
-        drone_acceleration = TwistStamped()
+        header = self._drone_trajectory.header
+
+        drone_pose = PoseStamped(header=header)
+        drone_velocity = TwistStamped(header=header)
+        drone_acceleration = TwistStamped(header=header)
+
         if self._point_count < len(self._transition_trajectory.points):   
             drone_pose, drone_velocity, drone_acceleration = self._read_trajectory(self._transition_trajectory, self._point_count)
             self._point_count += 1
@@ -67,12 +77,12 @@ class trajectoryHandler:
         else: 
             complete = True
             self._point_count = 0
-            self._transition_trajectory = MultiDOFJointTrajectory() #reset trajectory so it can't be repeated by accident
         return drone_pose, drone_velocity, drone_acceleration, complete
 
     def get_print_start_pose(self):
-        pose = PoseStamped()
-        pose.header = self._drone_trajectory.header
+        header = self._drone_trajectory.header
+        pose = PoseStamped(header=header)
+        
         pose.pose.position = self._drone_trajectory.points[0].transforms[0].translation
         pose.pose.orientation = self._drone_trajectory.points[0].transforms[0].rotation
         return pose
@@ -98,6 +108,45 @@ class trajectoryHandler:
         publish_viz_trajectory(self._drone_trajectory, self._pub_dronepath_viz)
         publish_viz_trajectory(self._tooltip_trajectory, self._pub_toolpath_viz)
         # return drone_trajectory, tooltip_trajectory
+
+    def get_loiter_point(self):
+        top_waypoints = self._fetch_waypoints_from_yaml(self._n_layers-1)
+   
+        loiter_point = Pose()
+        loiter_point.position.x = 0.0
+        loiter_point.position.y = 0.0
+        loiter_point.position.z = top_waypoints.poses[0].position.z
+        loiter_point.orientation.x = 0.0
+        loiter_point.orientation.y = 0.0
+        loiter_point.orientation.z = 0.0
+        loiter_point.orientation.w = 1.0
+        
+        loiter_fake_array = PoseArray()
+        loiter_fake_array.header.frame_id = self.print_frame_id
+        loiter_fake_array.header.stamp = rospy.Time.now()
+        loiter_fake_array.poses.append(loiter_point)
+
+        transformed_fake_array = self._transform_trajectory(loiter_fake_array)
+        transformed_loiter_point = PoseStamped()
+        transformed_loiter_point.header = transformed_fake_array.header
+        transformed_loiter_point.pose = transformed_fake_array.poses[0]
+
+        fake_transform = Transform(translation=transformed_loiter_point.pose.position, rotation=transformed_loiter_point.pose.orientation)
+        fake_points = MultiDOFJointTrajectoryPoint()
+        fake_points.transforms.append(fake_transform)
+        fake_points.time_from_start = rospy.Duration(0)
+        fake_points.velocities.append(Twist())
+        fake_points.accelerations.append(Twist())
+        fake_trajectory = MultiDOFJointTrajectory(header=transformed_loiter_point.header)
+        fake_trajectory.points.append(fake_points)
+        fake_offset_trajectory = self._offset_drone_trajectory(fake_trajectory)
+
+        self.loiter_point = PoseStamped()
+        self.loiter_point.header = transformed_fake_array.header
+        self.loiter_point.pose.position = fake_offset_trajectory.points[0].transforms[0].translation
+        self.loiter_point.pose.orientation = fake_offset_trajectory.points[0].transforms[0].rotation
+
+        return self.loiter_point
 
     def _read_trajectory(self, trajectory, point_num):
         pose = PoseStamped()
@@ -159,5 +208,6 @@ class trajectoryHandler:
         response = get_traj(request)
         return response.drone_trajectory
 
-    def _viz_timer_cb(self):
+    def _viz_timer_cb(self, event):
         publish_viz_print(self._pub_print_viz)
+        self._pub_loiter_viz.publish(self.loiter_point)

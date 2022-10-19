@@ -1,0 +1,19 @@
+print_planner:
+  setpoint_rate: 30 #Hz
+
+  #Take-off and landing
+  tol_speed: 0.2 #m/s
+  tol_height: 1.0 #m
+        
+  #TOPPRA     
+  print_vel: 2.0 #m/s
+  max_accel: 0.2 #m/s^2
+  max_yawrate: 40 #deg/s
+  max_yawrate_dot: 10 #deg/s^2
+
+  #Tolerance checking  
+  start_speed_tolerance: 0.2 #m/s
+  start_position_tolerance: 0.2 #m
+        
+  #Print progress      
+  first_layer: 0
