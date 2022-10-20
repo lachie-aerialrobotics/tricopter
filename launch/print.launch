@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- Hex+delta arm -->
+<launch>
+    <rosparam file="$(find tricopter)/cfg/print_config.yaml" />
+    <rosparam file="$(find tricopter)/cfg/cylinder_points.yaml" />
+  
+    <!-- todo: include base_link to stewart_base transform here:-->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="0 0 0.5 1.570796 0 1.570796 map printing_plane" />
+
+    <include file="$(find tricopter)/launch/lidar_mapping.launch">
+        <arg name="lidar_type" default = "ouster"/>
+        <arg name="relocalize" default = "false"/>
+    </include>
+
+    <include file="$(find tricopter)/launch/geometric_controller.launch"/>
+
+    <include file="$(find delta_2)/launch/stabilise.launch">
+        <arg name="sim" value="false"/>
+    </include>
+
+    <node name="trajectory_services" pkg="tricopter" type="trajectory_services.py" required="true" output="screen"/> 
+    <node name="print_manager" pkg="tricopter" type="print_manager.py" required="true" output="screen"/>  
+</launch>

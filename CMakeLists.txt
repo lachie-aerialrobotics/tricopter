@@ -107,10 +107,10 @@ generate_messages(
 ##     and list every .cfg file to be processed
 
 # Generate dynamic reconfigure parameters in the 'cfg' folder
-generate_dynamic_reconfigure_options(
-  cfg/Joystick_config.cfg
-  cfg/Path_config.cfg
-)
+# generate_dynamic_reconfigure_options(
+#   cfg/Joystick_config.cfg
+#   cfg/Path_config.cfg
+# )
 
 ###################################
 ## catkin specific configuration ##
