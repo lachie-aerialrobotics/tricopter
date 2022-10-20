@@ -5,7 +5,7 @@ import numpy as np
 
 n_layers = 1
 n_points = 10
-radius = 0.5
+radius = 0.3
 layer_height = 0.0
 theta_inc = 2 * np.pi / n_points
 
