@@ -33,7 +33,8 @@ class trajectoryHandler:
         # publishers for visualisation only
         self._pub_toolpath_viz = rospy.Publisher('/viz/toolpath', Path, queue_size=1)
         self._pub_dronepath_viz = rospy.Publisher('/viz/dronepath', Path, queue_size=1)
-        self._pub_transitionpath_viz = rospy.Publisher('/viz/transitionpath', Path, queue_size=1)
+        self._pub_dronetransitionpath_viz = rospy.Publisher('/viz/dronetransitionpath', Path, queue_size=1)
+        # self._pub_tooltransitionpath_viz = rospy.Publisher('/viz/toltransitionpath', Path, queue_size=1)
         self._pub_print_viz = rospy.Publisher('/viz/print', Path, queue_size=1) 
         self._pub_loiter_viz = rospy.Publisher('/viz/loiter_point', PoseStamped, queue_size=1) 
 
@@ -95,9 +96,11 @@ class trajectoryHandler:
             poses.header.stamp = rospy.Time.now()
             poses.header.frame_id = start_pose.header.frame_id
             poses.poses.append(start_pose.pose)
-            poses.poses.append(end_pose.pose)
+            poses.poses.append(end_pose.pose)        
             self._transition_trajectory = self._TOPPRA_interpolation(poses)
-            publish_viz_trajectory(self._transition_trajectory, self._pub_transitionpath_viz)
+            # tip_trajectory = self._offset_tip_trajectory(self._transition_trajectory)
+            publish_viz_trajectory(self._transition_trajectory, self._pub_dronetransitionpath_viz)
+            # publish_viz_trajectory(tip_trajectory, self._pub_tooltransitionpath_viz)
             # return trajectory
 
     def generate_print_layer(self, layer_number):
@@ -214,6 +217,17 @@ class trajectoryHandler:
         request.toolpath_trajectory = trajectory
         response = get_traj(request)
         return response.drone_trajectory
+
+    # def _offset_tip_trajectory(self, trajectory):
+    #     #get offset drone trajectory
+    #     rospy.wait_for_service('get_drone_trajectory')
+    #     get_traj = rospy.ServiceProxy('get_drone_trajectory', droneTrajectory)
+    #     request = droneTrajectoryRequest()
+    #     request.drone_body_frame_id = self.tooltip_frame_id
+    #     request.tooltip_frame_id = self.drone_frame_id
+    #     request.toolpath_trajectory = trajectory
+    #     response = get_traj(request)
+    #     return response.drone_trajectory
 
     def _viz_timer_cb(self, event):
         publish_viz_print(self._pub_print_viz)

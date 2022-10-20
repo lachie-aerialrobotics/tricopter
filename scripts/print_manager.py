@@ -115,7 +115,7 @@ class printStateMachine(object):
         if self.layer < rospy.get_param(str(self.tH_print.waypoint_prefix) + '/n_layers'):
             rospy.loginfo("Generating trajectory for next layer")
             self.tH_print.generate_print_layer(self.layer)
-            rospy.loginfo("will start in 3 seconds...") 
+            rospy.loginfo("will start printing in 3 seconds...") 
             rospy.sleep(3)
             self.goToPrint()       
         else:
@@ -139,7 +139,7 @@ class printStateMachine(object):
         rospy.loginfo("Printing...")
 
     def on_goToHome(self):
-        rospy.loginfo("Moving to home position")
+        rospy.loginfo("Generating trajectory to loiter position")
         # determine loiter point above print
         if self.layer < rospy.get_param(str(self.tH_print.waypoint_prefix) + '/n_layers'):
             self.home_pose = self.tH_print.get_loiter_point(self.layer, self.offset)
@@ -204,7 +204,7 @@ class printStateMachine(object):
     def during_Manual(self):
         # If flying -> goto home position
         self.target, self.yaw = flat_target_msg_conversion(4, self.local_pose)
-        self.tooltip_state = "HOME"
+        self.tooltip_state = "STAB_3DOF"
         if self.mavros_ext_state.landed_state == 1:
             self.switchToGround()
         if self.mavros_state.mode == "OFFBOARD":

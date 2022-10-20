@@ -7,12 +7,12 @@ print_planner:
         
   #TOPPRA     
   print_vel:                0.2 #m/s
-  print_max_accel:          0.2 #m/s^2
+  print_max_accel:          0.1 #m/s^2
   
   transition_vel:           0.5 #m/s
   transition_max_accel:     0.2 #m/s^2
   
-  max_yawrate:              40 #deg/s
+  max_yawrate:              45 #deg/s
   max_yawrate_dot:          10 #deg/s^2
 
   #Tolerance checking  
