@@ -5,9 +5,9 @@ import numpy as np
 import tf2_ros
 import tf2_geometry_msgs
 
-from geometry_msgs.msg import Pose, PoseArray, PoseStamped, TwistStamped, TransformStamped, Transform, Twist, WrenchStamped
+from geometry_msgs.msg import Pose, PoseArray, PoseStamped, TwistStamped, TransformStamped, Transform, Twist, WrenchStamped, Vector3, Vector3Stamped, Quaternion
 from trajectory_msgs.msg import MultiDOFJointTrajectory, MultiDOFJointTrajectoryPoint
-from tf.transformations import euler_from_quaternion, quaternion_from_euler
+from tf.transformations import euler_from_quaternion, quaternion_from_euler, quaternion_inverse
 from tricopter.srv import *
 
 import toppra as ta
@@ -73,7 +73,6 @@ def handle_drone_trajectory(req):
     # service generates a drone trajectory offset from a supplied tooltip trajectory. x/y/z and yaw commands
     # are preserved and pitch/roll angles are ignored
     rospy.loginfo("Offset drone trajectory requested")
-    tip_traj = req.toolpath_trajectory
 
     drone_frame = req.drone_body_frame_id
     tip_frame = req.tooltip_frame_id
@@ -81,23 +80,43 @@ def handle_drone_trajectory(req):
     # get tf from drone frame to tooltip frame
     tfBuffer = tf2_ros.Buffer()
     tfListener = tf2_ros.TransformListener(tfBuffer)
+
     tf = tfBuffer.lookup_transform(tip_frame, drone_frame, time=rospy.Time.now(), timeout=rospy.Duration(5))
+    tf_rotation = TransformStamped()
+    tf_rotation.header = tf.header
+    tf_rotation.child_frame_id = tf.child_frame_id
+    tf_rotation.transform.rotation = tf.transform.rotation
+    tf_rotation.transform.translation = Vector3(0,0,0)
+
+    tf_inv = tfBuffer.lookup_transform(drone_frame, tip_frame, time=rospy.Time.now(), timeout=rospy.Duration(5))
+    tf_inv_rotation = TransformStamped()
+    tf_inv_rotation.header = tf_inv.header
+    tf_inv_rotation.child_frame_id = tf_inv.child_frame_id
+    tf_inv_rotation.transform.rotation = tf_inv.transform.rotation
+    tf_inv_rotation.transform.translation = Vector3(0,0,0)
 
     resp = droneTrajectoryResponse()
     resp.drone_trajectory = MultiDOFJointTrajectory()
-    resp.drone_trajectory.header.frame_id = tip_traj.header.frame_id
+    resp.drone_trajectory.header.frame_id = req.toolpath_trajectory.header.frame_id
     resp.drone_trajectory.header.stamp = rospy.Time.now()
 
-    for i in range(len(tip_traj.points)):
-        drone_transform = do_transform_transform(tf, tip_traj.points[i].transforms[0])
-
+    for i in range(len(req.toolpath_trajectory.points)): 
+        traj = do_transform_transform(tf_rotation, req.toolpath_trajectory.points[i].transforms[0])
+        (roll, pitch, yaw) = euler_from_quaternion([traj.rotation.x,
+                                                    traj.rotation.y,
+                                                    traj.rotation.z,
+                                                    traj.rotation.w])
+        q = quaternion_from_euler(yaw,0,0,'szyx')
+        traj.rotation = Quaternion(q[0],q[1],q[2],q[3])
+        traj = do_transform_transform(tf_inv_rotation, traj)
+        drone_transform = do_transform_transform(tf, traj)
+        
         drone_trajectory_point = MultiDOFJointTrajectoryPoint()
-        drone_trajectory_point.time_from_start = tip_traj.points[i].time_from_start
+        drone_trajectory_point.time_from_start = req.toolpath_trajectory.points[i].time_from_start
         drone_trajectory_point.transforms.append(drone_transform)
-        drone_trajectory_point.velocities.append(tip_traj.points[i].velocities[0])
-        drone_trajectory_point.accelerations.append(tip_traj.points[i].accelerations[0])
+        drone_trajectory_point.velocities.append(req.toolpath_trajectory.points[i].velocities[0])
+        drone_trajectory_point.accelerations.append(req.toolpath_trajectory.points[i].accelerations[0])
         resp.drone_trajectory.points.append(drone_trajectory_point)
-
     rospy.loginfo("Trajectory ready")
     return resp
 

@@ -9,7 +9,8 @@
   <rosparam file="$(find tricopter)/cfg/cylinder_points.yaml" />
   
   <!-- todo: include base_link to stewart_base transform here:-->
-  <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="4 2 3 2.570796 0 1.8 map printing_plane" />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="0 0 1 1.570796 0 1.570796 map printing_plane" />
+
   <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2caminit" args="0 0 0 0 0 0 map camera_init" />
   <include file="$(find tricopter)/launch/static_transforms.launch"/>
 

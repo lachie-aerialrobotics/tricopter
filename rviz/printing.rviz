@@ -6,13 +6,8 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /Path1
-        - /Path2
-        - /Pose1
-        - /Path3
-        - /Path4
+        - /TF1/Frames1
         - /Pose2
-        - /Pose3
       Splitter Ratio: 0.5
     Tree Height: 1211
   - Class: rviz/Selection
@@ -110,25 +105,25 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
         base_link:
           Value: true
         base_link_frd:
-          Value: true
+          Value: false
         body:
-          Value: true
+          Value: false
         camera_init:
-          Value: true
+          Value: false
         map:
           Value: true
         map_ned:
-          Value: true
+          Value: false
         odom:
-          Value: true
+          Value: false
         odom_ned:
-          Value: true
+          Value: false
         os_sensor:
-          Value: true
+          Value: false
         platform:
           Value: true
         printing_plane:
@@ -140,7 +135,7 @@ Visualization Manager:
         tooltip_init:
           Value: true
         workspace_center:
-          Value: true
+          Value: false
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
@@ -170,8 +165,8 @@ Visualization Manager:
       Update Interval: 0
       Value: true
     - Alpha: 1
-      Axes Length: 1
-      Axes Radius: 0.10000000149011612
+      Axes Length: 0.4000000059604645
+      Axes Radius: 0.05000000074505806
       Class: rviz/Pose
       Color: 255; 25; 0
       Enabled: true
@@ -234,8 +229,24 @@ Visualization Manager:
       Unreliable: false
       Value: true
     - Alpha: 1
-      Axes Length: 1
-      Axes Radius: 0.10000000149011612
+      Axes Length: 0.4000000059604645
+      Axes Radius: 0.05000000074505806
+      Class: rviz/Pose
+      Color: 92; 53; 102
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Pose
+      Queue Size: 10
+      Shaft Length: 0.4000000059604645
+      Shaft Radius: 0.05000000074505806
+      Shape: Axes
+      Topic: /tooltip_setpoint/pose
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Axes Length: 0.20000000298023224
+      Axes Radius: 0.05000000074505806
       Class: rviz/Pose
       Color: 255; 25; 0
       Enabled: true
@@ -246,7 +257,7 @@ Visualization Manager:
       Shaft Length: 1
       Shaft Radius: 0.05000000074505806
       Shape: Axes
-      Topic: /tooltip_setpoint/pose
+      Topic: /viz/loiter_point
       Unreliable: false
       Value: true
     - Alpha: 1
@@ -261,8 +272,8 @@ Visualization Manager:
       Queue Size: 10
       Shaft Length: 1
       Shaft Radius: 0.05000000074505806
-      Shape: Axes
-      Topic: /viz/loiter_point
+      Shape: Arrow
+      Topic: /platform_setpoint/pose
       Unreliable: false
       Value: true
   Enabled: true
@@ -293,7 +304,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 12.092171669006348
+      Distance: 6.981780052185059
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -301,17 +312,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 1.2388660907745361
-        Y: 0.7092092037200928
-        Z: 2.130265235900879
+        X: 1.1705849170684814
+        Y: -1.1018071174621582
+        Z: -0.6125832200050354
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.22479656338691711
+      Pitch: 0.6447964310646057
       Target Frame: <Fixed Frame>
-      Yaw: 2.1235742568969727
+      Yaw: 2.003582239151001
     Saved: ~
 Window Geometry:
   Displays:
@@ -330,4 +341,4 @@ Window Geometry:
     collapsed: false
   Width: 2578
   X: 150
-  Y: 143
+  Y: 54

@@ -1,8 +1,7 @@
 #! /usr/bin/env python3
 
-from ast import Mult
 import rospy
-from geometry_msgs.msg import Pose, Twist, PoseArray, PoseStamped, TwistStamped, Transform
+from geometry_msgs.msg import Pose, Twist, PoseArray, PoseStamped, TwistStamped, Transform, Vector3
 from nav_msgs.msg import Path
 from trajectory_msgs.msg import MultiDOFJointTrajectory, MultiDOFJointTrajectoryPoint
 from tricopter.srv import *
@@ -88,6 +87,7 @@ class trajectoryHandler:
         return pose
 
     def generate_transition(self, start_pose, end_pose):
+        self._point_count = 0 #ensure point count is reset in case last trajectory was interrupted
         if start_pose.header.frame_id != end_pose.header.frame_id:
             rospy.logerr("Cannot interpolate between poses in different reference frames.")
         else:
@@ -101,6 +101,7 @@ class trajectoryHandler:
             # return trajectory
 
     def generate_print_layer(self, layer_number):
+        self._point_count = 0 #ensure point count is reset in case last trajectory was interrupted
         print_waypoints = self._fetch_waypoints_from_yaml(layer_number)
         print_waypoints_transformed = self._transform_trajectory(print_waypoints)
         self._tooltip_trajectory = self._TOPPRA_interpolation(print_waypoints_transformed)
@@ -109,27 +110,30 @@ class trajectoryHandler:
         publish_viz_trajectory(self._tooltip_trajectory, self._pub_toolpath_viz)
         # return drone_trajectory, tooltip_trajectory
 
-    def get_loiter_point(self):
-        top_waypoints = self._fetch_waypoints_from_yaml(self._n_layers-1)
+    def get_loiter_point(self, layer, offset=[0, 0, 0]):
+        def transformPose(pose):
+            fake_array = PoseArray()
+            fake_array.header.frame_id = self.print_frame_id
+            fake_array.header.stamp = rospy.Time.now()
+            fake_array.poses.append(pose)
+            transformed_fake_array = self._transform_trajectory(fake_array)
+            transformed_point = PoseStamped()
+            transformed_point.header = transformed_fake_array.header
+            transformed_point.pose = transformed_fake_array.poses[0]
+            return transformed_point
+
+        top_waypoints = self._fetch_waypoints_from_yaml(layer)
    
         loiter_point = Pose()
-        loiter_point.position.x = 0.0
-        loiter_point.position.y = 0.0
-        loiter_point.position.z = top_waypoints.poses[0].position.z
+        loiter_point.position.x = top_waypoints.poses[0].position.x + offset[0]
+        loiter_point.position.y = top_waypoints.poses[0].position.y + offset[1]
+        loiter_point.position.z = top_waypoints.poses[0].position.z - offset[2]
         loiter_point.orientation.x = 0.0
         loiter_point.orientation.y = 0.0
         loiter_point.orientation.z = 0.0
         loiter_point.orientation.w = 1.0
         
-        loiter_fake_array = PoseArray()
-        loiter_fake_array.header.frame_id = self.print_frame_id
-        loiter_fake_array.header.stamp = rospy.Time.now()
-        loiter_fake_array.poses.append(loiter_point)
-
-        transformed_fake_array = self._transform_trajectory(loiter_fake_array)
-        transformed_loiter_point = PoseStamped()
-        transformed_loiter_point.header = transformed_fake_array.header
-        transformed_loiter_point.pose = transformed_fake_array.poses[0]
+        transformed_loiter_point = transformPose(loiter_point)
 
         fake_transform = Transform(translation=transformed_loiter_point.pose.position, rotation=transformed_loiter_point.pose.orientation)
         fake_points = MultiDOFJointTrajectoryPoint()
@@ -142,8 +146,11 @@ class trajectoryHandler:
         fake_offset_trajectory = self._offset_drone_trajectory(fake_trajectory)
 
         self.loiter_point = PoseStamped()
-        self.loiter_point.header = transformed_fake_array.header
-        self.loiter_point.pose.position = fake_offset_trajectory.points[0].transforms[0].translation
+        self.loiter_point.header.frame_id = self.world_frame_id
+        self.loiter_point.header.stamp = rospy.Time.now()
+        self.loiter_point.pose.position.x = fake_offset_trajectory.points[0].transforms[0].translation.x
+        self.loiter_point.pose.position.y = fake_offset_trajectory.points[0].transforms[0].translation.y
+        self.loiter_point.pose.position.z = fake_offset_trajectory.points[0].transforms[0].translation.z
         self.loiter_point.pose.orientation = fake_offset_trajectory.points[0].transforms[0].rotation
 
         return self.loiter_point

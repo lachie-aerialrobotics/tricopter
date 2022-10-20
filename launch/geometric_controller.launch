@@ -4,7 +4,7 @@
     <include file="$(find geometric_controller)/launch/geometric_controller.launch">
         <arg name="mav_name" default="Hex_delta"/>
         <arg name="command_input" default="2" />
-        <arg name= "max_acc" default="2.0" />
+        <arg name= "max_acc" default="0.5" />
         <arg name="Kp_x" default="3.0" />
         <arg name="Kp_y" default="3.0" />
         <arg name="Kp_z" default="20.0" />

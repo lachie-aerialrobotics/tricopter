@@ -3,10 +3,10 @@
 import rospy
 import numpy as np
 
-n_layers = 3
+n_layers = 5
 n_points = 10
 radius = 1.0
-layer_height = 0.3
+layer_height = 0
 theta_inc = 2 * np.pi / n_points
 
 f = open('../cfg/cylinder_points.yaml', 'w')
@@ -15,11 +15,11 @@ f.write('waypoints:\n\n')
 f.write('  n_layers: '+str(n_layers)+'\n\n')
 for i in range(n_layers):
     f.write('  layer'+str(i)+':\n')
-    z = layer_height * i
+    y = layer_height * i
     for j in range(n_points+1):
         theta = theta_inc * j
         x = radius * np.sin(theta)
-        y = radius * np.cos(theta)
+        z = radius * np.cos(theta)
         pose = [x, y, z, 0.0, 0.0, 0.0]
         f.write('    point'+str(j)+': '+str(pose)+'\n')
     f.write('\n')
