@@ -3,10 +3,10 @@
 import rospy
 import numpy as np
 
-n_layers = 5
+n_layers = 1
 n_points = 10
 radius = 0.5
-layer_height = 0.1
+layer_height = 0.0
 theta_inc = 2 * np.pi / n_points
 
 f = open('../cfg/cylinder_points.yaml', 'w')
