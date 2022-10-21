@@ -5,12 +5,12 @@
         <arg name="mav_name" default="Hex_delta"/>
         <arg name="command_input" default="2" />
         <arg name="max_acc" default="2.0" />
-        <arg name="Kp_x" default="1.0" />
-        <arg name="Kp_y" default="1.0" />
-        <arg name="Kp_z" default="10.0" />
-        <arg name="Kv_x" default="1.0"/>
-        <arg name="Kv_y" default="1.0"/>
-        <arg name="Kv_z" default="10.0"/>
+        <arg name="Kp_x" default="3.0" />
+        <arg name="Kp_y" default="3.0" />
+        <arg name="Kp_z" default="15.0" />
+        <arg name="Kv_x" default="2.0"/>
+        <arg name="Kv_y" default="2.0"/>
+        <arg name="Kv_z" default="15.0"/>
         <!-- <arg name="normalizedthrust_constant" default="0.011"/> 
         <arg name="normalizedthrust_offset" default="0.227"/> -->
         <arg name="normalizedthrust_constant" default="0.045"/> <!-- map thrust in N to [0,1] -->
