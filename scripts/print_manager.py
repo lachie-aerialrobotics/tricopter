@@ -115,8 +115,7 @@ class printStateMachine(object):
         if self.layer < rospy.get_param(str(self.tH_print.waypoint_prefix) + '/n_layers'):
             rospy.loginfo("Generating trajectory for next layer")
             self.tH_print.generate_print_layer(self.layer)
-            rospy.loginfo("will start printing in 60 seconds...") 
-            rospy.sleep(60)
+            rospy.loginfo("starting print")
             self.goToPrint()       
         else:
             self.goToPad()
