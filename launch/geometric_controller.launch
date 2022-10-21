@@ -13,7 +13,7 @@
         <arg name="Kv_z" default="10.0"/>
         <!-- <arg name="normalizedthrust_constant" default="0.011"/> 
         <arg name="normalizedthrust_offset" default="0.227"/> -->
-        <arg name="normalizedthrust_constant" default="0.025"/> <!-- map thrust in N to [0,1] -->
+        <arg name="normalizedthrust_constant" default="0.03"/> <!-- map thrust in N to [0,1] -->
         <arg name="normalizedthrust_offset" default="0.0"/>
         <arg name="attctrl_constant" default="0.5"/>
     </include>
