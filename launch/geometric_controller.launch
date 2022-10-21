@@ -14,7 +14,7 @@
         <!-- <arg name="normalizedthrust_constant" default="0.011"/> 
         <arg name="normalizedthrust_offset" default="0.227"/> -->
         <arg name="normalizedthrust_constant" default="0.04"/> <!-- map thrust in N to [0,1] -->
-        <arg name="normalizedthrust_offset" default="0.0"/>
+        <arg name="normalizedthrust_offset" default="0.1"/>
         <arg name="attctrl_constant" default="0.5"/>
     </include>
 </launch>
