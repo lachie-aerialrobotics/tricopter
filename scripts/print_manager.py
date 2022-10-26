@@ -4,7 +4,7 @@ import rospy
 
 from std_msgs.msg import Float32, String
 from controller_msgs.msg import FlatTarget
-from geometry_msgs.msg import PoseStamped, TwistStamped
+from geometry_msgs.msg import PoseStamped, TwistStamped, Vector3, Quaternion
 from mavros_msgs.msg import State, ExtendedState
 from tricopter.srv import *
 from transitions import Machine
@@ -49,15 +49,25 @@ class printStateMachine(object):
         self.yaw = 0.0
         self.tooltip_state = "RETRACTED"
         self.tooltip_pose = PoseStamped()
+        self.tooltip_pose.pose.position = Vector3(0,0,0)
+        self.tooltip_pose.pose.orientation = Quaternion(0,0,0,1)
         self.tooltip_pose.header.frame_id = "map"
         self.tooltip_twist = TwistStamped()
         self.tooltip_twist.header.frame_id = "map"
+        
+        self.pose = PoseStamped()
+        self.pose.header.frame_id = "map"
+        self.velocity = TwistStamped()
+        self.velocity.header.frame_id = "map"
+        self.acceleration = TwistStamped()
+        self.acceleration.header.frame_id = "map"
+
+        self.mask = 4
 
         # initiate state machine model with states and transitions listed above
         self.machine = Machine(model=self, states=self.states, transitions=self.transitions, initial = 'Ground')
 
         # initiate trajectoryHandler object instance - used to store and generate new trajectories 
-        # #todo: maybe split transition handler and print handler?
         self.tH_print = trajectoryHandler(
             frequency=self.rate, max_vel=self.max_vel_print, max_acc=self.max_acc_print, 
             max_yawrate=self.max_yawrate, max_yawrate_dot=self.max_yawrate_dot)
@@ -71,6 +81,10 @@ class printStateMachine(object):
             'reference/flatsetpoint', FlatTarget, queue_size=1, tcp_nodelay=True)
         self.geo_yaw_pub = rospy.Publisher(
             'reference/yaw', Float32, queue_size=1, tcp_nodelay=True)
+
+        # publisher for on-board position controller
+        self.sp_position_pub = rospy.Publisher(
+            '/mavros/setpoint_position/local', PoseStamped, queue_size=1, tcp_nodelay=True)
 
         # publishers to manipulator
         self.pub_tooltip_state = rospy.Publisher(
@@ -156,36 +170,39 @@ class printStateMachine(object):
 
     def during_Home(self):
         self.tooltip_state = "STAB_3DOF"
-        self.target, self.yaw = flat_target_msg_conversion(4, self.home_pose)
+        self.pose = self.home_pose
+        self.mask = 4
 
     def during_Takeoff(self):
         self.tooltip_state = "HOME"
+        self.mask = 4
         #increase target z to deined loiter height
-        if self.target.position.z < self.takeoff_hgt:
-            self.target.position.z += self.tol_speed / self.rate
+        if self.pose.pose.position.z < self.takeoff_hgt:
+            self.pose.pose.position.z += self.tol_speed / self.rate
         else: #when target has reached loiter height and drone knows its flying, move to next state 
-            self.target.position.z = self.takeoff_hgt
+            self.pose.pose.position.z = self.takeoff_hgt
             if self.mavros_ext_state.landed_state == 2:
                 self.goToHome()
 
     def during_Move(self):
         self.tooltip_state = "STAB_3DOF"
-        pose, velocity, acceleration, complete = self.tH_move.follow_transition_trajectory()
-        self.target, self.yaw = flat_target_msg_conversion(2, pose, velocity, acceleration)
+        self.pose, self.velocity, self.acceleration, complete = self.tH_move.follow_transition_trajectory()
+        self.mask = 2
         if complete:
             self.moveCompletionTransition()
 
     def during_TolCheck(self):
         self.tooltip_state = "STAB_3DOF"
-        self.target, self.yaw = flat_target_msg_conversion(4, self.print_start_pose)
+        self.mask = 4
+        self.pose = self.print_start_pose
         tolerances_satisfied = tolerance_checker(self.local_pose, self.local_velocity, self.print_start_pose, self.pos_tol, self.vel_tol)
         if tolerances_satisfied:
             self.startPrint()
 
     def during_Print(self):
         self.tooltip_state = "STAB_6DOF"
-        pose, velocity, acceleration, self.tooltip_pose, self.tooltip_twist, self.tooltip_accel, complete = self.tH_print.follow_print_trajectory()
-        self.target, self.yaw = flat_target_msg_conversion(2, pose, velocity, acceleration)
+        self.mask = 2
+        self.pose, self.velocity, self.acceleration, self.tooltip_pose, self.tooltip_twist, self.tooltip_accel, complete = self.tH_print.follow_print_trajectory()
         if complete:
             self.layer += 1
             self.goToHome()
@@ -193,8 +210,8 @@ class printStateMachine(object):
     def during_Landing(self):
         self.tooltip_state = "HOME"
         #reduce height of z setpoint until altitude is zero
-        if self.target.position.z > 0 and not (self.mavros_ext_state.landed_state == 1):
-            self.target.position.z += -self.tol_speed / self.rate
+        if self.pose.pose.position.z > 0 and not (self.mavros_ext_state.landed_state == 1):
+            self.pose.pose.position.z += -self.tol_speed / self.rate
         else:
         #make double sure the drone is on the ground by calling the mavros landing service
             call_landing_service()
@@ -202,7 +219,7 @@ class printStateMachine(object):
 
     def during_Manual(self):
         # If flying -> goto home position
-        self.target, self.yaw = flat_target_msg_conversion(4, self.local_pose)
+        self.pose = self.local_pose
         self.tooltip_state = "STAB_3DOF"
         if self.mavros_ext_state.landed_state == 1:
             self.switchToGround()
@@ -211,7 +228,7 @@ class printStateMachine(object):
         
     def during_Ground(self):
         # if landed -> takeoff. 
-        self.target, self.yaw = flat_target_msg_conversion(4, self.local_pose)
+        self.pose = self.local_pose
         self.tooltip_state = "RETRACTED"
         if self.mavros_state.armed:
             self.tooltip_state = "HOME"
@@ -233,8 +250,14 @@ class printStateMachine(object):
         self.target.header.stamp = rospy.Time.now()
         self.tooltip_pose.header.stamp = rospy.Time.now()
         self.tooltip_twist.header.stamp = rospy.Time.now()
+        self.pose.header.stamp = rospy.Time.now()
+
+        self.target, self.yaw = flat_target_msg_conversion(self.mask, self.pose, self.velocity, self.acceleration)
         self.geo_pose_pub.publish(self.target)
         self.geo_yaw_pub.publish(Float32(self.yaw))
+
+        self.sp_position_pub.publish(self.pose)
+
         self.pub_tooltip_state.publish(String(self.tooltip_state))
         self.pub_tooltip_pose.publish(self.tooltip_pose)
         self.pub_tooltip_twist.publish(self.tooltip_twist)
