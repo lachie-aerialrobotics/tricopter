@@ -2,8 +2,7 @@
 <launch>
     <arg name="bag" default = "true"/>
 
-    <rosparam file="$(find tricopter)/cfg/print_config.yaml" />
-    <rosparam file="$(find tricopter)/cfg/cylinder_points.yaml" />
+
   
     <!-- todo: include base_link to stewart_base transform here:-->
     <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="0 0 0.5 1.570796 0 1.570796 map printing_plane" />
