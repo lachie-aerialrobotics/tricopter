@@ -16,7 +16,7 @@
         <arg name="sim" value="false"/>
     </include>
 
-    <include file="$(find tricopter)/launch/usb_cam.launch"/> 
+    <include file="$(find tricopter)/launch/usb_cam.launch" output="log"/> 
 
     <group if="$(arg bag)">
         <node pkg="rosbag" type="record" name="rosbag_record" args="-o $(env HOME)/bags/ -e '(.*)mavros(.*)' /os_cloud_node/points '(.*)mocap(.*)' /usb_cam/image_raw/compressed /Odometry"/>
