@@ -1,5 +1,5 @@
 <launch>
-    <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen">
+    <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen"/>
       <!-- <param name="video_device" value="/dev/video0" />
       <param name="image_width" value="200" />
       <param name="image_height" value="200" />
@@ -8,7 +8,7 @@
       <param name="io_method" value="mmap"/>
       <param name="framerate" value="30"/>
       <param name="autofocus" value="true"/> -->
-    </node>
+    <!-- </node> -->
   
     <!-- <node name="republish_GCS" type="republish" pkg="image_transport" output="screen" args="compressed in:=/usb_cam/image_raw raw out:=/usb_cam/image_raw/decompressed" />
     <node name="rosImage2OpenCV" pkg="tricopter" type="usb_cam2open_cv.py" required="true" output="screen"/>     -->
