@@ -7,5 +7,6 @@
     <node name="print_manager" pkg="tricopter" type="print_manager.py" required="true" output="screen"/>
     <group if="$(arg viz)">
         <node type="rviz" name="rviz" pkg="rviz" args="-d $(find tricopter)/rviz/printing.rviz"/>
+        <node name="rqt_gui" pkg="rqt_gui" type="rqt_gui" args="--perspective-file $(find tricopter)/rviz/testing.perspective"/>
     </group>
 </launch>
