@@ -19,6 +19,6 @@
     <include file="$(find tricopter)/launch/usb_cam.launch"/> 
 
     <group if="$(arg bag)">
-        <node pkg="rosbag" type="record" name="rosbag_record" args="-o $(env HOME)/bags/ -e '(.*)mavros(.*)' /os_cloud_node/points '(.*)mocap(.*)'"/>
+        <node pkg="rosbag" type="record" name="rosbag_record" args="-o $(env HOME)/bags/ -e '(.*)mavros(.*)' /os_cloud_node/points '(.*)mocap(.*)' /usb_cam/image_raw/compressed /Odometry"/>
     </group>
 </launch>

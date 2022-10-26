@@ -5,7 +5,6 @@
     <rosparam file="$(find tricopter)/cfg/cylinder_points.yaml" />
     <node name="trajectory_services" pkg="tricopter" type="trajectory_services.py" required="true" output="screen"/> 
     <node name="print_manager" pkg="tricopter" type="print_manager.py" required="true" output="screen"/>
-    <node name="republish_GCS" type="republish" pkg="image_transport" output="screen" args="compressed in:=/usb_cam/image_raw raw out:=/usb_cam/image_raw/decompressed" />  
     <group if="$(arg viz)">
         <node type="rviz" name="rviz" pkg="rviz" args="-d $(find tricopter)/rviz/printing.rviz"/>
     </group>
