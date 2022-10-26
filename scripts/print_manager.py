@@ -86,6 +86,10 @@ class printStateMachine(object):
         self.sp_position_pub = rospy.Publisher(
             '/mavros/setpoint_position/local', PoseStamped, queue_size=1, tcp_nodelay=True)
 
+        # publish current state for debugging
+        self.pub_drone_state = rospy.Publisher(
+            '/printer/state',  String, queue_size=1, tcp_nodelay=True)
+
         # publishers to manipulator
         self.pub_tooltip_state = rospy.Publisher(
             '/manipulator/state',  String, queue_size=1, tcp_nodelay=True)
@@ -232,6 +236,8 @@ class printStateMachine(object):
         self.tooltip_state = "RETRACTED"
         if self.mavros_state.armed:
             self.tooltip_state = "HOME"
+            if self.mavros_ext_state.landed_state == 2:
+                self.manualTakeover()
             if self.mavros_state.mode == "OFFBOARD":
                 self.tooltip_state = "HOME"
                 self.startTakeoff()
@@ -257,6 +263,8 @@ class printStateMachine(object):
         self.geo_yaw_pub.publish(Float32(self.yaw))
 
         self.sp_position_pub.publish(self.pose)
+
+        self.pub_drone_state.publish(String(str(self.state)))
 
         self.pub_tooltip_state.publish(String(self.tooltip_state))
         self.pub_tooltip_pose.publish(self.tooltip_pose)
