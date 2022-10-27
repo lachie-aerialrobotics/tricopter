@@ -1,4 +1,4 @@
 vicon:
-    model_list:                                         [hexacopter]
+    model_list:                                         [tricopter_tracked, tooltip_tracked]
     server_address:                                     "192.168.0.100"
     publish_tf:                                         true

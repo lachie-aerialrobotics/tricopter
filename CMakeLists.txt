@@ -73,6 +73,7 @@ add_service_files(
    transformTrajectory.srv
    TOPPRATrajectory.srv
    fetchPoses.srv
+   alignVicon.srv
 #   Service1.srv
 #   Service2.srv
 )
