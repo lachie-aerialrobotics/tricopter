@@ -5,7 +5,7 @@ import rospy
 from std_msgs.msg import Float32, String
 from controller_msgs.msg import FlatTarget
 from geometry_msgs.msg import PoseStamped, TwistStamped, Vector3, Quaternion
-from mavros_msgs.msg import State, ExtendedState
+from mavros_msgs.msg import State, ExtendedState, PositionTarget
 from tricopter.srv import *
 from transitions import Machine
 from trajectory_handler import *
@@ -224,7 +224,7 @@ class printStateMachine(object):
     def during_Manual(self):
         # If flying -> goto home position
         self.pose = self.local_pose
-        self.tooltip_state = "STAB_3DOF"
+        self.tooltip_state = "STAB_6DOF-MANUAL"
         if self.mavros_ext_state.landed_state == 1:
             self.switchToGround()
         if self.mavros_state.mode == "OFFBOARD":
@@ -288,6 +288,10 @@ class printStateMachine(object):
 
     def _local_vel_cb(self, local_vel_msg):
         self.local_velocity = local_vel_msg
+
+    def _sp_raw_cb(self, sp_raw_msg):
+        self.setpoint_raw = sp_raw_msg
+    
     
 if __name__ == '__main__':
     # initialize node
