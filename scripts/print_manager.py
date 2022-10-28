@@ -233,7 +233,7 @@ class printStateMachine(object):
     def during_Ground(self):
         # if landed -> takeoff. 
         self.pose = self.local_pose
-        self.tooltip_state = "RETRACTED"
+        self.tooltip_state = "HOME"
         if self.mavros_state.armed:
             self.tooltip_state = "HOME"
             if self.mavros_ext_state.landed_state == 2:
