@@ -122,31 +122,23 @@ Visualization Manager:
           Value: true
         map_ned:
           Value: false
-        mocap:
-          Value: true
         odom:
           Value: false
         odom_ned:
           Value: false
-        os_imu:
-          Value: true
-        os_lidar:
-          Value: true
         os_sensor:
           Value: false
         platform:
-          Value: false
+          Value: true
         printing_plane:
           Value: true
         stewart_base:
-          Value: false
+          Value: true
         tooltip:
           Value: true
         tooltip_init:
           Value: false
-        tooltip_tracked:
-          Value: true
-        tricopter_tracked:
+        tooltip_setpoint:
           Value: true
         workspace_center:
           Value: false
@@ -159,33 +151,24 @@ Visualization Manager:
       Tree:
         map:
           camera_init:
-            body:
-              base_link:
-                base_link_frd:
-                  {}
-                stewart_base:
-                  platform:
-                    tooltip:
-                      {}
-                  workspace_center:
-                    tooltip_init:
-                      {}
-              os_sensor:
-                os_imu:
-                  {}
-                os_lidar:
-                  {}
+            base_link:
+              base_link_frd:
+                {}
+              stewart_base:
+                platform:
+                  tooltip:
+                    {}
+                workspace_center:
+                  tooltip_init:
+                    {}
             odom:
               odom_ned:
                 {}
           map_ned:
             {}
-          mocap:
-            tooltip_tracked:
-              {}
-            tricopter_tracked:
-              {}
           printing_plane:
+            {}
+          tooltip_setpoint:
             {}
       Update Interval: 0
       Value: true
@@ -332,11 +315,11 @@ Visualization Manager:
       Unreliable: false
       Value: true
     - Alpha: 1
-      Axes Length: 1
+      Axes Length: 0.30000001192092896
       Axes Radius: 0.10000000149011612
       Class: rviz/Pose
       Color: 255; 25; 0
-      Enabled: false
+      Enabled: true
       Head Length: 0.30000001192092896
       Head Radius: 0.10000000149011612
       Name: Pose
@@ -346,7 +329,7 @@ Visualization Manager:
       Shape: Axes
       Topic: /mavros/setpoint_position/local
       Unreliable: false
-      Value: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -375,7 +358,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.6060634851455688
+      Distance: 4.264096260070801
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -391,9 +374,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.4897962808609009
+      Pitch: 0.9047957062721252
       Target Frame: <Fixed Frame>
-      Yaw: 3.870422124862671
+      Yaw: 2.2304258346557617
     Saved: ~
 Window Geometry:
   Displays:

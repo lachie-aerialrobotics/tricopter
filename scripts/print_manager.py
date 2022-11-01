@@ -11,6 +11,7 @@ from transitions import Machine
 from trajectory_handler import *
 from misc_functions import *
 
+
 class printStateMachine(object):
     states = ['Takeoff', 'Landing', 'Home', 'Move', 'Print', 'TolCheck', 'Ground', 'Manual']
 
@@ -134,7 +135,7 @@ class printStateMachine(object):
             rospy.loginfo("Generating trajectory for next layer")
             self.tH_print.generate_print_layer(self.layer)
             rospy.loginfo("starting print")
-            self.goToPrint()       
+            self.goToPrint()
         else:
             self.goToPad()
     
@@ -173,7 +174,7 @@ class printStateMachine(object):
     # callbacks to occur on timer event - need to be defined for every state that is called
 
     def during_Home(self):
-        self.tooltip_state = "STAB_3DOF"
+        self.tooltip_state = "HOME"
         self.pose = self.home_pose
         self.mask = 4
 
@@ -189,14 +190,14 @@ class printStateMachine(object):
                 self.goToHome()
 
     def during_Move(self):
-        self.tooltip_state = "STAB_3DOF"
+        self.tooltip_state = "HOME"
         self.pose, self.velocity, self.acceleration, complete = self.tH_move.follow_transition_trajectory()
         self.mask = 2
         if complete:
             self.moveCompletionTransition()
 
     def during_TolCheck(self):
-        self.tooltip_state = "STAB_3DOF"
+        self.tooltip_state = "HOME"
         self.mask = 4
         self.pose = self.print_start_pose
         tolerances_satisfied = tolerance_checker(self.local_pose, self.local_velocity, self.print_start_pose, self.pos_tol, self.vel_tol)
@@ -224,7 +225,7 @@ class printStateMachine(object):
     def during_Manual(self):
         # If flying -> goto home position
         self.pose = self.local_pose
-        self.tooltip_state = "STAB_6DOF-MANUAL"
+        self.tooltip_state = "STAB_3DOF"
         if self.mavros_ext_state.landed_state == 1:
             self.switchToGround()
         if self.mavros_state.mode == "OFFBOARD":
