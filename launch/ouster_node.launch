@@ -3,7 +3,7 @@
     <arg name="sensor_hostname" default="10.5.5.86" doc="hostname or IP in dotted decimal form of the sensor"/>
     <arg name="lidar_port" default="7502" doc="port to which the sensor should send lidar data"/>
     <arg name="imu_port" default="7503" doc="port to which the sensor should send imu data"/>
-    <arg name="lidar_mode" default="512x20" doc="resolution and rate: either 512x10, 512x20, 1024x10, 1024x20, or 2048x10"/>
+    <arg name="lidar_mode" default="512x10" doc="resolution and rate: either 512x10, 512x20, 1024x10, 1024x20, or 2048x10"/>
     <arg name="timestamp_mode" default="TIME_FROM_PTP_1588" doc="method used to timestamp measurements: TIME_FROM_INTERNAL_OSC, TIME_FROM_SYNC_PULSE_IN, TIME_FROM_PTP_1588"/>
     <arg name="metadata" default="/home/xavier02/lidar_metadata/ouster_data.json" doc="path to read or write metadata file when replaying or receiving sensor data, respectively"/>
     <arg name="tf_prefix" default="" doc="namespace for tf transforms"/>
