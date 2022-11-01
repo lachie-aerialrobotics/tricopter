@@ -143,7 +143,9 @@ class printStateMachine():
 
 if __name__ == '__main__':
     # initialize node
+    
     rospy.init_node('print_state_machine', anonymous=True)
-    pSM = printStateMachine()
     jS = joystick()
+    pSM = printStateMachine()
+    
     rospy.spin()
