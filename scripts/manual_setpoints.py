@@ -65,6 +65,12 @@ class printStateMachine():
 
         self.rate = rospy.get_param('/print_planner/setpoint_rate')
 
+        self.mavros_state = State()
+        self.mavros_state.mode = "MANUAL"
+        
+        state_sub = rospy.Subscriber(
+            '/mavros/state', State, self._state_cb, queue_size=5, tcp_nodelay=True)
+
         # publishers to geometric controller
         self.geo_pose_pub = rospy.Publisher(
             'reference/flatsetpoint', FlatTarget, queue_size=1, tcp_nodelay=True)
@@ -123,7 +129,13 @@ class printStateMachine():
         target, yaw = flat_target_msg_conversion(4, self.pose_sp)
         self.geo_pose_pub.publish(target)
         self.geo_yaw_pub.publish(yaw)
-        self.pub_tooltip_state.publish(String("STAB_6DOF"))
+        if self.mavros_state.mode == "OFFBOARD":
+            self.pub_tooltip_state.publish(String("STAB_6DOF"))
+        else:
+            self.pub_tooltip_state.publish(String("STAB_3DOF"))
+
+    def _state_cb(self, state_msg):
+        self.mavros_state = state_msg
 
     def _lookup_vec_and_rot(self, frame_id, child_frame_id, Timeout=0.1):
         tf = self.tfBuffer.lookup_transform(frame_id, child_frame_id, time=rospy.Time.now(), timeout=rospy.Duration(Timeout))       
