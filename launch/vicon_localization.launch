@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>   
+    <arg name="lidar_type" default = "livox"/>
+    <arg name="relocalize" default = "false"/>
+    <arg name="map" value = "$(env HOME)/scans/scans.pcd"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2mocap" args="0 0 0 0 0 0 1 map mocap" /> 
+    <rosparam>
+        /mavros/vision_pose/tf/listen: true
+        /mavros/vision_pose/tf/frame_id: map
+        /mavros/vision_pose/tf/child_frame_id: tricopter_tracked
+        <!-- /mavros/vision_pose/tf/rate_limit: 100 -->
+    </rosparam> 
+    <include file="$(find tricopter)/launch/mavros_node.launch"/>
+    <rosparam>
+        /mavros/vision_pose/tf/listen: true
+        /mavros/vision_pose/tf/frame_id: map
+        /mavros/vision_pose/tf/child_frame_id: tricopter_tracked
+        <!-- /mavros/vision_pose/tf/rate_limit: 100 -->
+    </rosparam>
+</launch>
