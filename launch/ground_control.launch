@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <launch>
     <arg name="viz" default = "true"/>
-    <!-- <rosparam file="$(find tricopter)/cfg/print_config.yaml" /> -->
+    <rosparam file="$(find tricopter)/cfg/print_config.yaml" />
     <!-- <rosparam file="$(find tricopter)/cfg/cylinder_points.yaml" /> -->
     <node name="manual_control" pkg="tricopter" type="manual_setpoints.py" required="true" output="screen"/>
     <!-- <node name="trajectory_services" pkg="tricopter" type="trajectory_services.py" required="true" output="screen"/>  -->

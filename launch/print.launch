@@ -15,7 +15,7 @@
         <arg name="sim" value="false"/>
     </include>
 
-    <include file="$(find tricopter)/launch/usb_cam.launch"/> 
+    <!-- <include file="$(find tricopter)/launch/usb_cam.launch"/>  -->
 
     <include file="$(find tricopter)/launch/extruder.launch"/>
 
