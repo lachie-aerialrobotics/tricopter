@@ -4,14 +4,14 @@
     "mainwindow": {
       "keys": {
         "geometry": {
-          "repr(QByteArray.hex)": "QtCore.QByteArray(b'01d9d0cb000300000000014d000000f300000bdc000006f50000014d0000013d00000bdc000006f500000000000000000f000000014d0000013d00000bdc000006f5')",
+          "repr(QByteArray.hex)": "QtCore.QByteArray(b'01d9d0cb00030000000000a8000001e400000d8d000007e6000000a80000022e00000d8d000007e600000000000000000f00000000a80000022e00000d8d000007e6')",
           "type": "repr(QByteArray.hex)",
-          "pretty-print": "     M       M =          M =    "
+          "pretty-print": "               .            .    "
         },
         "state": {
-          "repr(QByteArray.hex)": "QtCore.QByteArray(b'000000ff00000000fd000000010000000300000a9000000524fc0100000009fb0000004c007200710074005f0074006f007000690063005f005f0054006f0070006900630050006c007500670069006e005f005f0031005f005f0054006f007000690063005700690064006700650074010000000000000c1b0000000000000000fc00000000000002d90000000000fffffffc0200000002fb0000006c007200710074005f007200650063006f006e006600690067007500720065005f005f0050006100720061006d005f005f0031005f005f005f0070006c007500670069006e0063006f006e007400610069006e00650072005f0074006f0070005f0077006900640067006500740000000027000002f10000012000fffffffb0000004c007200710074005f00740066005f0074007200650065005f005f0052006f0073005400660054007200650065005f005f0031005f005f0052006f0073005400660054007200650065005500690100000027000003750000000000000000fb00000026007200710074005f007200760069007a005f005f005200560069007a005f005f0031005f005f00000004c70000090a0000000000000000fb00000042007200710074005f0070006c006f0074005f005f0050006c006f0074005f005f0031005f005f00440061007400610050006c006f007400570069006400670065007401000000000000029c0000000000000000fb0000006c007200710074005f007200650063006f006e006600690067007500720065005f005f0050006100720061006d005f005f0032005f005f005f0070006c007500670069006e0063006f006e007400610069006e00650072005f0074006f0070005f007700690064006700650074010000000000000333000001ba00fffffffb00000026007200710074005f007200760069007a005f005f005200560069007a005f005f0032005f005f0100000498000009390000000000000000fb00000058007200710074005f007000750062006c00690073006800650072005f005f005000750062006c00690073006800650072005f005f0031005f005f005000750062006c006900730068006500720057006900640067006500740100000408000005650000000000000000fb00000042007200710074005f0070006c006f0074005f005f0050006c006f0074005f005f0032005f005f00440061007400610050006c006f007400570069006400670065007401000006da000006540000000000000000fb0000005a007200710074005f0069006d006100670065005f0076006900650077005f005f0049006d0061006700650056006900650077005f005f0031005f005f0049006d0061006700650056006900650077005700690064006700650074010000033f000007510000011100ffffff00000a900000000000000004000000040000000800000008fc00000001000000030000000100000036004d0069006e0069006d0069007a006500640044006f0063006b00570069006400670065007400730054006f006f006c0062006100720100000000ffffffff0000000000000000')",
+          "repr(QByteArray.hex)": "QtCore.QByteArray(b'000000ff00000000fd000000010000000300000ce600000524fc0100000009fb0000004c007200710074005f0074006f007000690063005f005f0054006f0070006900630050006c007500670069006e005f005f0031005f005f0054006f0070006900630057006900640067006500740100000000000009910000000000000000fc00000000000002d9000002d900fffffffc0200000002fb0000006c007200710074005f007200650063006f006e006600690067007500720065005f005f0050006100720061006d005f005f0031005f005f005f0070006c007500670069006e0063006f006e007400610069006e00650072005f0074006f0070005f0077006900640067006500740000000027000002f10000012000fffffffb0000004c007200710074005f00740066005f0074007200650065005f005f0052006f0073005400660054007200650065005f005f0031005f005f0052006f0073005400660054007200650065005500690100000027000005240000010c00fffffffb00000026007200710074005f007200760069007a005f005f005200560069007a005f005f0031005f005f00000004c70000090a0000000000000000fb00000042007200710074005f0070006c006f0074005f005f0050006c006f0074005f005f0031005f005f00440061007400610050006c006f007400570069006400670065007401000000000000029c0000000000000000fb0000006c007200710074005f007200650063006f006e006600690067007500720065005f005f0050006100720061006d005f005f0032005f005f005f0070006c007500670069006e0063006f006e007400610069006e00650072005f0074006f0070005f00770069006400670065007401000002e500000327000001ba00fffffffb00000026007200710074005f007200760069007a005f005f005200560069007a005f005f0032005f005f0100000498000009390000000000000000fb00000058007200710074005f007000750062006c00690073006800650072005f005f005000750062006c00690073006800650072005f005f0031005f005f005000750062006c006900730068006500720057006900640067006500740100000618000006ce0000035400fffffffb00000042007200710074005f0070006c006f0074005f005f0050006c006f0074005f005f0032005f005f00440061007400610050006c006f007400570069006400670065007401000006da000006540000000000000000fb0000005a007200710074005f0069006d006100670065005f0076006900650077005f005f0049006d0061006700650056006900650077005f005f0031005f005f0049006d00610067006500560069006500770057006900640067006500740100000620000006c6000000000000000000000ce60000000000000004000000040000000800000008fc00000001000000030000000100000036004d0069006e0069006d0069007a006500640044006f0063006b00570069006400670065007400730054006f006f006c0062006100720100000000ffffffff0000000000000000')",
           "type": "repr(QByteArray.hex)",
-          "pretty-print": "                 Lrqt_topic__TopicPlugin__1__TopicWidget                                                                              '                                                ' u                                                                                                                                          3                             9                                                      e                                           T                                                     ? Q                                                            "
+          "pretty-print": "                 Lrqt_topic__TopicPlugin__1__TopicWidget                                                                              '                                                ' $                                                                                                                                          '                             9                                                        T                                         T                                                                                                                    "
         }
       },
       "groups": {
@@ -29,7 +29,7 @@
     "pluginmanager": {
       "keys": {
         "running-plugins": {
-          "repr": "{'rqt_image_view/ImageView': [1], 'rqt_reconfigure/Param': [1, 2]}",
+          "repr": "{'rqt_publisher/Publisher': [1], 'rqt_reconfigure/Param': [1, 2], 'rqt_tf_tree/RosTfTree': [1]}",
           "type": "repr"
         }
       },
@@ -131,7 +131,7 @@
                   "type": "repr"
                 },
                 "dockable": {
-                  "repr": "True",
+                  "repr": "'true'",
                   "type": "repr"
                 },
                 "parent": {
@@ -144,11 +144,11 @@
             "plugin": {
               "keys": {
                 "dynamic_range": {
-                  "repr": "False",
+                  "repr": "'false'",
                   "type": "repr"
                 },
                 "max_range": {
-                  "repr": "10.0",
+                  "repr": "'10'",
                   "type": "repr"
                 },
                 "mouse_pub_topic": {
@@ -156,23 +156,23 @@
                   "type": "repr"
                 },
                 "num_gridlines": {
-                  "repr": "0",
+                  "repr": "'0'",
                   "type": "repr"
                 },
                 "publish_click_location": {
-                  "repr": "False",
+                  "repr": "'false'",
                   "type": "repr"
                 },
                 "rotate": {
-                  "repr": "0",
+                  "repr": "'0'",
                   "type": "repr"
                 },
                 "smooth_image": {
-                  "repr": "False",
+                  "repr": "'false'",
                   "type": "repr"
                 },
                 "toolbar_hidden": {
-                  "repr": "False",
+                  "repr": "'false'",
                   "type": "repr"
                 },
                 "topic": {
@@ -180,7 +180,7 @@
                   "type": "repr"
                 },
                 "zoom1": {
-                  "repr": "False",
+                  "repr": "'false'",
                   "type": "repr"
                 }
               },
@@ -321,7 +321,7 @@
                   "type": "repr"
                 },
                 "dockable": {
-                  "repr": "'true'",
+                  "repr": "True",
                   "type": "repr"
                 },
                 "parent": {
@@ -334,7 +334,7 @@
             "plugin": {
               "keys": {
                 "publishers": {
-                  "repr": "\"[{'topic_name': '/mavros/setpoint_position/local', 'type_name': 'geometry_msgs/PoseStamped', 'rate': 10.0, 'enabled': False, 'publisher_id': 0, 'counter': 0, 'expressions': {'/mavros/setpoint_position/local/pose/position/z': '2', '/mavros/setpoint_position/local/pose/position/x': '0', '/mavros/setpoint_position/local/pose/orientation/z': '0'}}, {'topic_name': '/mavros/setpoint_velocity/cmd_vel', 'type_name': 'geometry_msgs/TwistStamped', 'rate': 10.0, 'enabled': False, 'publisher_id': 1, 'counter': 0, 'expressions': {'/mavros/setpoint_velocity/cmd_vel/twist/linear/z': '0', '/mavros/setpoint_velocity/cmd_vel/twist/linear/x': '0', '/mavros/setpoint_velocity/cmd_vel/twist/angular/z': '0.0'}}, {'topic_name': '/mavros/setpoint_accel/accel', 'type_name': 'geometry_msgs/Vector3Stamped', 'rate': 10.0, 'enabled': False, 'publisher_id': 2, 'counter': 0, 'expressions': {'/mavros/setpoint_accel/accel/vector/z': '0'}}, {'topic_name': '/trajectory_publisher/motionselector', 'type_name': 'std_msgs/Int32', 'rate': 1.0, 'enabled': False, 'publisher_id': 3, 'counter': 0, 'expressions': {'/trajectory_publisher/motionselector/data': '1'}}, {'topic_name': '/trajectory_publisher/primitiveset0', 'type_name': 'nav_msgs/Path', 'rate': 1.0, 'enabled': False, 'publisher_id': 4, 'counter': 0, 'expressions': {}}, {'topic_name': '/reference/yaw', 'type_name': 'std_msgs/Float32', 'rate': 20.0, 'enabled': False, 'publisher_id': 5, 'counter': 0, 'expressions': {'/reference/yaw/data': '1'}}]\"",
+                  "repr": "\"[{'topic_name': '/motor_on', 'type_name': 'std_msgs/Bool', 'rate': 10.0, 'enabled': False, 'publisher_id': 6, 'counter': 178, 'expressions': {'/motor_on/data': 'False'}}]\"",
                   "type": "repr"
                 }
               },
@@ -433,11 +433,11 @@
                   "pretty-print": "       u d     "
                 },
                 "expanded_nodes": {
-                  "repr": "['/usb_cam', '/usb_cam/image_raw']",
+                  "repr": "[]",
                   "type": "repr"
                 },
                 "selected_nodes": {
-                  "repr": "['/usb_cam/image_raw/compressed']",
+                  "repr": "[]",
                   "type": "repr"
                 },
                 "splitter": {
@@ -574,7 +574,7 @@
                   "type": "repr"
                 },
                 "dockable": {
-                  "repr": "'true'",
+                  "repr": "True",
                   "type": "repr"
                 },
                 "parent": {
@@ -587,11 +587,11 @@
             "plugin": {
               "keys": {
                 "auto_fit_graph_check_box_state": {
-                  "repr": "'true'",
+                  "repr": "True",
                   "type": "repr"
                 },
                 "highlight_connections_check_box_state": {
-                  "repr": "'true'",
+                  "repr": "True",
                   "type": "repr"
                 }
               },
@@ -657,9 +657,9 @@
             "plugin": {
               "keys": {
                 "tree_widget_header_state": {
-                  "repr(QByteArray.hex)": "QtCore.QByteArray(b'000000ff00000000000000010000000000000000010000000000000000000000000000000000000bf50000000501010001000000000000000005000000c8ffffffff000000810000000300000005000000f100000001000000030000011f0000000100000003000000cb00000001000000030000006e0000000100000003000008ac0000000100000003000003e800000000c8')",
+                  "repr(QByteArray.hex)": "QtCore.QByteArray(b'000000ff0000000000000001000000000000000001000000000000000000000000000000000000094f0000000501010001000000000000000005000000c8ffffffff0000008100000003000000050000027900000001000000030000026e0000000100000003000000cb00000001000000030000006e00000001000000030000032f0000000100000003000003e800000000c8')",
                   "type": "repr(QByteArray.hex)",
-                  "pretty-print": "                                                          n              "
+                  "pretty-print": "                                        y     n           n     /        "
                 }
               },
               "groups": {}
