@@ -3,6 +3,6 @@
         <param name="video_device" value="/dev/video0" />
         <param name="image_width" value="640" />
         <param name="image_height" value="480" />
-        <param name="pixel_format" value="mjpeg"/>
+        <param name="pixel_format" value="yuyv"/>
     </node>     
 </launch>
