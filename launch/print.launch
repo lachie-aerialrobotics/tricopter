@@ -13,9 +13,9 @@
 
     <!-- <include file="$(find tricopter)/launch/geometric_controller.launch"/> -->
 
-    <include file="$(find delta_2)/launch/stabilise.launch">
+    <!-- <include file="$(find delta_2)/launch/stabilise.launch">
         <arg name="sim" value="false"/>
-    </include>
+    </include> -->
 
     <include file="$(find tricopter)/launch/usb_cam.launch"/> 
 
