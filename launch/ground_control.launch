@@ -7,7 +7,7 @@
     <node name="manual_control" pkg="tricopter" type="manual_setpoints.py" required="true" output="screen"/>
     <!-- <node name="trajectory_services" pkg="tricopter" type="trajectory_services.py" required="true" output="screen"/>  -->
     <!-- <node name="print_manager" pkg="tricopter" type="print_manager.py" required="true" output="screen"/> -->
-    <!-- <include file="$(find tricopter)/launch/vicon_node.launch"/> -->
+    <include file="$(find tricopter)/launch/vicon_node.launch"/>
     <group if="$(arg viz)">
         <node type="rviz" name="rviz" pkg="rviz" args="-d $(find tricopter)/rviz/printing.rviz"/>
         <node name="rqt_gui" pkg="rqt_gui" type="rqt_gui" args="--perspective-file $(find tricopter)/rviz/testing.perspective"/>

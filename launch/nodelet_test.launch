@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <arg name="os1_hostname" default="10.5.5.86" doc="hostname or IP in dotted decimal form of the sensor"/>
+    <arg name="os1_udp_dest" default="" doc="hostname or IP where the sensor will send data packets"/>
+    <arg name="os1_lidar_port" default="7502" doc="port to which the sensor should send lidar data"/>
+    <arg name="os1_imu_port" default="7503" doc="port to which the sensor should send imu data"/>
+    <arg name="replay" default="false" doc="do not connect to a sensor; expect /os1_node/{lidar,imu}_packets from replay"/>
+    <arg name="lidar_mode" default="512x10" doc="resolution and rate: either 512x10, 512x20, 1024x10, 1024x20, or 2048x10"/>
+    <arg name="metadata" default="/home/xavier02/lidar_metadata/ouster_data.json" doc="override default metadata file for replays"/>
+    <arg name="viz" default="false" doc="whether to run a simple visualizer"/>
+    <arg name="image" default="false" doc="publish range/intensity/noise image topic"/>
+  
+    <node pkg="nodelet" type="nodelet" name="standalone_nodelet" args="manager" output="screen"/>
+  
+    <node pkg="nodelet" type="nodelet" name="os1_cloud_nodelet" args="load ouster_nodelet/os1_cloud_nodelet standalone_nodelet" output="screen">
+      <remap from="~/os1_config" to="/os1_node/os1_config"/>
+      <remap from="~/lidar_packets" to="/os1_node/lidar_packets"/>
+      <remap from="~/imu_packets" to="/os1_node/imu_packets"/>
+    </node>
+  
+    <node pkg="nodelet" type="nodelet" name="os1_assembler_nodelet" args="load ouster_nodelet/os1_assembler_nodelet standalone_nodelet" output="screen">
+      <param name="~/lidar_mode" type="string" value="$(arg lidar_mode)"/>
+      <param name="~/replay" value="$(arg replay)"/>
+      <param name="~/os1_hostname" value="$(arg os1_hostname)"/>
+      <param name="~/os1_udp_dest" value="$(arg os1_udp_dest)"/>
+      <param name="~/os1_lidar_port" value="$(arg os1_lidar_port)"/>
+      <param name="~/os1_imu_port" value="$(arg os1_imu_port)"/>
+      <param name="~/metadata" value="$(arg metadata)"/>
+    </node>
+
+    <rosparam command="load" file="$(find fast_lio)/config/ouster64.yaml" />
+
+    <param name="feature_extract_enable" type="bool" value="true"/>
+    <param name="point_filter_num" type="int" value="6"/>
+    <param name="max_iteration" type="int" value="2" />
+    <param name="filter_size_surf" type="double" value="0.5" />
+    <param name="filter_size_map" type="double" value="0.5" />
+    <param name="cube_side_length" type="double" value="100" />
+    <param name="runtime_pos_log_enable" type="bool" value="0" />
+
+    <node pkg="nodelet"  type="nodelet" name="FAST_LIO_Nodelet" args="load fast_lio/FAST_LIO_Nodelet standalone_nodelet" output="screen"/>
+  </launch>

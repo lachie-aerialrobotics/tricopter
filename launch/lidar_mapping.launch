@@ -49,9 +49,9 @@
         </group>
     </group>
     <group if="$(eval lidar_type == 'ouster')">
-        <include file="$(find tricopter)/launch/ouster_node.launch"/>
-        
-        <group if="$(arg relocalize)">
+        <!-- <include file="$(find tricopter)/launch/ouster_node.launch"/> -->
+        <include file="$(find ouster_ros)/launch/uav.launch"/>
+        <!-- <group if="$(arg relocalize)">
             <rosparam>
                 /relocalize/FOV: 6.283
             </rosparam>
@@ -61,6 +61,6 @@
         </group>
         <group unless="$(arg relocalize)">
             <include file="$(find fast_lio)/launch/mapping_ouster64.launch"/>      
-        </group>
+        </group> -->
     </group>
 </launch>
