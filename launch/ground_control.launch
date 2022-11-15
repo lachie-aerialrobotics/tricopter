@@ -2,9 +2,9 @@
 <launch>
     <arg name="viz" default = "true"/>
     <rosparam file="$(find tricopter)/cfg/print_config.yaml" />
-    <node pkg="joy" type="joy_node" name="joystick_node" />
+    <!-- <node pkg="joy" type="joy_node" name="joystick_node" /> -->
     <!-- <rosparam file="$(find tricopter)/cfg/cylinder_points.yaml" /> -->
-    <node name="manual_control" pkg="tricopter" type="manual_setpoints.py" required="true" output="screen"/>
+    <!-- <node name="manual_control" pkg="tricopter" type="manual_setpoints.py" required="true" output="screen"/> -->
     <!-- <node name="trajectory_services" pkg="tricopter" type="trajectory_services.py" required="true" output="screen"/>  -->
     <!-- <node name="print_manager" pkg="tricopter" type="print_manager.py" required="true" output="screen"/> -->
     <include file="$(find tricopter)/launch/vicon_node.launch"/>

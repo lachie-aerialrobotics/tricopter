@@ -48,7 +48,7 @@ class printStateMachine():
         #init tf listener
         self.tfBuffer = tf2_ros.Buffer()
         self.tfListener = tf2_ros.TransformListener(self.tfBuffer)
-        self.DT_d, self.d_R_t = self._lookup_vec_and_rot('base_link', 'tooltip_init', Timeout=10)
+        self.DT_d, self.d_R_t = self._lookup_vec_and_rot('body', 'tooltip_init', Timeout=10)
 
         self.pose_sp = PoseStamped()
         self.pose_sp.header.frame_id = "map"
