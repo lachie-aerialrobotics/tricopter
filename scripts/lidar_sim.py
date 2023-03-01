@@ -33,7 +33,7 @@ class LidarSim:
         dir = self.world_dir
         world_mesh = world_parser(dir)
         if len(world_mesh.triangles) == 0:
-            print("Input mesh has no triangles! Lidar sim will not start.")
+            rospy.loginfo("Input mesh has no triangles! Lidar sim will not start.")
         else:
             #computing pointcloud
             self.pcd_full = world_mesh.sample_points_uniformly(self.world_samples)
@@ -65,7 +65,7 @@ class LidarSim:
         #     self.camera = [tf.transform.translation.x, tf.transform.translation.y, tf.transform.translation.z]
             
         # except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-        #     print("Lidar sim tf dropped")
+        #     rospy.loginfo("Lidar sim tf dropped")
 
         # # Get all points that are visible from given view point.
         # _, pt_map = self.pcd_full.hidden_point_removal(self.camera, self.radius)
@@ -111,7 +111,7 @@ def apply_noise(pcd, mu, sigma):
 
 
 def world_parser(world_file):
-    print("Reading .world file located at: "+world_file)
+    rospy.loginfo("Reading .world file located at: "+world_file)
 
     world_sdf = ET.parse(world_file).getroot() # parse .world file
 
@@ -120,33 +120,33 @@ def world_parser(world_file):
     for model_uri in world_sdf.findall('world/include'): #iterate through model uris in world file
         model_sdf_path = os.path.dirname(world_file) + '/../models/' + model_uri.find('uri').text.lstrip('model://')+"/model.sdf"
         model_sdf_path = os.path.abspath(model_sdf_path)
-        print("Reading .sdf        located at: " + model_sdf_path)
+        rospy.loginfo("Reading .sdf        located at: " + model_sdf_path)
         model_sdf_root = ET.parse(model_sdf_path).getroot() # parse .world file
         for link in model_sdf_root.findall('model/link'):
             try:
                 pose = link.find('pose').text #get pose as string "x y z r p y"
                 pose = [float(i) for i in pose.split()] #convert pose to array
-                print("Mesh pose is: "+str(pose))
+                rospy.loginfo("Mesh pose is: "+str(pose))
                 for mesh in link.findall('visual/geometry/mesh'):
                     mesh_uri = mesh.find('uri').text
                     mesh_path = os.path.abspath(model_sdf_path + '/../../' + mesh_uri.lstrip('model://').lstrip('file://'))
-                    print("Converting mesh     located at " + mesh_path)
+                    rospy.loginfo("Converting mesh     located at " + mesh_path)
                     if mesh_path.endswith(".stl") or mesh_path.endswith(".obj"):
                         mesh_component = o3d.io.read_triangle_mesh(mesh_path)
                         mesh_component.translate(pose[0:3]) # translate according to pose
                         r = mesh_component.get_rotation_matrix_from_xyz(pose[3:6])
                         mesh_component.rotate(r, center=pose[0:3]) #rotate
                         world_mesh += mesh_component
-                        print('Converted!')
+                        rospy.loginfo('Converted!')
                     elif mesh_path.endswith(".dae"):
-                        print('.dae meshes not supported at this time, please convert to .obj or .stl')
-                        print('Skipping...')
+                        rospy.logwarn('.dae meshes not supported at this time, please convert to .obj or .stl')
+                        rospy.logwarn('Skipping...')
                     else:
-                        print('Unknown file extension') 
-                        print('Skipping...')
+                        rospy.logwarn('Unknown file extension') 
+                        rospy.logwarn('Skipping...')
             except:
-                print('Conversion error!')
-    print('Done!')
+                rospy.logwarn('Conversion error!')
+    rospy.loginfo('Done!')
     # visualisation of final mesh: uncomment for debugging
     # world_mesh.compute_vertex_normals()
     # o3d.visualization.draw_geometries([world_mesh])
