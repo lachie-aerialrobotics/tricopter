@@ -15,7 +15,7 @@
   <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2caminit" args="0 0 0 0 0 0 map camera_init" />
   <include file="$(find tricopter)/launch/static_transforms.launch"/>
 
-  <include file="$(find tricopter)/launch/spawn_gazebo.launch"/>
+  
 
   <!-- <include file="$(find tricopter)/launch/geometric_controller.launch"/> -->
 
@@ -23,6 +23,8 @@
     <arg name="sim" value="true"/>
   </include>
 
+  <include file="$(find tricopter)/launch/spawn_gazebo.launch"/>
+  
   <!-- <node name="trajectory_services" pkg="tricopter" type="trajectory_services.py" required="true" output="screen"/> 
   <node name="print_manager" pkg="tricopter" type="print_manager.py" required="true" output="screen"/>   -->
   
