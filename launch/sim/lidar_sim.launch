@@ -10,7 +10,7 @@
         /lidar_sim/lidar_frame: body
         /lidar_sim/noise_mu: 0.0
         /lidar_sim/noise_sigma: 0.01
-        /lidar_sim/world_samples: 5000000
+        /lidar_sim/world_samples: 2500000
     </rosparam>
     <node name="lidar_sim" pkg="tricopter" type="lidar_sim.py" required="false" output="screen">
         <param name="world_dir" value="$(find mavlink_sitl_gazebo)/worlds/$(arg world_name).world" />

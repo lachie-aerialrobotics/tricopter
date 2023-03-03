@@ -37,4 +37,6 @@
         <arg name="model_name" value="$(arg vehicle_name)"/>
         <arg name="sim" value="true"/>
     </include>
+
+    <!-- <node name="damage_detection" pkg="tricopter" type="detection.py" required="true" output="screen"/> -->
 </launch>

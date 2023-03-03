@@ -1,0 +1,3 @@
+geometry_msgs/PoseStamped init_pose                 # initial guess of object pose
+---
+geometry_msgs/PoseStamped target_pose               # pose for repair

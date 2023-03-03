@@ -7,7 +7,6 @@ import numpy as np
 import ros_numpy as rnp
 import open3d as o3d
 import xml.etree.ElementTree as ET
-import pysdf
 
 from sensor_msgs.msg import PointCloud2
 from std_msgs.msg import Header
@@ -33,7 +32,7 @@ class LidarSim:
         dir = self.world_dir
         world_mesh = world_parser(dir)
         if len(world_mesh.triangles) == 0:
-            rospy.loginfo("Input mesh has no triangles! Lidar sim will not start.")
+            rospy.logwarn("Input mesh has no triangles! Lidar sim will not start.")
         else:
             #computing pointcloud
             self.pcd_full = world_mesh.sample_points_uniformly(self.world_samples)
@@ -41,17 +40,29 @@ class LidarSim:
             diameter = np.linalg.norm(np.asarray(self.pcd_full.get_max_bound()) - np.asarray(self.pcd_full.get_min_bound()))
             # Define parameters used for hidden_point_removal.
             self.radius = diameter * 100
-            self.camera = [rospy.get_param('/lidar_sim/x'), rospy.get_param('/lidar_sim/y'), rospy.get_param('/lidar_sim/z')+1.0]
+
+            self.camera1 = [rospy.get_param('/lidar_sim/x'), rospy.get_param('/lidar_sim/y'), rospy.get_param('/lidar_sim/z')]
+            self.camera2 = [rospy.get_param('/lidar_sim/x'), rospy.get_param('/lidar_sim/y'), rospy.get_param('/lidar_sim/z')+2]
 
             #init map cloud
             self.pcd_map = o3d.geometry.PointCloud()
             # Get all points that are visible from given view point.
-            _, pt_map = self.pcd_full.hidden_point_removal(self.camera, self.radius)
+
+            _, pt_map = self.pcd_full.hidden_point_removal(self.camera1, self.radius)
             pcd_view = self.pcd_full.select_by_index(pt_map)
 
             # apply noise to new pointcloud
             pcd_view = apply_noise(pcd_view, self.noise_mu, self.noise_sigma)
-            
+                
+            # add to map
+            self.pcd_map += pcd_view
+
+            _, pt_map = self.pcd_full.hidden_point_removal(self.camera2, self.radius)
+            pcd_view = self.pcd_full.select_by_index(pt_map)
+
+            # apply noise to new pointcloud
+            pcd_view = apply_noise(pcd_view, self.noise_mu, self.noise_sigma)
+                
             # add to map
             self.pcd_map += pcd_view
 

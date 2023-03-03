@@ -74,6 +74,7 @@ add_service_files(
    TOPPRATrajectory.srv
    fetchPoses.srv
    alignVicon.srv
+   detectDamage.srv
 #   Service1.srv
 #   Service2.srv
 )
