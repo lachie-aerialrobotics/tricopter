@@ -8,16 +8,17 @@ import ros_numpy as rnp
 
 from std_msgs.msg import Header
 from sensor_msgs.msg import PointCloud2
-from geometry_msgs.msg import PoseStamped, Pose
+from geometry_msgs.msg import PoseStamped, Pose, PoseArray
 from tricopter.srv import *
+from visualization_msgs.msg import Marker, MarkerArray
     
 class DamageDetection:
     def __init__(self):
         map_topic_name = '/LaserMap'
         mesh_path = '/home/aam01/aam_ws/src/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models/ARLarena/meshes/FoamBoardNoHoles.stl'
         samples = 100000
-        self.registration_threshold = 0.002
-        self.voxel_size = 0.005
+        # self.registration_threshold = 0.002
+        self.voxel_size = 0.1
         self.max_icp_iterations = 500
 
         sub_map = rospy.Subscriber(map_topic_name, PointCloud2, self.map_cb, queue_size=1)
@@ -25,6 +26,7 @@ class DamageDetection:
         self.pub_init = rospy.Publisher('/model_registration_init', PointCloud2, queue_size=1)
         self.pub_cropped_map = rospy.Publisher('/cropped_map', PointCloud2, queue_size=1)
         self.pub_damage = rospy.Publisher('/damage_points', PointCloud2, queue_size=1)
+        self.pub_markers = rospy.Publisher('/damage_markers', MarkerArray, queue_size=1)
         
         self.model_pc = get_pc_from_mesh(mesh_path, samples)
 
@@ -76,11 +78,6 @@ class DamageDetection:
         rospy.loginfo('Tranformation matrix is:')
         rospy.loginfo(transformation)
 
-        # output registered pose
-        target_pose = trans_matrix_to_posestamped(transformation)
-        resp = detectDamageResponse()
-        resp.target_pose = target_pose
-
         # publish transformed pointcloud for visualisation
         aligned_model_pc = copy.deepcopy(init_model_pc).transform(transformation)
         self.pub_result.publish(o3d_to_pc2(aligned_model_pc))
@@ -101,9 +98,62 @@ class DamageDetection:
 
         outlier_pcd = map_pc_cropped.select_by_index(outliers)
         self.pub_damage.publish(o3d_to_pc2(outlier_pcd))
+
+        rospy.loginfo('Clustering...')
+
+        # Define clustering parameters
+        eps = 0.05
+        min_points = 8
+
+        # Run DBSCAN clustering algorithm
+        labels = np.array(outlier_pcd.cluster_dbscan(eps=eps, min_points=min_points))
+        num_clusters = labels.max() + 1
+
+        rospy.loginfo('Found '+str(num_clusters)+' clusters.')
+        rospy.loginfo('Centroids are at:')
+        marker_array = MarkerArray()
+        for i in range(num_clusters):
+            # Extract points belonging to the i-th cluster
+            cluster_indices = np.where(labels == i)[0]
+            cluster_pcd = outlier_pcd.select_by_index(cluster_indices)
+
+            # Compute the centroid of the cluster
+            centroid = np.asarray(cluster_pcd.get_center())
+            rospy.loginfo(centroid)
+
+            # generate poses
+            bbox = o3d.geometry.AxisAlignedBoundingBox(centroid + [-eps, -eps, -eps], centroid + [eps, eps, eps])
+            roi = aligned_model_pc.crop(bbox)
+            roi.estimate_normals
+            avg_normal = np.average(np.asarray(roi.normals), axis=0)
+            
+            # publish marker message
+            marker = Marker()
+            marker.header.frame_id = 'camera_init'
+            marker.id = i
+            marker.type = Marker.TEXT_VIEW_FACING
+            marker.action = Marker.ADD
+            marker.scale.z = 0.2
+            marker.color.a = 1.0
+            marker.color.r = 1.0
+            marker.color.g = 1.0
+            marker.color.b = 1.0
+            marker.pose.position.x = centroid[0]
+            marker.pose.position.y = centroid[1]
+            marker.pose.position.z = centroid[2]
+            marker.text = str(i)
+            marker_array.markers.append(marker)
+        
+        self.pub_markers.publish(marker_array)
+
         
         rospy.loginfo("Done!")
-        print()
+
+        # output registered pose
+        target_pose = trans_matrix_to_posestamped(transformation)
+        resp = detectDamageResponse()
+        resp.target_pose = target_pose
+    
         return resp
 
 def get_pc_from_mesh(dir, samples):
@@ -214,6 +264,8 @@ def voxel_down_sample(pcd, voxel_size):
         # for opend3d 0.7 or lower
         pcd_down = o3d.geometry.voxel_down_sample(pcd, voxel_size)
     return pcd_down
+
+
 
 if __name__ == "__main__":
     rospy.init_node('damage_detection_service_client')
