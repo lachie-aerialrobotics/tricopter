@@ -1,16 +1,19 @@
 <?xml version="1.0"?>
 <launch>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2camera_init" args="0 0 0 0 0 0 1 map camera_init" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_base_link2body" args="0 0 0 0 0 0 1 base_link body" />
+
     <!-- MODELS -->
     <arg name="vehicle_name" default="hex_stewart"/> <!-- hex, hex_delta or hex_stewart -->
     <arg name="world_name" default="ARLarena"/> <!-- ARLarena or DroneHub -->
 
     <!-- DRONE SPAWN POINT -->
     <arg name="x" default="0"/>
-    <arg name="y" default="0"/>
+    <arg name="y" default="2"/>
     <arg name="z" default="0.5"/>
     <arg name="R" default="0"/>
     <arg name="P" default="0"/>
-    <arg name="Y" default="0"/>
+    <arg name="Y" default="0.5"/>
 
     <!-- LAUNCH VANILLA GAZEBO SIM -->
     <include file="$(find tricopter)/launch/sim/px4_gazebo.launch">
@@ -24,7 +27,7 @@
         <arg name="vehicle" value="$(arg vehicle_name)"/>
     </include>
 
-    <!-- LIDAR SIMULATION -->
+    <!-- LIDAR MAP SIMULATION -->
     <include file="$(find tricopter)/launch/sim/lidar_sim.launch">
         <arg name="world_name" value="$(arg world_name)"/>
         <arg name="x" value="$(arg x)"/>

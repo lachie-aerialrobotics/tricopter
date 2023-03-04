@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<launch>
+    <rosparam>
+        /damage_detection/map_topic_name: /LaserMap
+        /damage_detection/model_samples: 500000
+        /damage_detection/icp_voxel_size: 0.1
+        /damage_detection/icp_max_iterations: 100
+        /damage_detection/length_scale: 0.1
+        /damage_detection/cluster_min_points: 10
+    </rosparam>
+
+    <rosparam>
+        /trajectory_planner/drone_frame: base_link
+        /trajectory_planner/tooltip_frame: tooltip_init
+        /trajectory_planner/frequency: 10
+        /trajectory_planner/max_vel: 0.5
+        /trajectory_planner/max_acc: 0.2
+        /trajectory_planner/max_yawrate: 0.1
+        /trajectory_planner/max_yawrate_dot: 0.1
+    </rosparam>
+
+    <node name="damage_detection" pkg="tricopter" type="repair.py" required="false" output="screen">
+        <param name="model_dir" value="$(find mavlink_sitl_gazebo)/models/ARLarena/meshes/FoamBoardNoHoles.stl" />
+    </node>
+</launch>

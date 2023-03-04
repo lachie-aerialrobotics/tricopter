@@ -36,13 +36,16 @@ class LidarSim:
         else:
             #computing pointcloud
             self.pcd_full = world_mesh.sample_points_uniformly(self.world_samples)
+
+            self.pcd_full = self.pcd_full.translate((-rospy.get_param('/lidar_sim/x'),-rospy.get_param('/lidar_sim/y'),-rospy.get_param('/lidar_sim/z')))
+
             # Get approx diameter of map
             diameter = np.linalg.norm(np.asarray(self.pcd_full.get_max_bound()) - np.asarray(self.pcd_full.get_min_bound()))
             # Define parameters used for hidden_point_removal.
             self.radius = diameter * 100
 
-            self.camera1 = [rospy.get_param('/lidar_sim/x'), rospy.get_param('/lidar_sim/y'), rospy.get_param('/lidar_sim/z')]
-            self.camera2 = [rospy.get_param('/lidar_sim/x'), rospy.get_param('/lidar_sim/y'), rospy.get_param('/lidar_sim/z')+2]
+            self.camera1 = [0, 0, 0]
+            self.camera2 = [0, 0, 2]
 
             #init map cloud
             self.pcd_map = o3d.geometry.PointCloud()

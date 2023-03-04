@@ -122,7 +122,7 @@ def handle_drone_trajectory(req):
 
 def handle_transform_trajectory(req):
     # service takes a set of desired toolpath poses and transforms 
-    # to the printing surface in the drone's frame of reference.
+    # and transforms to the drone's frame of reference.
 
     frame_id_init = req.poses.header.frame_id
     frame_id_new = req.transformed_frame_id

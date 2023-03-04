@@ -75,6 +75,7 @@ add_service_files(
    fetchPoses.srv
    alignVicon.srv
    detectDamage.srv
+   repairTrajectory.srv
 #   Service1.srv
 #   Service2.srv
 )
