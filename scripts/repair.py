@@ -9,12 +9,13 @@ import numpy as np
 import ros_numpy as rnp
 import toppra as ta
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
-from std_msgs.msg import Header
+from std_msgs.msg import Header, String
 from sensor_msgs.msg import PointCloud2
 from geometry_msgs.msg import PoseStamped, Pose, PoseArray, PoseWithCovarianceStamped, TransformStamped, Transform, TwistStamped, Twist, Vector3, Quaternion, WrenchStamped
 from trajectory_msgs.msg import MultiDOFJointTrajectory, MultiDOFJointTrajectoryPoint
 from visualization_msgs.msg import Marker, MarkerArray
 from nav_msgs.msg import Path
+from mavros_msgs.msg import State
 from tricopter.srv import *
     
 class DamageDetection:
@@ -37,10 +38,9 @@ class DamageDetection:
         self.max_yawrate = rospy.get_param('/trajectory_planner/max_yawrate')
         self.max_yawrate_dot = rospy.get_param('/trajectory_planner/max_yawrate_dot')
 
+        self.hover_time = 10.0
+
         # init publishers and subscribers
-        sub_map = rospy.Subscriber(map_topic_name, PointCloud2, self.map_cb, queue_size=1)
-        sub_drone_pose = rospy.Subscriber('/mavros/local_position/pose', PoseStamped, self.mavros_pose_cb, queue_size=1)
-        sub_init_pose = rospy.Subscriber('/initialpose', PoseWithCovarianceStamped, self.init_pose_cb, queue_size=1)
         self.pub_result = rospy.Publisher('/model_registration_result', PointCloud2, queue_size=1)
         self.pub_init = rospy.Publisher('/model_registration_init', PointCloud2, queue_size=1)
         self.pub_cropped_map = rospy.Publisher('/cropped_map', PointCloud2, queue_size=1)
@@ -51,6 +51,18 @@ class DamageDetection:
         self.pub_tip_trajectory_viz = rospy.Publisher('/repair_trajectory/tooltip/viz', Path, queue_size=1)
         self.pub_drone_trajectory = rospy.Publisher('/repair_trajectory/drone', MultiDOFJointTrajectory, queue_size=1)
         self.pub_drone_trajectory_viz = rospy.Publisher('/repair_trajectory/drone/viz', Path, queue_size=1)
+        self.pub_drone_sp = rospy.Publisher('/mavros/setpoint_position/local', PoseStamped, queue_size=1)
+        self.pub_tip_sp = rospy.Publisher('/tooltip_setpoint/pose', PoseStamped, queue_size=1)
+        self.pub_tooltip_state = rospy.Publisher('/manipulator/state',  String, queue_size=1, tcp_nodelay=True)
+
+        sub_map = rospy.Subscriber(map_topic_name, PointCloud2, self.map_cb, queue_size=1)
+        sub_drone_pose = rospy.Subscriber('/mavros/local_position/pose', PoseStamped, self.mavros_pose_cb, queue_size=1)
+        sub_init_pose = rospy.Subscriber('/initialpose', PoseWithCovarianceStamped, self.init_pose_cb, queue_size=1)
+        sub_state = rospy.Subscriber('/mavros/state', State, self.state_cb, queue_size=5, tcp_nodelay=True)
+        
+        
+        rospy.wait_for_message('/mavros/state', State)
+        self.pub_sp_position = rospy.Publisher('/mavros/setpoint_position/local', PoseStamped, queue_size=1, tcp_nodelay=True)
 
         # change working directory to this script - for saving .pcd files
         abspath = os.path.abspath(__file__)
@@ -69,6 +81,11 @@ class DamageDetection:
 
         # check that damage detection is done before trajectory generation can start
         self.damage_detection_done = False
+        self.flying_trajectory = False
+        self.i = 0
+
+        self.drone_trajectory = MultiDOFJointTrajectory()
+        self.tooltip_trajectory = MultiDOFJointTrajectory()
 
         #don't start services until map and drone pose are available
         rospy.wait_for_message(map_topic_name, PointCloud2) 
@@ -80,7 +97,59 @@ class DamageDetection:
         planning_service = rospy.Service('plan_repair_trajectory', repairTrajectory, self.handle_repair_trajectory)
         transform_service = rospy.Service('get_drone_trajectory', droneTrajectory, handle_drone_trajectory)
         TOPPRA_service = rospy.Service('get_TOPPRA_trajectory', TOPPRATrajectory, handle_TOPPRA_trajectory)
+
+        sp_timer = rospy.Timer(rospy.Duration(1.0/30), self.sp_timer_cb, reset=True)
         rospy.spin()
+
+
+    def sp_timer_cb(self, event):
+        drone_pose = PoseStamped()
+        tip_pose = PoseStamped()
+        if self.mavros_state.mode == 'OFFBOARD':
+            if self.flying_trajectory is False: 
+                self.flying_trajectory = True
+                self.trajectory_start_time = rospy.Time.now()
+            if (self.i > (len(self.drone_trajectory.points) - 1)) or (self.i > (len(self.tooltip_trajectory.points) - 1)):
+                self.i = 0
+                self.flying_trajectory = False
+            else:
+                while (self.drone_trajectory.points[self.i].time_from_start.to_sec() + self.trajectory_start_time.to_sec()) < rospy.Time.now().to_sec():
+                    self.i += 1  
+                drone_pose = PoseStamped()
+                drone_pose.header.frame_id = self.drone_trajectory.header.frame_id
+                drone_pose.header.stamp = rospy.Time.now()
+                drone_pose.pose.position = self.drone_trajectory.points[self.i].transforms[0].translation
+                drone_pose.pose.orientation = self.drone_trajectory.points[self.i].transforms[0].rotation
+
+                tip_pose = PoseStamped()
+                tip_pose.header.frame_id = self.tooltip_trajectory.header.frame_id
+                tip_pose.header.stamp = rospy.Time.now()
+                tip_pose.pose.position = self.tooltip_trajectory.points[self.i].transforms[0].translation
+                tip_pose.pose.orientation = self.tooltip_trajectory.points[self.i].transforms[0].rotation
+
+                rospy.loginfo('Speed: '+ str(np.linalg.norm(rnp.numpify(self.drone_trajectory.points[self.i+1].transforms[0].translation) - rnp.numpify(self.drone_trajectory.points[self.i].transforms[0].translation)) * self.trajectory_frequency))
+        else:
+            drone_pose = PoseStamped()
+            drone_pose.header.frame_id = self.map_frame
+            drone_pose.header.stamp = rospy.Time.now()
+            drone_pose.pose = self.mavros_pose.pose
+
+            tip_pose = PoseStamped()
+            tip_pose.header.frame_id = self.map_frame
+            tip_pose.header.stamp = rospy.Time.now()
+            tip_pose.pose = self.mavros_pose.pose
+
+        self.pub_drone_sp.publish(drone_pose)
+        self.pub_tip_sp.publish(tip_pose)
+
+    def state_cb(self, state_msg):
+        self.mavros_state = state_msg
+        if self.mavros_state.mode == 'OFFBOARD':
+            self.pub_tooltip_state.publish(String("STAB_6DOF"))
+        elif self.mavros_state.mode == 'POSCTL':
+            self.pub_tooltip_state.publish(String("STAB_3DOF"))
+        else:
+            self.pub_tooltip_state.publish(String("RETRACTED"))
 
     def init_pose_cb(self, msg):
         # generate initial pose extimate and do damage detection from rviz
@@ -139,22 +208,52 @@ class DamageDetection:
         request.max_yawrate_dot = self.max_yawrate_dot
         request.poses = pose_array
         toppra_response = get_traj(request)
-        self.pub_tip_trajectory.publish(toppra_response.trajectory)
+
+        outbound_trajectory = toppra_response.trajectory
+
+        pose_array = PoseArray()
+        pose_array.header.frame_id = self.map_frame
+        pose_array.header.stamp = rospy.Time.now()
+        pose_array.poses.append(repair_pose)
+        pose_array.poses.append(start_pose)
+
+        get_traj = rospy.ServiceProxy('get_TOPPRA_trajectory', TOPPRATrajectory)
+        request = TOPPRATrajectoryRequest()
+        request.frequency = self.trajectory_frequency
+        request.max_vel = self.max_vel
+        request.max_acc = self.max_acc
+        request.max_yawrate = self.max_yawrate
+        request.max_yawrate_dot = self.max_yawrate_dot
+        request.poses = pose_array
+        toppra_response = get_traj(request)
+
+        inbound_trajectory = toppra_response.trajectory
+
+        delay = rospy.Duration(self.hover_time) + outbound_trajectory.points[len(outbound_trajectory.points)-1].time_from_start
+        for i in range(len(inbound_trajectory.points)-1):
+            inbound_trajectory.points[i].time_from_start += delay
+
+        trajectory = MultiDOFJointTrajectory()
+        trajectory.header = outbound_trajectory.header
+        trajectory.joint_names = outbound_trajectory.joint_names
+        trajectory.points = outbound_trajectory.points + inbound_trajectory.points
+
+        self.pub_tip_trajectory.publish(trajectory)
 
         # output a path message for visualisation
         viz_path = Path()
-        viz_path.header = toppra_response.trajectory.header
-        for i in range(len(toppra_response.trajectory.points)):
+        viz_path.header = trajectory.header
+        for i in range(len(trajectory.points)):
             pose = PoseStamped()
-            pose.header.frame_id = toppra_response.trajectory.header.frame_id
+            pose.header.frame_id = trajectory.header.frame_id
             pose.header.stamp = viz_path.header.stamp
-            pose.pose.position.x = toppra_response.trajectory.points[i].transforms[0].translation.x
-            pose.pose.position.y = toppra_response.trajectory.points[i].transforms[0].translation.y
-            pose.pose.position.z = toppra_response.trajectory.points[i].transforms[0].translation.z
-            pose.pose.orientation.x = toppra_response.trajectory.points[i].transforms[0].rotation.x
-            pose.pose.orientation.y = toppra_response.trajectory.points[i].transforms[0].rotation.y
-            pose.pose.orientation.z = toppra_response.trajectory.points[i].transforms[0].rotation.z
-            pose.pose.orientation.w = toppra_response.trajectory.points[i].transforms[0].rotation.w
+            pose.pose.position.x = trajectory.points[i].transforms[0].translation.x
+            pose.pose.position.y = trajectory.points[i].transforms[0].translation.y
+            pose.pose.position.z = trajectory.points[i].transforms[0].translation.z
+            pose.pose.orientation.x = trajectory.points[i].transforms[0].rotation.x
+            pose.pose.orientation.y = trajectory.points[i].transforms[0].rotation.y
+            pose.pose.orientation.z = trajectory.points[i].transforms[0].rotation.z
+            pose.pose.orientation.w = trajectory.points[i].transforms[0].rotation.w
             viz_path.poses.append(pose)
         self.pub_tip_trajectory_viz.publish(viz_path)
 
@@ -165,9 +264,12 @@ class DamageDetection:
         request = droneTrajectoryRequest()
         request.drone_body_frame_id = self.drone_frame
         request.tooltip_frame_id = self.tip_frame
-        request.toolpath_trajectory = toppra_response.trajectory
+        request.toolpath_trajectory = trajectory
         drone_trajectory_response = get_traj(request)
         self.pub_drone_trajectory.publish(drone_trajectory_response.drone_trajectory)
+
+        self.drone_trajectory = drone_trajectory_response.drone_trajectory
+        self.tooltip_trajectory = trajectory
 
         # output a second path message
         viz_path = Path()
@@ -186,7 +288,7 @@ class DamageDetection:
             viz_path.poses.append(pose)
         self.pub_drone_trajectory_viz.publish(viz_path)
 
-        resp = toppra_response.trajectory
+        resp = trajectory
         return resp
             
     def handle_detect_damage(self, req):
@@ -265,21 +367,26 @@ class DamageDetection:
             aligned_model_pc.estimate_normals()
             normal = aligned_model_pc.normals[nearest_point_index]
 
-            # this is converted to a robot pose message with maths
-            # todo: quaternion calculation is wrong :(
-            drone_pose = Pose()
-            drone_pose.position.x = aligned_model_pc.points[nearest_point_index][0]
-            drone_pose.position.y = aligned_model_pc.points[nearest_point_index][1]
-            drone_pose.position.z = aligned_model_pc.points[nearest_point_index][2]
-            q_axis= np.cross(normal, [0, 0, 1]) / np.linalg.norm(np.cross(normal, [0, 0, 1]))
-            q_angle = np.arccos(np.dot(normal, [0, 0, 1]))
-            drone_pose.orientation.x = q_axis[0] * np.sin(q_angle/2)
-            drone_pose.orientation.y = q_axis[1] * np.sin(q_angle/2)
-            drone_pose.orientation.z = q_axis[2] * np.sin(q_angle/2)
-            drone_pose.orientation.w = np.cos(q_angle/2)
-            self.pose_array.poses.append(drone_pose)
+            # get euler angles for pitch and yaw rotation from map pose - we don't care about roll
+            x_vector = np.asarray([1, 0, 0])
+            normal_xy = np.asarray([normal[0], normal[1], 0])
+            yaw = np.arccos(np.dot(normal_xy, x_vector,) / (np.linalg.norm(x_vector) * np.linalg.norm(normal_xy)))
+            pitch = np.arccos(np.dot(normal_xy, normal) / (np.linalg.norm(normal_xy) * np.linalg.norm(normal)))
+
+            # transform into manipulator tooltip frame
+            q = quaternion_from_euler(np.pi/2, pitch, yaw-np.pi/2)
+
+            normal_pose = Pose()
+            normal_pose.position.x = aligned_model_pc.points[nearest_point_index][0]
+            normal_pose.position.y = aligned_model_pc.points[nearest_point_index][1]
+            normal_pose.position.z = aligned_model_pc.points[nearest_point_index][2]
+            normal_pose.orientation.x = q[0]
+            normal_pose.orientation.y = q[1]
+            normal_pose.orientation.z = q[2]
+            normal_pose.orientation.w = q[3]
+            self.pose_array.poses.append(normal_pose)
             
-            # publish marker message to enable the operator to choose a point
+            # publish marker message to enable the operator to choose a numbered point
             marker = Marker()
             marker.header.stamp = rospy.Time.now()
             marker.header.frame_id = self.map_frame
@@ -305,7 +412,6 @@ class DamageDetection:
         resp.target_poses = self.pose_array
         self.pub_poses.publish(self.pose_array)
         return resp
-
 
 def handle_drone_trajectory(req):
     # service generates a drone trajectory offset from a supplied tooltip trajectory. x/y/z and yaw commands
@@ -440,7 +546,7 @@ def handle_TOPPRA_trajectory(req):
         trajectory_point.time_from_start = rospy.Duration(i / req.frequency)
 
         resp.trajectory.points.append(trajectory_point)
-
+    
     rospy.loginfo("Trajectory ready")
     return resp
 
