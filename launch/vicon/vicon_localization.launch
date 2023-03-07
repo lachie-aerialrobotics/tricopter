@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>   
-    <include file="$(find tricopter)/launch/vicon_node.launch"/>
+    <include file="$(find tricopter)/launch/vicon/vicon_node.launch"/>
     <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2mocap" args="0 0 0 0 0 0 1 map mocap" /> 
     <node pkg="tf2_ros" type="static_transform_publisher" name="tracking2base" args="0 0 0 0 0 0 1 tricopter_tracked base_link" /> 
     <rosparam>
