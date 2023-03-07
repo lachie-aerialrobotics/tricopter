@@ -4,9 +4,6 @@
     <arg name="world_name" default="ARLarena"/> <!-- ARLarena or DroneHub -->
     <arg name="viz" default = "true"/>
     
-    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2camera_init" args="0 0 0 0 0 0 1 map camera_init" />
-    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_base_link2body" args="0 0 0 0 0 0 1 base_link body" />
-
     <!-- DRONE SPAWN POINT -->
     <arg name="x" default="0"/>
     <arg name="y" default="2"/>
@@ -14,6 +11,9 @@
     <arg name="R" default="0"/>
     <arg name="P" default="0"/>
     <arg name="Y" default="0.5"/>
+    
+    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2camera_init" args="$(arg x) $(arg y) $(arg z) $(arg R) $(arg P) $(arg Y) map camera_init" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_base_link2body" args="0 0 0 0 0 0 1 base_link body" />
 
     <!-- LAUNCH VANILLA GAZEBO SIM -->
     <include file="$(find tricopter)/launch/sim/px4_gazebo.launch">

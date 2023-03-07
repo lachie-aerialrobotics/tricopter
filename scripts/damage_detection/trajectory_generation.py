@@ -23,7 +23,7 @@ class TrajectoryGeneration:
         self.max_yawrate = rospy.get_param('/trajectory_planner/max_yawrate')
         self.max_yawrate_dot = rospy.get_param('/trajectory_planner/max_yawrate_dot')
 
-        self.hover_time = 10.0
+        self.hover_time = rospy.get_param('/trajectory_planner/hover_time')
 
         # init publishers and subscribers
         self.pub_poses = rospy.Publisher('/damage_poses', PoseArray, queue_size=1)

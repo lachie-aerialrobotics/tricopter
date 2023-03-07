@@ -2,22 +2,27 @@
 <launch>
     <rosparam>
         /damage_detection/map_topic_name: /LaserMap
+        /damage_detection/map_frame: map
         /damage_detection/model_samples: 500000
         /damage_detection/icp_voxel_size: 0.1
         /damage_detection/icp_max_iterations: 100
-        /damage_detection/length_scale: 0.08
+        /damage_detection/clustering_scale: 0.08
+        /damage_detection/damage_scale: 0.04
         /damage_detection/cluster_min_points: 10
 
         /trajectory_planner/drone_frame: base_link
         /trajectory_planner/tooltip_frame: tooltip_init
         /trajectory_planner/frequency: 10
-        /trajectory_planner/max_vel: 5.0
-        /trajectory_planner/max_acc: 2.0
-        /trajectory_planner/max_yawrate: 5.0
-        /trajectory_planner/max_yawrate_dot: 2.0
+        /trajectory_planner/max_vel: 0.1
+        /trajectory_planner/max_acc: 1.0
+        /trajectory_planner/max_yawrate: 30.0
+        /trajectory_planner/max_yawrate_dot: 30.0
+        /trajectory_planner/hover_time: 30.0
     </rosparam>
 
-    <node name="damage_detection" pkg="tricopter" type="repair.py" required="false" output="screen">
+    <node name="damage_detection" pkg="tricopter" type="damage_detection.py" required="true" output="screen">
         <param name="model_dir" value="$(find mavlink_sitl_gazebo)/models/ARLarena/meshes/FoamBoardNoHoles.stl" />
     </node>
+    <node name="trajectory_generation" pkg="tricopter" type="trajectory_generation.py" required="true" output="screen"/>
+    <node name="offboard_setpoints" pkg="tricopter" type="offboard_setpoints.py" required="true" output="screen"/>
 </launch>

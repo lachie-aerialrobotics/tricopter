@@ -16,7 +16,7 @@ class LidarSim:
         # get params from paremter server
         self.lidar_rate = rospy.get_param('/lidar_sim/rate')
         self.lidar_frame = rospy.get_param('/lidar_sim/lidar_frame')
-        self.odom_frame = rospy.get_param('/lidar_sim/odom_frame')
+        self.map_frame = rospy.get_param('/lidar_sim/map_frame')
         self.world_dir = rospy.get_param('/lidar_sim/world_dir')
         # voxel_size = 0.005
         self.noise_mu = rospy.get_param('/lidar_sim/noise_mu')
@@ -95,7 +95,7 @@ class LidarSim:
         # self.pcd_map = self.pcd_map.voxel_down_sample(voxel_size=self.voxel_size)
 
         # publish as pc2 message
-        header = Header(stamp=rospy.Time.now(), frame_id=self.odom_frame)
+        header = Header(stamp=rospy.Time.now(), frame_id=self.map_frame)
         pc_msg = o3d_to_pc2(self.pcd_map, header)
         self.pub_map.publish(pc_msg)
      
