@@ -9,7 +9,7 @@
         /mavros/vision_pose/tf/child_frame_id: tricopter_tracked
         <!-- /mavros/vision_pose/tf/rate_limit: 100 -->
     </rosparam> 
-    <include file="$(find tricopter)/launch/mavros_node.launch"/>
+    <include file="$(find tricopter)/launch/flight_controller/mavros_node.launch"/>
     <rosparam>
         /mavros/vision_pose/tf/listen: true
         /mavros/vision_pose/tf/frame_id: map
