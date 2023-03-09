@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>   
-    <arg name="lidar_type" default = "livox"/>
+    <arg name="lidar_type" default = "ouster"/>
     <arg name="relocalize" default = "false"/>
     <arg name="map" value = "$(env HOME)/scans/scans.pcd"/>
 
@@ -13,7 +13,7 @@
         <!-- /mavros/vision_pose/tf/rate_limit: 100 -->
     </rosparam> 
 
-    <include file="$(find tricopter)/launch/mavros_node.launch"/>
+    <include file="$(find tricopter)/launch/flight_controller/mavros_node.launch"/>
 
     <remap from="/Odometry" to="/mavros/odometry/out"/>
     <!-- <rosparam>
@@ -38,7 +38,7 @@
     </group>
 
     <group if="$(eval lidar_type == 'livox')">
-        <include file="$(find tricopter)/launch/livox_node.launch"/>   
+        <include file="$(find tricopter)/launch/lidar/livox_node.launch"/>   
         <group if="$(arg relocalize)">
             <rosparam>
                 /relocalize/FOV: 1.6
