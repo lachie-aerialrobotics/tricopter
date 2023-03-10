@@ -17,7 +17,6 @@ class ViconServer:
 
     def align_vicon(self, req):
         rospy.loginfo("Vicon alignment requested")
-        resp = alignViconResponse
 
         mavros_pose_topic = "/mavros/local_position/pose"
         vicon_pose_topic = str("/vicon/"+req.object_name+"/pose")
@@ -57,6 +56,7 @@ class ViconServer:
 
         rospy.loginfo("Alignment complete - static tf has been published")
 
+        resp = alignViconResponse()
         resp.transform = tf
          
         return resp
