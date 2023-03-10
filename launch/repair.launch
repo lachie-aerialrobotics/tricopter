@@ -18,6 +18,4 @@
     <group if="$(arg bag)">
         <node pkg="rosbag" type="record" name="rosbag_record" args="-o $(env HOME)/bags/ -e '(.*)mavros(.*)' '(.*)vicon(.*)' /usb_cam/image_raw/compressed /Odometry '/platform/(.*)' '(.*)tooltip(.*)' '/servo(.*)' /tf /tf_static"/>
     </group>
-
-    <node pkg="rosservice" type="rosservice" name="align_vicon" args="call --wait /align_vicon object_name=tricopter_tracked" />
 </launch>
