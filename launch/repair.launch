@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <launch>
-    <arg name="bag" default = "false"/>
+    <arg name="bag" default = "true"/>
 
     <include file="$(find tricopter)/launch/lidar/lidar_mapping.launch">
         <arg name="lidar_type" default = "ouster"/>
@@ -9,14 +9,14 @@
     
     <rosparam>
         /mavros/vision_pose/tf/listen: true
-        /mavros/vision_pose/tf/frame_id: camera_init
+        /mavros/vision_pose/tf/frame_id: map
         /mavros/vision_pose/tf/child_frame_id: base_link
         /mavros/vision_pose/tf/rate_limit: 100
     </rosparam>
     <include file="$(find tricopter)/launch/flight_controller/mavros_node.launch"/>
     <rosparam>
         /mavros/vision_pose/tf/listen: true
-        /mavros/vision_pose/tf/frame_id: camera_init
+        /mavros/vision_pose/tf/frame_id: map
         /mavros/vision_pose/tf/child_frame_id: base_link
         /mavros/vision_pose/tf/rate_limit: 100
     </rosparam>
