@@ -21,12 +21,13 @@ class ViconServer:
 
         mavros_pose_topic = "/mavros/local_position/pose"
         vicon_pose_topic = str("/vicon/"+req.object_name+"/pose")
+        print("Topic is "+vicon_pose_topic)
         rospy.loginfo("Waiting for pose data...")
         rospy.wait_for_message(mavros_pose_topic, PoseStamped)
         rospy.wait_for_message(vicon_pose_topic, PoseStamped)
         rospy.loginfo("Got pose data!")
 
-        print("Topic is "+vicon_pose_topic)
+        
         
         self.vicon_sub = rospy.Subscriber(vicon_pose_topic, PoseStamped, self.vicon_cb)
         self.mavros_sub = rospy.Subscriber(mavros_pose_topic, PoseStamped, self.mavros_cb)
