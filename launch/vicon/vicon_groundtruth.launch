@@ -9,5 +9,5 @@
       vicon/publish_tf:                                         true
   </rosparam>
   <node name="align_vicon_service" pkg="tricopter" type="vicon_align.py" required="true" output="screen"/> 
-  <node pkg="rosservice" type="rosservice" name="align_vicon" args="call --wait /align_vicon object_name=tricopter_tracked" />
+  <node pkg="rosservice" type="rosservice" name="align_vicon" args="call --wait /align_vicon tricopter_tracked" />
 </launch>
