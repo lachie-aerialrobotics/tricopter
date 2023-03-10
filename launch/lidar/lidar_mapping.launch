@@ -13,7 +13,7 @@
         <!-- /mavros/vision_pose/tf/rate_limit: 100 -->
     </rosparam> 
 
-    <include file="$(find tricopter)/launch/flight_controller/mavros_node.launch"/>
+    <!-- <include file="$(find tricopter)/launch/flight_controller/mavros_node.launch"/> -->
 
     <remap from="/Odometry" to="/mavros/odometry/out"/>
     <!-- <rosparam>
