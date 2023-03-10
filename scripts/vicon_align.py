@@ -38,7 +38,7 @@ class ViconServer:
         got_tf = False
         while not got_tf:
             try:
-                tf_mav2vicon = self.tfBuffer.lookup_transform(mavros_pose_frame, vicon_pose_frame, rospy.time.now(), timeout=rospy.Duration(1))
+                tf_mav2vicon = self.tfBuffer.lookup_transform(mavros_pose_frame, vicon_pose_frame, rospy.Time.now(), timeout=rospy.Duration(1))
                 got_tf = True
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
                 rospy.loginfo("tf dropped - retrying..")
