@@ -22,6 +22,7 @@ class ViconServer:
         rospy.loginfo("Vicon alignment requested")
 
         mavros_pose_frame = "base_link"
+        rospy.loginfo("Object frame is "+req.object_name)
         vicon_pose_frame = str(req.object_name)
 
         # print("Topic is "+vicon_pose_topic)
