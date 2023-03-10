@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<launch>
+  <arg name="nozzle_length" default="0.2"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="transform_platform2tooltip_tracked" args="0 0 $(arg nozzle_length) 0 0 0 platform_tracked tooltip_tracked" />
+    <include file="$(find mocap_vicon)/launch/vicon.launch" />
+    <rosparam>
+      vicon/model_list:                                         [tricopter_tracked, platform_tracked]
+      vicon/server_address:                                     "192.168.0.100"
+      vicon/publish_tf:                                         true
+  </rosparam>
+  <node name="align_vicon_service" pkg="tricopter" type="vicon_align.py" required="true" output="screen"/> 
+</launch>
