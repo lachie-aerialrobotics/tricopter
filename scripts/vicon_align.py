@@ -54,7 +54,7 @@ class ViconServer:
         vicon_quat = [tf_vicon2mav.transform.rotation.x, tf_vicon2mav.transform.rotation.y, tf_vicon2mav.transform.rotation.z, tf_vicon2mav.transform.rotation.w]
         vicon_rot = R.from_quat(vicon_quat)
 
-        mav2vic_vec = -vicon_vec + mavros_vec
+        mav2vic_vec = vicon_vec + mavros_vec
         mav2vic_rot = mavros_rot.inv() * vicon_rot
         mav2vic_quat = mav2vic_rot.as_quat()
 
