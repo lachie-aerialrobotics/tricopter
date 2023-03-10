@@ -40,7 +40,7 @@ class ViconServer:
         # tf_lidar2mav = TransformStamped()
         while not got_tf:
             try:
-                tf_vicon2mav = self.tfBuffer.lookup_transform("mocap", vicon_pose_frame, rospy.Time.now(), timeout=rospy.Duration(1))
+                tf_vicon2mav = self.tfBuffer.lookup_transform(vicon_pose_frame, "mocap", rospy.Time.now(), timeout=rospy.Duration(1))
                 tf_lidar2mav = self.tfBuffer.lookup_transform("map", mavros_pose_frame, rospy.Time.now(), timeout=rospy.Duration(1))
                 got_tf = True
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
