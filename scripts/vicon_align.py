@@ -12,6 +12,7 @@ class ViconServer:
     def __init__(self):
         rospy.init_node('vicon_service')
         # services for trajectory generation
+        
         vicon_service = rospy.Service(
             'align_vicon', alignVicon, self.align_vicon)
         rospy.spin()
@@ -22,6 +23,9 @@ class ViconServer:
         mavros_pose_topic = "/mavros/local_position/pose"
         vicon_pose_topic = str("/vicon/"+req.object_name+"/pose")
         print("Topic is "+vicon_pose_topic)
+        self.vicon_sub = rospy.Subscriber(vicon_pose_topic, PoseStamped, self.vicon_cb)
+        self.mavros_sub = rospy.Subscriber(mavros_pose_topic, PoseStamped, self.mavros_cb)
+        
         rospy.loginfo("Waiting for pose data...")
         rospy.wait_for_message(mavros_pose_topic, PoseStamped)
         rospy.wait_for_message(vicon_pose_topic, PoseStamped)
@@ -29,13 +33,6 @@ class ViconServer:
         rospy.loginfo("Got pose data!")
         rospy.loginfo("Waiting 5s for odom data to settle...")
         rospy.sleep(5)
-
-        
-        
-        self.vicon_sub = rospy.Subscriber(vicon_pose_topic, PoseStamped, self.vicon_cb)
-        self.mavros_sub = rospy.Subscriber(mavros_pose_topic, PoseStamped, self.mavros_cb)
-        rospy.wait_for_message(mavros_pose_topic, PoseStamped)
-        rospy.wait_for_message(vicon_pose_topic, PoseStamped)
 
         mavros_vec = np.asarray([self.mavros_pose_msg.pose.position.x, self.mavros_pose_msg.pose.position.y, self.mavros_pose_msg.pose.position.z])
         mavros_quat = [self.mavros_pose_msg.pose.orientation.x, self.mavros_pose_msg.pose.orientation.y, self.mavros_pose_msg.pose.orientation.z, self.mavros_pose_msg.pose.orientation.w]
@@ -68,12 +65,10 @@ class ViconServer:
     def mavros_cb(self, msg):
         rospy.loginfo("Retreived pose in odom frame")
         self.mavros_pose_msg = msg
-        self.mavros_sub.unregister()
 
     def vicon_cb(self, msg):
         rospy.loginfo("Retreived pose in mocap frame")
         self.vicon_pose_msg = msg
-        self.vicon_sub.unregister()
         
     
 if __name__ == "__main__":
