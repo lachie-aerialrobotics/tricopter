@@ -37,33 +37,35 @@ class ViconServer:
         # rospy.loginfo("Waiting 5s for odom data to settle...")
         # rospy.sleep(5)
         got_tf = False
+        # tf_lidar2mav = TransformStamped()
         while not got_tf:
             try:
-                tf_mav2vicon = self.tfBuffer.lookup_transform(mavros_pose_frame, vicon_pose_frame, rospy.Time.now(), timeout=rospy.Duration(1))
+                tf_vicon2mav = self.tfBuffer.lookup_transform("mocap", vicon_pose_frame, rospy.Time.now(), timeout=rospy.Duration(1))
+                tf_lidar2mav = self.tfBuffer.lookup_transform("map", mavros_pose_frame, rospy.Time.now(), timeout=rospy.Duration(1))
                 got_tf = True
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
                 rospy.loginfo("tf dropped - retrying..")
 
-        # mavros_vec = np.asarray([self.mavros_pose_msg.pose.position.x, self.mavros_pose_msg.pose.position.y, self.mavros_pose_msg.pose.position.z])
-        # mavros_quat = [self.mavros_pose_msg.pose.orientation.x, self.mavros_pose_msg.pose.orientation.y, self.mavros_pose_msg.pose.orientation.z, self.mavros_pose_msg.pose.orientation.w]
-        # mavros_rot = R.from_quat(mavros_quat)
+        mavros_vec = np.asarray([tf_lidar2mav.transform.translation.x, tf_lidar2mav.transform.translation.y, tf_lidar2mav.transform.translation.z])
+        mavros_quat = [tf_lidar2mav.transform.rotation.x,tf_lidar2mav.transform.rotation.y, tf_lidar2mav.transform.rotation.z, tf_lidar2mav.transform.rotation.w]
+        mavros_rot = R.from_quat(mavros_quat)
 
-        # vicon_vec = np.asarray([self.vicon_pose_msg.pose.position.x, self.vicon_pose_msg.pose.position.y, self.vicon_pose_msg.pose.position.z])
-        # vicon_quat = [self.vicon_pose_msg.pose.orientation.x, self.vicon_pose_msg.pose.orientation.y, self.vicon_pose_msg.pose.orientation.z, self.vicon_pose_msg.pose.orientation.w]
-        # vicon_rot = R.from_quat(vicon_quat)
+        vicon_vec = np.asarray([tf_vicon2mav.transform.translation.x, tf_vicon2mav.transform.translation.y, tf_vicon2mav.transform.translation.z])
+        vicon_quat = [tf_vicon2mav.transform.rotation.x, tf_vicon2mav.transform.rotation.y, tf_vicon2mav.transform.rotation.z, tf_vicon2mav.transform.rotation.w]
+        vicon_rot = R.from_quat(vicon_quat)
 
-        # mav2vic_vec = -vicon_vec + mavros_vec
-        # mav2vic_rot = mavros_rot.inv() * vicon_rot
-        # mav2vic_quat = mav2vic_rot.as_quat()
+        mav2vic_vec = -vicon_vec + mavros_vec
+        mav2vic_rot = mavros_rot.inv() * vicon_rot
+        mav2vic_quat = mav2vic_rot.as_quat()
 
         br_static = tf2_ros.StaticTransformBroadcaster()
         tf = TransformStamped()
         tf.header.frame_id = "map"
         tf.header.stamp = rospy.Time.now()
         tf.child_frame_id = "mocap"
-        tf.transform = tf_mav2vicon.transform
-        # tf.transform.translation = Vector3(mav2vic_vec[0], mav2vic_vec[1], mav2vic_vec[2])
-        # tf.transform.rotation = Quaternion(mav2vic_quat[0], mav2vic_quat[1], mav2vic_quat[2], mav2vic_quat[3])
+        # tf.transform = tf_mav2vicon.transform
+        tf.transform.translation = Vector3(mav2vic_vec[0], mav2vic_vec[1], mav2vic_vec[2])
+        tf.transform.rotation = Quaternion(mav2vic_quat[0], mav2vic_quat[1], mav2vic_quat[2], mav2vic_quat[3])
         br_static.sendTransform(tf)
 
         rospy.loginfo("Alignment complete - static tf has been published")
