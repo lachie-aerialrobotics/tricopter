@@ -4,6 +4,7 @@ import rospy
 import numpy as np
 import tf2_ros
 from geometry_msgs.msg import PoseStamped, TransformStamped, Vector3, Quaternion
+from nav_msgs.msg import Odometry
 from tricopter.srv import *
 from scipy.spatial.transform import Rotation as R
 
@@ -24,6 +25,7 @@ class ViconServer:
         rospy.loginfo("Waiting for pose data...")
         rospy.wait_for_message(mavros_pose_topic, PoseStamped)
         rospy.wait_for_message(vicon_pose_topic, PoseStamped)
+        rospy.wait_for_message('/Odometry', Odometry)
         rospy.loginfo("Got pose data!")
         rospy.loginfo("Waiting 5s for odom data to settle...")
         rospy.sleep(5)
