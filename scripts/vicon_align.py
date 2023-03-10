@@ -21,6 +21,10 @@ class ViconServer:
 
         mavros_pose_topic = "/mavros/local_position/pose"
         vicon_pose_topic = str("/vicon/"+req.object_name+"/pose")
+        rospy.loginfo("Waiting for pose data...")
+        rospy.wait_for_message(mavros_pose_topic)
+        rospy.wait_for_message(vicon_pose_topic)
+        rospy.loginfo("Got pose data!")
 
         print("Topic is "+vicon_pose_topic)
         

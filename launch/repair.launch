@@ -7,9 +7,9 @@
         <arg name="relocalize" default = "false"/>
     </include>
     
-    <include file="$(find tricopter)/launch/vicon/vicon_groundtruth.launch"/>
-
     <include file="$(find tricopter)/launch/flight_controller/mavros_node.launch"/>
+    
+    <include file="$(find tricopter)/launch/vicon/vicon_groundtruth.launch"/>
 
     <include file="$(find delta_2)/launch/stabilise.launch">
         <arg name="sim" value="false"/>
