@@ -12,7 +12,7 @@ class ViconServer:
     def __init__(self):
         rospy.init_node('vicon_service')
         # services for trajectory generation
-        self.tfBuffer = tf2_ros.Buffer(2.0)
+        self.tfBuffer = tf2_ros.Buffer(rospy.Duration(2.0))
         listener = tf2_ros.TransformListener(self.tfBuffer)
         vicon_service = rospy.Service(
             'align_vicon', alignVicon, self.align_vicon)
