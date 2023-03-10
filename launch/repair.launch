@@ -11,8 +11,12 @@
     
     <include file="$(find tricopter)/launch/vicon/vicon_groundtruth.launch"/>
 
-    <include file="$(find delta_2)/launch/stabilise.launch">
+    <!-- <include file="$(find delta_2)/launch/stabilise.launch">
         <arg name="sim" value="false"/>
+    </include> -->
+
+    <include file="$(find delta_2)/launch/test_manipulator.launch">
+        <arg name="mode" value="points"/>
     </include>
 
     <group if="$(arg bag)">
