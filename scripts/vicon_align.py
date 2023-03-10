@@ -35,7 +35,7 @@ class ViconServer:
         # rospy.loginfo("Got pose data!")
         # rospy.loginfo("Waiting 5s for odom data to settle...")
         # rospy.sleep(5)
-
+        got_tf = False
         while not got_tf:
             try:
                 tf_mav2vicon = self.tfBuffer.lookup_transform(mavros_pose_frame, vicon_pose_frame, rospy.time.now(), timeout=rospy.Duration(1))
