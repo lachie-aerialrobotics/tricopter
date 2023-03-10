@@ -56,8 +56,10 @@ class ViconServer:
         br_static.sendTransform(tf)
 
         rospy.loginfo("Alignment complete - static tf has been published")
+
+        resp.transform = tf
          
-        # return resp
+        return resp
 
     def mavros_cb(self, msg):
         rospy.loginfo("Retreived pose in odom frame")
