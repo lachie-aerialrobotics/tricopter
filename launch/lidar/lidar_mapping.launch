@@ -15,7 +15,7 @@
 
     <!-- <include file="$(find tricopter)/launch/flight_controller/mavros_node.launch"/> -->
 
-    <remap from="/Odometry" to="/mavros/odometry/out"/>
+    <!-- <remap from="/Odometry" to="/mavros/odometry/out"/> -->
     <!-- <rosparam>
         /pcd_save/pcd_save_en: false
         /mavros/vision_pose/tf/listen: true
