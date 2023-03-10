@@ -25,6 +25,8 @@ class ViconServer:
         rospy.wait_for_message(mavros_pose_topic, PoseStamped)
         rospy.wait_for_message(vicon_pose_topic, PoseStamped)
         rospy.loginfo("Got pose data!")
+        rospy.loginfo("Waiting 5s for odom data to settle...")
+        rospy.sleep(5)
 
         
         
