@@ -4,7 +4,10 @@
     <arg name="relocalize" default = "false"/>
     <arg name="map" value = "$(env HOME)/scans/scans.pcd"/>
 
-    <include file="$(find tricopter)/launch/static_transforms.launch"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_body2sensor" args="-0.13 0 -0.069 0 0 0 1 os_sensor base_link" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_odom2camera_init" args="0 0 0 0 0 0 1 camera_init odom" />
+    <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="transform_base2body" args="0 0 0 0 0 0 1 body base_link" /> -->
+
     <rosparam>
         /pcd_save/pcd_save_en: false
         <!-- /mavros/vision_pose/tf/listen: true

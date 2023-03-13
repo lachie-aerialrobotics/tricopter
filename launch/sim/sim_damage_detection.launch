@@ -42,7 +42,7 @@
     </include>
 
     <!-- DAMAGE DETECTION AND TRAJECTORY PLANNING-->
-    <!-- <include file="$(find tricopter)/launch/sim/damage_detection.launch"/> -->
+    <include file="$(find tricopter)/launch/damage_detection.launch"/>
 
     <!-- RVIZ AND RQT-->
     <group if="$(arg viz)">
