@@ -16,7 +16,7 @@ class printStateMachine(object):
     states = ['Takeoff', 'Landing', 'Home', 'Move', 'Print', 'TolCheck', 'Ground', 'Manual']
 
     transitions = [
-        {'trigger': 'startTakeoff',     'source': 'Ground',                         'dest': 'Takeoff',  'after':   'on_startTakeoff'  },
+        {'trigger': 'startTakeoff',     'source': ['Ground', 'Manual'],                         'dest': 'Takeoff',  'after':   'on_startTakeoff'  },
         {'trigger': 'arriveAtPrint',    'source': 'Move',                           'dest': 'TolCheck', 'after':   'on_arriveAtPrint' },
         {'trigger': 'startPrint',       'source': 'TolCheck',                       'dest': 'Print',    'before':  'on_startPrint'    },
         {'trigger': 'arriveAtHome',     'source': 'Move',                           'dest': 'Home',     'after':   'on_arriveAtHome'  },
@@ -244,6 +244,7 @@ class printStateMachine(object):
                 self.startTakeoff()
                
     def during_always(self): #this callback always runs to check if not in offboard mode
+        print(str(self.state))
         if self.mavros_state.mode != "OFFBOARD" and not (self.state == 'Manual' or self.state == 'Ground'):
                 self.manualTakeover()
 

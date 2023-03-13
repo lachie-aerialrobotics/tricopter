@@ -5,7 +5,7 @@
     <arg name="viz" default = "true"/>
     
     <!-- DRONE SPAWN POINT -->
-    <arg name="x" default="0"/>
+    <arg name="x" default="1.0"/>
     <arg name="y" default="0"/>
     <arg name="z" default="0.5"/>
     <arg name="R" default="0"/>
@@ -34,7 +34,7 @@
     </include>
 
     <!-- TRAJECTORY -->
-    <rosparam file="$(find tricopter)/cfg/cylinder_points.yaml" />
+    <rosparam file="$(find tricopter)/cfg/forward_backwards.yaml" />
     <rosparam file="$(find tricopter)/cfg/print_config.yaml" />
     <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="0 0 1.0 1.570796 0 1.570796 map printing_plane" />
     <node name="trajectory_services" pkg="tricopter" type="trajectory_services.py" required="true" output="screen"/> 
