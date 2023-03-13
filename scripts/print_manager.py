@@ -129,6 +129,11 @@ class printStateMachine(object):
 
     def on_startTakeoff(self):
         rospy.loginfo("Takeoff initiated")
+        self.pad_pose = PoseStamped()
+        self.pad_pose = self.local_pose
+        self.pad_pose.pose.position.z = self.takeoff_hgt
+        rospy.loginfo("Landing site updated at x=" + str(self.pad_pose.pose.position.x) +
+            ", y=" + str(self.pad_pose.pose.position.y) + ".")
 
     def on_arriveAtHome(self):
         if self.layer < rospy.get_param(str(self.tH_print.waypoint_prefix) + '/n_layers'):

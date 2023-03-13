@@ -20,6 +20,9 @@
         /mavros/vision_pose/tf/child_frame_id: base_link
         /mavros/vision_pose/tf/rate_limit: 100
     </rosparam>
+
+    <!-- CONTROLLER -->
+    <include file="$(find tricopter)/launch/flight_controller/geometric_controller.launch"/>
     
     <include file="$(find tricopter)/launch/vicon/vicon_groundtruth.launch"/>
 
@@ -30,11 +33,11 @@
      <!-- TRAJECTORY -->
     <rosparam file="$(find tricopter)/cfg/forward_backwards.yaml" />
     <rosparam file="$(find tricopter)/cfg/print_config.yaml" />
-    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="0 0 1.0 1.570796 0 1.570796 map printing_plane" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="0 0 0.5 1.570796 0 1.570796 map printing_plane" />
     <node name="trajectory_services" pkg="tricopter" type="trajectory_services.py" required="true" output="screen"/> 
     <node name="print_manager" pkg="tricopter" type="print_manager.py" output="screen" respawn="true"/>
 
     <group if="$(arg bag)">
-        <node pkg="rosbag" type="record" name="rosbag_record" args="-o $(env HOME)/bags/ -e '(.*)mavros(.*)' '(.*)vicon(.*)' /usb_cam/image_raw/compressed /Odometry '/platform/(.*)' '(.*)tooltip(.*)' '/servo(.*)' /tf /tf_static /printer/state /manipulator/state"/>
+        <node pkg="rosbag" type="record" name="rosbag_record" args="-o $(env HOME)/bags/ -e '(.*)mavros(.*)' '(.*)vicon(.*)' /usb_cam/image_raw/compressed /Odometry '/platform(.*)' '(.*)tooltip(.*)' '/servo(.*)' /tf /tf_static /printer/state /manipulator/state"/>
     </group>
 </launch>

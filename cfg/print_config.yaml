@@ -17,7 +17,7 @@ print_planner:
 
   #Tolerance checking  
   start_speed_tolerance:    0.1 #m/s
-  start_position_tolerance: 0.1 #m
+  start_position_tolerance: 0.02 #m
 
   offset:                   [0, 0, 0] #[m, m, m]
         

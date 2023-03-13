@@ -2,7 +2,7 @@
 <!-- geometric controller params for Hex -->
 <launch>
     <include file="$(find geometric_controller)/launch/geometric_controller.launch">
-        <arg name="mav_name" default="Hex_delta"/>
+        <arg name="mav_name" default="hex"/>
         <arg name="command_input" default="2" />
         <arg name="max_acc" default="2.0" />
         <arg name="Kp_x" default="4.0" />
