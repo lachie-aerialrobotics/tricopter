@@ -26,6 +26,7 @@
     <include file="$(find delta_2)/launch/stabilise.launch">
         <arg name="sim" value="false"/>
     </include>
+    <node name="mode_switch" pkg="delta_2" type="mode_switch.py" required="true" output="screen"/>
 
     <group if="$(arg bag)">
         <node pkg="rosbag" type="record" name="rosbag_record" args="-o $(env HOME)/bags/ -e '(.*)mavros(.*)' '(.*)vicon(.*)' /usb_cam/image_raw/compressed /Odometry '/platform(.*)' '(.*)tooltip(.*)' '/servo(.*)' /tf /tf_static"/>
