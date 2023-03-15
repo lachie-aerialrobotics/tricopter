@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
     <rosparam>
-        /damage_detection/map_topic_name: /Laser_map
+        /damage_detection/map_topic_name: /map
         /damage_detection/map_frame: map
         /damage_detection/model_samples: 500000
         /damage_detection/icp_voxel_size: 0.1

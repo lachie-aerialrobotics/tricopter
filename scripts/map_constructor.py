@@ -14,7 +14,7 @@ from std_msgs.msg import Header
 class MapConstructor:
     def __init__(self):
         #init publisher
-        self.pub_map = rospy.Publisher('/Laser_map', PointCloud2, queue_size=1)
+        self.pub_map = rospy.Publisher('/map', PointCloud2, queue_size=1)
         
         #init subscriber
         sub_cloud = rospy.Subscriber('/cloud_registered', PointCloud2, self.cloud_cb, queue_size=1)
