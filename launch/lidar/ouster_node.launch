@@ -7,7 +7,7 @@
 <arg name="timestamp_mode" default="TIME_FROM_PTP_1588" doc="method used to timestamp measurements: TIME_FROM_INTERNAL_OSC, TIME_FROM_SYNC_PULSE_IN, TIME_FROM_PTP_1588"/>
 <arg name="metadata" default="/home/aam01/lidar_metadata/ouster_data.json" doc="path to read or write metadata file when replaying or receiving sensor data, respectively"/>
 <arg name="tf_prefix" default="" doc="namespace for tf transforms"/>
-<arg name="udp_profile_lidar" default="LEGACY" doc="lidar packet profile: LEGACY, RNG19_RFL8_SIG16_NIR16_DUAL"/>
+<arg name="udp_profile_lidar" default="RNG19_RFL8_SIG16_NIR16_DUAL" doc="lidar packet profile: LEGACY, RNG19_RFL8_SIG16_NIR16_DUAL"/>
 <include file="$(find ouster_ros)/ouster.launch">
 <arg name="sensor_hostname" value="$(arg sensor_hostname)" />
 <arg name="lidar_port" value="$(arg lidar_port)" />
