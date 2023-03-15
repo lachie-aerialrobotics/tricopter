@@ -15,10 +15,12 @@ class MapConstructor:
         #init subscriber
         sub_cloud = rospy.Subscriber('/cloud_registered', PointCloud2, self.cloud_cb, queue_size=1)
 
+        rospy.spin()
+
         
 
     def cloud_cb(self, msg):
-        self.pcd += pc2_to_o3d(msg)
+        self.pcd = self.pcd + pc2_to_o3d(msg)
         pcd = pcd.voxel_down_sample(voxel_size=0.02)
         pc2 = o3d_to_pc2(pcd, msg.header)
         self.pub_map.publish(pc2)

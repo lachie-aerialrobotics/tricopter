@@ -4,7 +4,7 @@
 
     <include file="$(find tricopter)/launch/lidar/lidar_mapping.launch">
         <arg name="lidar_type" default = "ouster"/>
-        <arg name="relocalize" default = "false"/>
+        <arg name="relocalize" default = "true"/>
     </include>
     
     <rosparam>
