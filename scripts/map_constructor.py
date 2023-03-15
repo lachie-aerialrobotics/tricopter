@@ -24,8 +24,8 @@ class MapConstructor:
 
     def cloud_cb(self, msg):
         self.pcd = self.pcd + convertCloudFromRosToOpen3d(msg)
-        pcd = pcd.voxel_down_sample(voxel_size=0.02)
-        pc2 = convertCloudFromOpen3dToRos(pcd, 'map')
+        self.pcd = self.pcd.voxel_down_sample(voxel_size=0.02)
+        pc2 = convertCloudFromOpen3dToRos(self.pcd, 'map')
         self.pub_map.publish(pc2)
 
 def o3d_to_pc2(o3d_pc=o3d.geometry.PointCloud(), pc_header=Header()):
