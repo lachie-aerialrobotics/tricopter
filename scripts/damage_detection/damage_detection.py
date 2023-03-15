@@ -43,14 +43,17 @@ class DamageDetection:
         os.chdir(dname)
         
         # generate pointcloud from undamaged cad model
-        self.model_pc = get_pc_from_mesh(mesh_path, model_samples)
+        # self.model_pc = get_pc_from_mesh(mesh_path, model_samples)
 
-        # perception filter - todo: get rid of the need for this
-        diameter = np.linalg.norm(np.asarray(self.model_pc.get_max_bound()) - np.asarray(self.model_pc.get_min_bound()))
-        radius = diameter * 100
-        camera = [5,0,1.5]
-        _, pt_map = self.model_pc.hidden_point_removal(camera, radius)
-        self.model_pc = self.model_pc.select_by_index(pt_map)
+        # # perception filter - todo: get rid of the need for this
+        # diameter = np.linalg.norm(np.asarray(self.model_pc.get_max_bound()) - np.asarray(self.model_pc.get_min_bound()))
+        # radius = diameter * 100
+        # camera = [5,0,1.5]
+        # _, pt_map = self.model_pc.hidden_point_removal(camera, radius)
+        # self.model_pc = self.model_pc.select_by_index(pt_map)
+
+        # get pointcloud from file
+        self.model_pc = o3d.io.read_point_cloud(mesh_path)
 
 
         #don't start services until map is available

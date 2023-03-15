@@ -21,7 +21,7 @@
     </rosparam>
 
     <node name="damage_detection" pkg="tricopter" type="damage_detection.py" required="true" output="screen">
-        <param name="model_dir" value="$(find mavlink_sitl_gazebo)/models/ARLarena/meshes/FoamBoardNoHoles.stl" />
+        <param name="model_dir" value="$(find tricopter)/scans/scans_cropped.pcd" />
     </node>
     <node name="trajectory_generation" pkg="tricopter" type="trajectory_generation.py" required="true" output="screen"/>
     <node name="offboard_setpoints" pkg="tricopter" type="offboard_setpoints.py" required="true" output="screen"/>
