@@ -131,12 +131,12 @@ def convertCloudFromRosToOpen3d(ros_cloud):
             rgb = [convert_rgbUint32_to_tuple(rgb) for x,y,z,rgb in cloud_data ]
 
         # combine
-        open3d_cloud.points = o3d.Vector3dVector(np.array(xyz))
-        open3d_cloud.colors = o3d.Vector3dVector(np.array(rgb)/255.0)
+        open3d_cloud.points = o3d.geometry.Vector3dVector(np.array(xyz))
+        open3d_cloud.colors = o3d.geometry.Vector3dVector(np.array(rgb)/255.0)
     else:
-        print(cloud_data)
+        # print(cloud_data)
         xyz = [(x,y,z) for x,y,z,a,b,c,d,e in cloud_data ] # get xyz
-        open3d_cloud.points = o3d.Vector3dVector(np.array(xyz))
+        open3d_cloud.points = o3d.geometry.Vector3dVector(np.array(xyz))
 
     # return
     return open3d_cloud
