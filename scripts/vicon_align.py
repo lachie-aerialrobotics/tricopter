@@ -12,7 +12,7 @@ class ViconServer:
     def __init__(self):
         rospy.init_node('vicon_service')
         # services for trajectory generation
-        self.tfBuffer = tf2_ros.Buffer(rospy.Duration(2.0))
+        self.tfBuffer = tf2_ros.Buffer(rospy.Duration(10.0))
         listener = tf2_ros.TransformListener(self.tfBuffer)
         vicon_service = rospy.Service(
             'align_vicon', alignVicon, self.align_vicon)
@@ -40,8 +40,8 @@ class ViconServer:
         # tf_lidar2mav = TransformStamped()
         while not got_tf:
             try:
-                tf_vicon2mav = self.tfBuffer.lookup_transform(vicon_pose_frame, "mocap", rospy.Time.now(), timeout=rospy.Duration(1))
-                tf_lidar2mav = self.tfBuffer.lookup_transform("map", mavros_pose_frame, rospy.Time.now(), timeout=rospy.Duration(1))
+                tf_vicon2mav = self.tfBuffer.lookup_transform(vicon_pose_frame, "mocap", rospy.Time.now(), timeout=rospy.Duration(10))
+                tf_lidar2mav = self.tfBuffer.lookup_transform("map", mavros_pose_frame, rospy.Time.now(), timeout=rospy.Duration(10))
                 got_tf = True
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
                 rospy.loginfo("tf dropped - retrying..")
