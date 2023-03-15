@@ -9,15 +9,12 @@ from std_msgs.msg import Header
 
 class MapConstructor:
     def __init__(self):
+        self.pcd = o3d.geometry.PointCloud()
         #init publisher
         self.pub_map = rospy.Publisher('/map', PointCloud2, queue_size=1)
-        self.pcd = o3d.geometry.PointCloud()
         #init subscriber
         sub_cloud = rospy.Subscriber('/cloud_registered', PointCloud2, self.cloud_cb, queue_size=1)
-
         rospy.spin()
-
-        
 
     def cloud_cb(self, msg):
         self.pcd = self.pcd + pc2_to_o3d(msg)
@@ -25,8 +22,6 @@ class MapConstructor:
         pc2 = o3d_to_pc2(pcd, msg.header)
         self.pub_map.publish(pc2)
 
-     
-        
 def o3d_to_pc2(o3d_pc=o3d.geometry.PointCloud(), pc_header=Header()):
     #convert back to structured array
     pc_np = np.asarray(o3d_pc.points)

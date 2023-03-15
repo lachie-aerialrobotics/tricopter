@@ -29,7 +29,7 @@ Panels:
   - Class: rviz/Time
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: PointCloud2
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -215,7 +215,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.004999999888241291
       Style: Flat Squares
-      Topic: /Laser_map
+      Topic: /map
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
