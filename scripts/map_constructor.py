@@ -1,12 +1,8 @@
 #! /usr/bin/env python3
 import rospy
-import tf2_ros
-import copy
-import os
 import numpy as np
 import ros_numpy as rnp
 import open3d as o3d
-import xml.etree.ElementTree as ET
 
 from sensor_msgs.msg import PointCloud2
 from std_msgs.msg import Header
@@ -15,11 +11,11 @@ class MapConstructor:
     def __init__(self):
         #init publisher
         self.pub_map = rospy.Publisher('/map', PointCloud2, queue_size=1)
-        
+        self.pcd = o3d.geometry.PointCloud()
         #init subscriber
         sub_cloud = rospy.Subscriber('/cloud_registered', PointCloud2, self.cloud_cb, queue_size=1)
 
-        self.pcd = o3d.geometry.PointCloud()
+        
 
     def cloud_cb(self, msg):
         self.pcd += pc2_to_o3d(msg)
