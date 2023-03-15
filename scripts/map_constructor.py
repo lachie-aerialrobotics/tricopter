@@ -111,7 +111,7 @@ def convertCloudFromRosToOpen3d(ros_cloud):
     cloud_data = list(pc2.read_points(ros_cloud, skip_nans=True, field_names = field_names))
 
     # Check empty
-    open3d_cloud = o3d.PointCloud()
+    open3d_cloud = o3d.geometry.PointCloud()
     if len(cloud_data)==0:
         print("Converting an empty cloud")
         return None
