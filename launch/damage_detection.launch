@@ -20,7 +20,7 @@
         /trajectory_planner/hover_time: 30.0
     </rosparam>
     
-    <node name="map_constructor" pkg="tricopter" type="map_constructor.py" required="true" output="screen">
+    <node name="map_constructor" pkg="tricopter" type="map_constructor.py" required="true" output="screen"/>
 
     <node name="damage_detection" pkg="tricopter" type="damage_detection.py" required="true" output="screen">
         <param name="model_dir" value="$(find tricopter)/scans/scans_cropped.pcd" />
