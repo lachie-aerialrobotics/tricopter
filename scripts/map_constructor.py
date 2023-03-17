@@ -16,7 +16,7 @@ import sensor_msgs.point_cloud2 as pc2
 class MapConstructor:
     def __init__(self):
         self.pcd = o3d.geometry.PointCloud()
-        self.pcd_new = o3d.geometry.PointCloud()
+        self.pcd_new = PointCloud2()
         #init publisher
         self.pub_map = rospy.Publisher('/map', PointCloud2, queue_size=1)
         #init subscriber
