@@ -22,6 +22,7 @@ class MapConstructor:
         #init subscriber
         sub_cloud = rospy.Subscriber('/cloud_registered', PointCloud2, self.cloud_cb, queue_size=1)
 
+        rospy.wait_for_message('/cloud_registered')
         sp_timer = rospy.Timer(rospy.Duration(1.0), self.timer_cb, reset=True)
 
         rospy.spin()
