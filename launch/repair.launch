@@ -34,6 +34,6 @@
     <include file="$(find tricopter)/launch/damage_detection.launch"/>
 
     <group if="$(arg bag)">
-        <node pkg="rosbag" type="record" name="rosbag_record" args="-o $(env HOME)/bags/ -e '(.*)mavros(.*)' '(.*)vicon(.*)' /usb_cam/image_raw/compressed /Odometry '/platform(.*)' '(.*)tooltip(.*)' '/servo(.*)' /tf /tf_static /os_cloud_nodelet/(.*)"/>
+        <node pkg="rosbag" type="record" name="rosbag_record" args="-o $(env HOME)/bags/ -e '(.*)mavros(.*)' '(.*)vicon(.*)' /usb_cam/image_raw/compressed /Odometry '/platform(.*)' '(.*)tooltip(.*)' '/servo(.*)' /tf /tf_static /os_cloud_nodelet/(.*) /map"/>
     </group>
 </launch>
