@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<launch>
+<node pkg="rosbag" type="play" name="player" output="screen" args="--clock /home/lachie/bags/_2023-03-17-17-11-11.bag --topics /map /tf /tf_static"/>
+<include file="$(find tricopter)/launch/damage_detection.launch"/>
+</launch>
