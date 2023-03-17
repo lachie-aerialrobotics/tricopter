@@ -28,7 +28,7 @@
     </include>
     <node name="mode_switch" pkg="delta_2" type="mode_switch.py" required="true" output="screen"/>
 
-    <node name="map_constructor" pkg="tricopter" type="map_constructor.py" required="true" output="screen"/>
+    <!-- <node name="map_constructor" pkg="tricopter" type="map_constructor.py" required="true" output="screen"/> -->
 
     <!-- DAMAGE DETECTION AND TRAJECTORY PLANNING-->
     <include file="$(find tricopter)/launch/damage_detection.launch"/>
