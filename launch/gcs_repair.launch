@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<launch>
+
+    <!-- DAMAGE DETECTION AND TRAJECTORY PLANNING-->
+    <include file="$(find tricopter)/launch/damage_detection.launch"/>
+<node type="rviz" name="rviz" pkg="rviz" args="-d $(find tricopter)/rviz/registration.rviz"/>
+        <node name="rqt_gui" pkg="rqt_gui" type="rqt_gui" args="--perspective-file $(find tricopter)/rviz/service_caller.perspective"/>
+
+
+</launch>
