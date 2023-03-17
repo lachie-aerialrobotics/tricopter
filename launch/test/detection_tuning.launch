@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <launch>
-<node pkg="rosbag" type="play" name="player" output="screen" args="--clock /home/lachie/bags/_2023-03-17-17-11-11.bag --topics /map /tf /tf_static"/>
+<node pkg="rosbag" type="play" name="player" output="screen" args="--clock /home/lachie/bags/_2023-03-17-17-28-15.bag  --topics /map /tf /tf_static"/>
 <include file="$(find tricopter)/launch/damage_detection.launch"/>
+
+        <node type="rviz" name="rviz" pkg="rviz" args="-d $(find tricopter)/rviz/registration.rviz"/>
+        <node name="rqt_gui" pkg="rqt_gui" type="rqt_gui" args="--perspective-file $(find tricopter)/rviz/service_caller.perspective"/>
+
 </launch>

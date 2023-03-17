@@ -117,6 +117,8 @@ class DamageDetection:
         max = aligned_model_pc.get_max_bound()
         bbox = o3d.geometry.AxisAlignedBoundingBox(min_bound=min, max_bound=max)
         map_pc_cropped = copy.deepcopy(map_pc).crop(bbox)
+        cl, ind = map_pc.remove_statistical_outlier(nb_neighbors=20, std_ratio=1.0)
+        map_pc = map_pc.select_by_index(ind)
         o3d.io.write_point_cloud(os.path.abspath('../pointclouds/map_cropped.pcd'), map_pc_cropped)
         self.pub_cropped_map.publish(o3d_to_pc2(map_pc_cropped, header))
 
