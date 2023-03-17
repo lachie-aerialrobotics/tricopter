@@ -1,5 +1,5 @@
 print_planner:
-  setpoint_rate:            50 #Hz
+  setpoint_rate:            10 #Hz
 
   #Take-off and landing
   tol_speed:                0.1 #m/s
@@ -7,17 +7,17 @@ print_planner:
         
   #TOPPRA     
   print_vel:                0.1 #m/s
-  print_max_accel:          10000 #m/s^2
+  print_max_accel:          1000000 #m/s^2
   
-  transition_vel:           0.05 #m/s
+  transition_vel:           0.1 #m/s
   transition_max_accel:     0.1 #m/s^2
   
   max_yawrate:              10 #deg/s
   max_yawrate_dot:          10 #deg/s^2
 
   #Tolerance checking  
-  start_speed_tolerance:    0.1 #m/s
-  start_position_tolerance: 0.02 #m
+  start_speed_tolerance:    0.05 #m/s
+  start_position_tolerance: 0.05 #m
 
   offset:                   [0, 0, 0] #[m, m, m]
         

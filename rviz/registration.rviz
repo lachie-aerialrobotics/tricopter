@@ -6,7 +6,6 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /PoseArray1
         - /PointCloud25
         - /TF1
         - /TF1/Frames1
@@ -192,7 +191,7 @@ Visualization Manager:
       Topic: /damage_poses
       Unreliable: false
       Value: true
-    - Alpha: 0.10000000149011612
+    - Alpha: 0.30000001192092896
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
         Max Value: 10
@@ -213,7 +212,7 @@ Visualization Manager:
       Queue Size: 1
       Selectable: true
       Size (Pixels): 3
-      Size (m): 0.004999999888241291
+      Size (m): 0.009999999776482582
       Style: Flat Squares
       Topic: /map
       Unreliable: false
@@ -424,7 +423,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 13.443465232849121
+      Distance: 14.611166954040527
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -440,9 +439,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5897965431213379
+      Pitch: 0.4397965967655182
       Target Frame: <Fixed Frame>
-      Yaw: 6.278159141540527
+      Yaw: 5.903154373168945
     Saved: ~
 Window Geometry:
   Displays:
@@ -460,5 +459,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 2818
-  X: 235
-  Y: 54
+  X: 693
+  Y: 79

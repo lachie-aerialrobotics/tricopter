@@ -63,7 +63,6 @@ class printStateMachine(object):
         self.acceleration = TwistStamped()
         self.acceleration.header.frame_id = "map"
 
-        self.mask = 4
 
         # initiate state machine model with states and transitions listed above
         self.machine = Machine(model=self, states=self.states, transitions=self.transitions, initial = 'Ground')
@@ -77,15 +76,11 @@ class printStateMachine(object):
             frequency=self.rate, max_vel=self.max_vel_move, max_acc=self.max_acc_move, 
             max_yawrate=self.max_yawrate, max_yawrate_dot=self.max_yawrate_dot)
 
-        # publishers to geometric controller
-        self.geo_pose_pub = rospy.Publisher(
-            'reference/flatsetpoint', FlatTarget, queue_size=1, tcp_nodelay=True)
-        self.geo_yaw_pub = rospy.Publisher(
-            'reference/yaw', Float32, queue_size=1, tcp_nodelay=True)
-
         # publisher for on-board position controller
         self.sp_position_pub = rospy.Publisher(
-            '/mavros/setpoint_position/local', PoseStamped, queue_size=1, tcp_nodelay=True)
+            '/setpoint/pose', PoseStamped, queue_size=1, tcp_nodelay=True)
+        self.sp_vel_pub = rospy.Publisher(
+            '/setpoint/vel', TwistStamped, queue_size=1, tcp_nodelay=True)
 
         # publish current state for debugging
         self.pub_drone_state = rospy.Publisher(
@@ -113,6 +108,10 @@ class printStateMachine(object):
         rospy.wait_for_message('/mavros/state', State)
         rospy.wait_for_message('/mavros/extended_state', ExtendedState)
         rospy.wait_for_message('/mavros/local_position/pose', PoseStamped)
+        rospy.wait_for_service('fetch_poses')
+        rospy.wait_for_service('get_transformed_trajectory')
+        rospy.wait_for_service('get_TOPPRA_trajectory')
+        rospy.wait_for_service('get_drone_trajectory')
         
         # timer callback to send setpoints at a reasonable rate    
         sp_timer = rospy.Timer(rospy.Duration(1.0/self.rate), self._timer_cb, reset=True)
@@ -181,37 +180,40 @@ class printStateMachine(object):
     def during_Home(self):
         self.tooltip_state = "HOME"
         self.pose = self.home_pose
-        self.mask = 4
+        self.velocity.twist.linear = Vector3(0,0,0)
+        self.velocity.twist.angular = Vector3(0,0,0)
 
     def during_Takeoff(self):
         self.tooltip_state = "HOME"
-        self.mask = 4
+        self.velocity.twist.angular = Vector3(0,0,0)
         #increase target z to deined loiter height
         if self.pose.pose.position.z < self.takeoff_hgt:
             self.pose.pose.position.z += self.tol_speed / self.rate
+            self.velocity.twist.linear = Vector3(0,0,self.tol_speed)
         else: #when target has reached loiter height and drone knows its flying, move to next state 
             self.pose.pose.position.z = self.takeoff_hgt
+            self.velocity.twist.linear = Vector3(0,0,0)
             if self.mavros_ext_state.landed_state == 2:
                 self.goToHome()
 
     def during_Move(self):
         self.tooltip_state = "HOME"
         self.pose, self.velocity, self.acceleration, complete = self.tH_move.follow_transition_trajectory()
-        self.mask = 2
         if complete:
             self.moveCompletionTransition()
 
     def during_TolCheck(self):
-        self.tooltip_state = "HOME"
-        self.mask = 4
+        # self.tooltip_state = "HOME"
         self.pose = self.print_start_pose
+        self.velocity.twist.linear = Vector3(0,0,0)
+        self.velocity.twist.angular = Vector3(0,0,0)
+        # tolerances_satisfied = True
         tolerances_satisfied = tolerance_checker(self.local_pose, self.local_velocity, self.print_start_pose, self.pos_tol, self.vel_tol)
         if tolerances_satisfied:
             self.startPrint()
 
     def during_Print(self):
         self.tooltip_state = "STAB_6DOF"
-        self.mask = 2
         self.pose, self.velocity, self.acceleration, self.tooltip_pose, self.tooltip_twist, self.tooltip_accel, complete = self.tH_print.follow_print_trajectory()
         if complete:
             self.layer += 1
@@ -219,9 +221,11 @@ class printStateMachine(object):
 
     def during_Landing(self):
         self.tooltip_state = "HOME"
+        self.velocity.twist.angular = Vector3(0,0,0)
         #reduce height of z setpoint until altitude is zero
         if self.pose.pose.position.z > 0 and not (self.mavros_ext_state.landed_state == 1):
             self.pose.pose.position.z += -self.tol_speed / self.rate
+            self.velocity.twist.linear = Vector3(0,0,-self.tol_speed)
         else:
         #make double sure the drone is on the ground by calling the mavros landing service
             call_landing_service()
@@ -230,6 +234,7 @@ class printStateMachine(object):
     def during_Manual(self):
         # If flying -> goto home position
         self.pose = self.local_pose
+        self.velocity = self.local_velocity
         self.tooltip_state = "STAB_3DOF"
         if self.mavros_ext_state.landed_state == 1:
             self.switchToGround()
@@ -239,6 +244,7 @@ class printStateMachine(object):
     def during_Ground(self):
         # if landed -> takeoff. 
         self.pose = self.local_pose
+        self.velocity = self.local_velocity
         self.tooltip_state = "HOME"
         if self.mavros_state.armed:
             self.tooltip_state = "HOME"
@@ -249,7 +255,7 @@ class printStateMachine(object):
                 self.startTakeoff()
                
     def during_always(self): #this callback always runs to check if not in offboard mode
-        print(str(self.state))
+        # print(str(self.state))
         if self.mavros_state.mode != "OFFBOARD" and not (self.state == 'Manual' or self.state == 'Ground'):
                 self.manualTakeover()
 
@@ -264,12 +270,11 @@ class printStateMachine(object):
         self.tooltip_pose.header.stamp = rospy.Time.now()
         self.tooltip_twist.header.stamp = rospy.Time.now()
         self.pose.header.stamp = rospy.Time.now()
+        self.velocity.header.stamp = rospy.Time.now()
 
-        self.target, self.yaw = flat_target_msg_conversion(self.mask, self.pose, self.velocity, self.acceleration)
-        self.geo_pose_pub.publish(self.target)
-        self.geo_yaw_pub.publish(Float32(self.yaw))
 
         self.sp_position_pub.publish(self.pose)
+        self.sp_vel_pub.publish(self.velocity)
 
         self.pub_drone_state.publish(String(str(self.state)))
 

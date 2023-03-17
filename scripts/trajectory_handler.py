@@ -164,8 +164,10 @@ class trajectoryHandler:
         acceleration = TwistStamped() 
         pose.header.stamp = rospy.Time.now()
         pose.header.frame_id = trajectory.header.frame_id
-        velocity.header = pose.header
-        acceleration.header = pose.header
+        velocity.header.stamp = rospy.Time.now()
+        velocity.header.frame_id = trajectory.header.frame_id
+        acceleration.header.stamp = rospy.Time.now()
+        acceleration.header.frame_id = trajectory.header.frame_id
         pose.pose.position = trajectory.points[point_num].transforms[0].translation
         pose.pose.orientation = trajectory.points[point_num].transforms[0].rotation
         velocity.twist = trajectory.points[point_num].velocities[0]
@@ -174,7 +176,7 @@ class trajectoryHandler:
 
     def _fetch_waypoints_from_yaml(self, layer_number):
         # get poses from file
-        rospy.wait_for_service('fetch_poses')
+        # rospy.wait_for_service('fetch_poses')
         get_poses = rospy.ServiceProxy('fetch_poses', fetchPoses)
         request = fetchPosesRequest()
         request.prefix = self.waypoint_prefix
@@ -185,7 +187,7 @@ class trajectoryHandler:
 
     def _transform_trajectory(self, poses):
         #transform to world coordinates system
-        rospy.wait_for_service('get_transformed_trajectory')
+        # rospy.wait_for_service('get_transformed_trajectory')
         transform_poses = rospy.ServiceProxy('get_transformed_trajectory', transformTrajectory)
         request = transformTrajectoryRequest()
         request.poses = poses
@@ -195,7 +197,7 @@ class trajectoryHandler:
 
     def _TOPPRA_interpolation(self, poses):
         #interpolate with TOPPRA
-        rospy.wait_for_service('get_TOPPRA_trajectory')
+        # rospy.wait_for_service('get_TOPPRA_trajectory')
         get_traj = rospy.ServiceProxy('get_TOPPRA_trajectory', TOPPRATrajectory)
         request = TOPPRATrajectoryRequest()
         request.frequency = self.frequency
@@ -209,7 +211,7 @@ class trajectoryHandler:
 
     def _offset_drone_trajectory(self, trajectory):
         #get offset drone trajectory
-        rospy.wait_for_service('get_drone_trajectory')
+        # rospy.wait_for_service('get_drone_trajectory')
         get_traj = rospy.ServiceProxy('get_drone_trajectory', droneTrajectory)
         request = droneTrajectoryRequest()
         request.drone_body_frame_id = self.drone_frame_id

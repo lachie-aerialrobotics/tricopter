@@ -25,16 +25,19 @@
     </include>
 
     <!-- CONTROLLER -->
-    <!-- <include file="$(find tricopter)/launch/flight_controller/geometric_controller.launch"/> -->
+    <node name="controller" pkg="tricopter" type="trajectory_controller.py" required="true" output="screen"/>
 
     <!-- MANIPULATOR -->
     <include file="$(find delta_2)/launch/stabilise.launch">
         <arg name="model_name" value="$(arg vehicle_name)"/>
         <arg name="sim" value="true"/>
     </include>
+    <!-- <node name="mode_switch" pkg="delta_2" type="mode_switch.py" required="true" output="screen"/> -->
 
     <!-- TRAJECTORY -->
-    <rosparam file="$(find tricopter)/cfg/forward_backwards.yaml" />
+    <!-- <rosparam file="$(find tricopter)/cfg/forward_backwards.yaml" /> -->
+    <!-- <rosparam file="$(find tricopter)/cfg/laminiscate_points.yaml" /> -->
+    <rosparam file="$(find tricopter)/cfg/cylinder_points.yaml" />
     <rosparam file="$(find tricopter)/cfg/print_config.yaml" />
     <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="0 0 0.5 1.570796 0 1.570796 map printing_plane" />
     <node name="trajectory_services" pkg="tricopter" type="trajectory_services.py" required="true" output="screen"/> 

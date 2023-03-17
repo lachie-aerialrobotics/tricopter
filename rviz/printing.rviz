@@ -15,6 +15,8 @@ Panels:
         - /Odometry1
         - /Odometry1/Shape1
         - /PointCloud21
+        - /TwistStamped3
+        - /TwistStamped3/Status1
       Splitter Ratio: 0.5
     Tree Height: 1027
   - Class: rviz/Selection
@@ -117,37 +119,23 @@ Visualization Manager:
           Value: true
         base_link_frd:
           Value: false
-        camera_init:
-          Value: false
         map:
           Value: true
         map_ned:
           Value: false
-        mocap:
-          Value: true
         odom:
           Value: false
         odom_ned:
           Value: false
-        os_imu:
-          Value: false
-        os_lidar:
-          Value: true
-        os_sensor:
-          Value: false
         platform:
           Value: true
-        platform_tracked:
-          Value: false
+        printing_plane:
+          Value: true
         stewart_base:
           Value: false
         tooltip:
           Value: true
         tooltip_init:
-          Value: false
-        tooltip_tracked:
-          Value: false
-        tricopter_tracked:
           Value: false
         workspace_center:
           Value: false
@@ -159,33 +147,20 @@ Visualization Manager:
       Show Names: true
       Tree:
         map:
-          camera_init:
-            odom:
-              odom_ned:
-                {}
-            os_sensor:
-              base_link:
-                base_link_frd:
+          base_link:
+            base_link_frd:
+              {}
+            stewart_base:
+              platform:
+                tooltip:
                   {}
-                stewart_base:
-                  platform:
-                    tooltip:
-                      {}
-                  workspace_center:
-                    tooltip_init:
-                      {}
-              os_imu:
-                {}
-              os_lidar:
-                {}
+              workspace_center:
+                tooltip_init:
+                  {}
           map_ned:
             {}
-          mocap:
-            platform_tracked:
-              tooltip_tracked:
-                {}
-            tricopter_tracked:
-              {}
+          printing_plane:
+            {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -409,6 +384,37 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: false
+    - Alpha: 1
+      Angular Arrow Scale: 0
+      Angular Color: 204; 204; 51
+      Arrow Width: 0.5
+      Class: rviz/TwistStamped
+      Enabled: true
+      Hide Small Values: true
+      History Length: 1
+      Linear Arrow Scale: 10
+      Linear Color: 204; 51; 51
+      Name: TwistStamped
+      Queue Size: 10
+      Topic: /mavros/setpoint_velocity/cmd_vel
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz/Pose
+      Color: 255; 25; 0
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Pose
+      Queue Size: 10
+      Shaft Length: 1
+      Shaft Radius: 0.05000000074505806
+      Shape: Arrow
+      Topic: /setpoint/pose
+      Unreliable: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -437,7 +443,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 12.524003982543945
+      Distance: 4.438437461853027
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -453,9 +459,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5897963047027588
+      Pitch: 0.5297959446907043
       Target Frame: <Fixed Frame>
-      Yaw: 2.9854423999786377
+      Yaw: 2.230443000793457
     Saved: ~
 Window Geometry:
   Displays:
@@ -473,5 +479,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 2335
-  X: 144
-  Y: 87
+  X: 229
+  Y: 403
