@@ -168,7 +168,7 @@ class DamageDetection:
                 pitch = np.arccos(np.dot(normal_xy, normal) / (np.linalg.norm(normal_xy) * np.linalg.norm(normal)))
 
                 # transform into manipulator tooltip frame
-                q = quaternion_from_euler(np.pi/2, pitch, yaw-np.pi/2)
+                q = quaternion_from_euler(np.pi/2, pitch, yaw+np.pi/2)
 
                 normal_pose = Pose()
                 normal_pose.position.x = aligned_model_pc.points[nearest_point_index][0]
