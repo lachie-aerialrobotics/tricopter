@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <launch>
- <rosparam>
+    <rosparam>
         /use_sim_time: true
     </rosparam>
 <node pkg="rosbag" type="play" name="player" output="screen" args="--clock /home/lachie/bags/lo_eval_bag.bag --topics /os_cloud_nodelet/points /mavros/imu/data /vicon/tricopter_tracked/pose /tf_static"/>
