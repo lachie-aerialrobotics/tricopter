@@ -8,10 +8,10 @@
 <node pkg="tf2_ros" type="static_transform_publisher" name="transform_liosam" args="-0.13 0 -0.069 0 0 0 1 os_sensor_lio_sam base_link_lio_sam" />
 <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="transform_fastlio" args="-0.13 0 -0.069 0 0 0 1 os_sensor base_link_fast_lio" /> -->
 <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="transform_aloam" args="-0.13 0 -0.069 0 0 0 1 aft_mapped base_link_aloam" /> -->
-<!-- <include file="$(find fast_lio)/launch/mapping_ouster64.launch"/> -->
+<include file="$(find fast_lio)/launch/mapping_ouster64.launch"/>
 <!-- <include file="$(find aloam_velodyne)/launch/aloam_velodyne_OS1_64.launch"/> -->
-<include file="$(find lio_sam)/launch/run.launch"/>
+<!-- <include file="$(find lio_sam)/launch/run.launch"/> -->
 <!-- <node name="map_constructor" pkg="tricopter" type="map_constructor.py" required="true" output="screen"/> -->
-<!-- <node pkg="rosbag" type="record" name="rosbag_record" args="-O /home/lachie/bags/liosam_bag_2.bag -a -o $(env HOME)/bags/"/> -->
+<node pkg="rosbag" type="record" name="rosbag_record" args="-O /home/lachie/bags/fastlio_bag.bag -a -o $(env HOME)/bags/"/>
 <!-- <node type="rviz" name="rviz" pkg="rviz" args="-d $(find tricopter)/rviz/odom_testing.rviz"/> -->
 </launch>
