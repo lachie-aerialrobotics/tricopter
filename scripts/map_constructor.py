@@ -31,7 +31,8 @@ class MapConstructor:
         self.pcd_new = msg
 
     def timer_cb(self, event):
-        self.pcd = self.pcd + convertCloudFromRosToOpen3d(self.pcd_new)
+        pcd_o3d_new = convertCloudFromRosToOpen3d(self.pcd_new)
+        self.pcd = self.pcd + pcd_o3d_new.translate((0,0,0.25))
         self.pcd = self.pcd.voxel_down_sample(voxel_size=0.005)
         # cl, ind = self.pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=0.1)
         # self.pcd = self.pcd.select_by_index(ind)
