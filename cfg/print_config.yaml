@@ -9,8 +9,8 @@ print_planner:
   print_vel:                0.1 #m/s
   print_max_accel:          1000000 #m/s^2
   
-  transition_vel:           0.1 #m/s
-  transition_max_accel:     0.5 #m/s^2
+  transition_vel:           0.15 #m/s
+  transition_max_accel:     0.05 #m/s^2
   
   max_yawrate:              10 #deg/s
   max_yawrate_dot:          10 #deg/s^2
