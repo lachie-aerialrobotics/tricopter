@@ -7,7 +7,7 @@
         <arg name="relocalize" default = "false"/>
     </include> -->
 
-    <include file="$(find tricopter)/launch/vicon/vicon_localization.launch">
+    <include file="$(find tricopter)/launch/vicon/vicon_localization.launch"/>
     
     <rosparam>
         /mavros/vision_pose/tf/listen: true
