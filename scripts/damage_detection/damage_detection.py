@@ -108,7 +108,7 @@ class DamageDetection:
 
         # publish visualisation of transformed pointcloud (and write to file)
         aligned_model_pc = copy.deepcopy(init_model_pc).transform(transformation)
-        o3d.io.write_point_cloud(os.path.abspath('../pointclouds/model_aligned.pcd'), aligned_model_pc)
+        o3d.io.write_point_cloud('/home/lachie/aam_ws/src/tricopter/scans/aligned_model_pc.pcd', aligned_model_pc)
         self.pub_result.publish(o3d_to_pc2(aligned_model_pc, header))
         rospy.loginfo("Alignment done!")
         
@@ -117,9 +117,9 @@ class DamageDetection:
         max = aligned_model_pc.get_max_bound()
         bbox = o3d.geometry.AxisAlignedBoundingBox(min_bound=min, max_bound=max)
         map_pc_cropped = copy.deepcopy(map_pc).crop(bbox)
-        cl, ind = map_pc.remove_statistical_outlier(nb_neighbors=20, std_ratio=1.0)
-        map_pc = map_pc.select_by_index(ind)
-        o3d.io.write_point_cloud(os.path.abspath('../pointclouds/map_cropped.pcd'), map_pc_cropped)
+        cl, ind = map_pc_cropped.remove_statistical_outlier(nb_neighbors=20, std_ratio=1.0)
+        map_pc_cropped = map_pc_cropped.select_by_index(ind)
+        o3d.io.write_point_cloud('/home/lachie/aam_ws/src/tricopter/scans/cropped_map_pc.pcd', map_pc_cropped)
         self.pub_cropped_map.publish(o3d_to_pc2(map_pc_cropped, header))
 
         # find distance from map points to undamaged model, keep any above a certain distance threshold
@@ -131,6 +131,7 @@ class DamageDetection:
         outlier_pcd = map_pc_cropped.select_by_index(outliers)
 
         # publish 'damaged' points
+        o3d.io.write_point_cloud('/home/lachie/aam_ws/src/tricopter/scans/damaged_points.pcd', outlier_pcd)
         self.pub_damage.publish(o3d_to_pc2(outlier_pcd, header))
 
         # run DBSCAN clustering algorithm

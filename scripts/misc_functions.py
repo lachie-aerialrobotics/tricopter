@@ -2,27 +2,26 @@
 
 import rospy
 import numpy as np
-from controller_msgs.msg import FlatTarget
 from geometry_msgs.msg import PoseStamped, TwistStamped
 from mavros_msgs.srv import CommandTOL
 from tf.transformations import euler_from_quaternion
 
 #function to convert position/velocity/acceleration references to a FlatTarget() message for geometric controller
-def flat_target_msg_conversion(mask, pose=PoseStamped(), velocity=TwistStamped(), acceleration=TwistStamped()):
-    # uint8 IGNORE_SNAP = 1	- Position Velocity Acceleration Jerk Reference
-    # uint8 IGNORE_SNAP_JERK = 2	- Position Velocity Acceleration Reference
-    # uint8 IGNORE_SNAP_JERK_ACC = 4	- Position Reference
-    target = FlatTarget()
-    target.header = pose.header
-    target.type_mask = mask
-    target.position = pose.pose.position
-    target.velocity = velocity.twist.linear
-    target.acceleration = acceleration.twist.linear
-    (roll, pitch, yaw) = euler_from_quaternion([pose.pose.orientation.x,
-                                                pose.pose.orientation.y,
-                                                pose.pose.orientation.z,
-                                                pose.pose.orientation.w])                                           
-    return target, yaw
+# def flat_target_msg_conversion(mask, pose=PoseStamped(), velocity=TwistStamped(), acceleration=TwistStamped()):
+#     # uint8 IGNORE_SNAP = 1	- Position Velocity Acceleration Jerk Reference
+#     # uint8 IGNORE_SNAP_JERK = 2	- Position Velocity Acceleration Reference
+#     # uint8 IGNORE_SNAP_JERK_ACC = 4	- Position Reference
+#     target = FlatTarget()
+#     target.header = pose.header
+#     target.type_mask = mask
+#     target.position = pose.pose.position
+#     target.velocity = velocity.twist.linear
+#     target.acceleration = acceleration.twist.linear
+#     (roll, pitch, yaw) = euler_from_quaternion([pose.pose.orientation.x,
+#                                                 pose.pose.orientation.y,
+#                                                 pose.pose.orientation.z,
+#                                                 pose.pose.orientation.w])                                           
+#     return target, yaw
 
 #function outputs true if velocity and position errors are below a defined threshold
 def tolerance_checker(pose_msg, vel_msg, target_pose, pos_tol, vel_tol):

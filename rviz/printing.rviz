@@ -16,7 +16,6 @@ Panels:
         - /Odometry1/Shape1
         - /PointCloud21
         - /TwistStamped3
-        - /TwistStamped3/Status1
       Splitter Ratio: 0.5
     Tree Height: 1027
   - Class: rviz/Selection
@@ -147,16 +146,6 @@ Visualization Manager:
       Show Names: true
       Tree:
         map:
-          base_link:
-            base_link_frd:
-              {}
-            stewart_base:
-              platform:
-                tooltip:
-                  {}
-              workspace_center:
-                tooltip_init:
-                  {}
           map_ned:
             {}
           printing_plane:
@@ -480,4 +469,4 @@ Window Geometry:
     collapsed: true
   Width: 2335
   X: 229
-  Y: 403
+  Y: 329

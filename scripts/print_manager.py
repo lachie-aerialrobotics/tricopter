@@ -2,10 +2,9 @@
 
 import rospy
 
-from std_msgs.msg import Float32, String
-from controller_msgs.msg import FlatTarget
+from std_msgs.msg import String
 from geometry_msgs.msg import PoseStamped, TwistStamped, Vector3, Quaternion
-from mavros_msgs.msg import State, ExtendedState, PositionTarget
+from mavros_msgs.msg import State, ExtendedState
 from tricopter.srv import *
 from transitions import Machine
 from trajectory_handler import *
@@ -45,13 +44,11 @@ class printStateMachine(object):
         self.offset = rospy.get_param('/print_planner/offset')
 
         # initial values
-        self.target = FlatTarget()
-        self.target.header.frame_id = "map"
+        # self.target = FlatTarget()
+        # self.target.header.frame_id = "map"
         self.yaw = 0.0
         self.tooltip_state = "RETRACTED"
         self.tooltip_pose = PoseStamped()
-        self.tooltip_pose.pose.position = Vector3(0,0,0)
-        self.tooltip_pose.pose.orientation = Quaternion(0,0,0,1)
         self.tooltip_pose.header.frame_id = "map"
         self.tooltip_twist = TwistStamped()
         self.tooltip_twist.header.frame_id = "map"
@@ -135,6 +132,9 @@ class printStateMachine(object):
             ", y=" + str(self.pad_pose.pose.position.y) + ".")
 
     def on_arriveAtHome(self):
+        print("HOME")
+        print("pose-------------")
+        print(self.pose)
         if self.layer < rospy.get_param(str(self.tH_print.waypoint_prefix) + '/n_layers'):
             rospy.loginfo("Generating trajectory for next layer")
             self.tH_print.generate_print_layer(self.layer)
@@ -147,14 +147,20 @@ class printStateMachine(object):
         rospy.loginfo("Landing initiated")
    
     def on_goToPad(self):
+        print("pose-------------")
+        print(self.pose)
+        print("pad--------------")
+        print(self.pad_pose)
         rospy.loginfo("Generating trajectory to pad")
-        self.tH_move.generate_transition(self.local_pose, self.pad_pose)  
+        self.tH_move.generate_transition(self.pose, self.pad_pose)  
         self.moveCompletionTransition = self.startLanding
 
     def on_goToPrint(self): 
         rospy.loginfo("Generating trajectory to beginning of print")  
+        print("pose-------------")
+        print(self.pose)
         self.print_start_pose = self.tH_print.get_print_start_pose()
-        self.tH_move.generate_transition(self.local_pose, self.print_start_pose)
+        self.tH_move.generate_transition(self.pose, self.print_start_pose)
         self.moveCompletionTransition = self.arriveAtPrint
 
     def on_startPrint(self):
@@ -162,10 +168,12 @@ class printStateMachine(object):
 
     def on_goToHome(self):
         rospy.loginfo("Generating trajectory to loiter position")
+        print("pose-------------")
+        print(self.pose)
         # determine loiter point above print
         if self.layer < rospy.get_param(str(self.tH_print.waypoint_prefix) + '/n_layers'):
             self.home_pose = self.tH_print.get_loiter_point(self.layer, self.offset)
-        self.tH_move.generate_transition(self.local_pose, self.home_pose)
+        self.tH_move.generate_transition(self.pose, self.home_pose)
         self.moveCompletionTransition = self.arriveAtHome
 
     def on_arriveAtPrint(self):
@@ -213,7 +221,7 @@ class printStateMachine(object):
             self.startPrint()
 
     def during_Print(self):
-        self.tooltip_state = "STAB_6DOF"
+        self.tooltip_state = "STAB_delta"
         self.pose, self.velocity, self.acceleration, self.tooltip_pose, self.tooltip_twist, self.tooltip_accel, complete = self.tH_print.follow_print_trajectory()
         if complete:
             self.layer += 1
@@ -266,12 +274,10 @@ class printStateMachine(object):
         self.during_always()
         exec("self.during_" + str(self.state) + "()") #execute the function name corresponding to the current state
         # update time stamps and publish current values of drone and manipulator commands
-        self.target.header.stamp = rospy.Time.now()
         self.tooltip_pose.header.stamp = rospy.Time.now()
         self.tooltip_twist.header.stamp = rospy.Time.now()
         self.pose.header.stamp = rospy.Time.now()
         self.velocity.header.stamp = rospy.Time.now()
-
 
         self.sp_position_pub.publish(self.pose)
         self.sp_vel_pub.publish(self.velocity)

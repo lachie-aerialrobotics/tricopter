@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 import rospy
+from std_msgs.msg import Header
 from geometry_msgs.msg import Pose, Twist, PoseArray, PoseStamped, TwistStamped, Transform, Vector3
 from nav_msgs.msg import Path
 from trajectory_msgs.msg import MultiDOFJointTrajectory, MultiDOFJointTrajectoryPoint
@@ -23,10 +24,18 @@ class trajectoryHandler:
 
         self._point_count = 0    
         self._drone_trajectory = MultiDOFJointTrajectory()
+        self._drone_trajectory.header.frame_id = self.world_frame_id
         self._tooltip_trajectory = MultiDOFJointTrajectory()
         self._transition_trajectory = MultiDOFJointTrajectory()
         self.loiter_point = PoseStamped()
         self.loiter_point.header.frame_id = self.world_frame_id
+
+        header = Header()
+        header.stamp = rospy.Time.now()
+        header.frame_id = self.world_frame_id
+        self.drone_pose = PoseStamped(header=header)
+        self.drone_velocity = TwistStamped(header=header)
+        self.drone_acceleration = TwistStamped(header=header)
 
         self._n_layers = rospy.get_param(str(self.waypoint_prefix)+'/n_layers')
 
@@ -43,17 +52,13 @@ class trajectoryHandler:
 
     def follow_print_trajectory(self):
         header = self._drone_trajectory.header
-
-        drone_pose = PoseStamped(header=header)
-        drone_velocity = TwistStamped(header=header)
-        drone_acceleration = TwistStamped(header=header)
         
         tooltip_pose = PoseStamped(header=header)
         tooltip_velocity = TwistStamped(header=header)
         tooltip_acceleration = TwistStamped(header=header)
 
         if self._point_count < len(self._drone_trajectory.points):   
-            drone_pose, drone_velocity, drone_acceleration = self._read_trajectory(self._drone_trajectory, self._point_count)
+            self.drone_pose, self.drone_velocity, self.drone_acceleration = self._read_trajectory(self._drone_trajectory, self._point_count)
             tooltip_pose, tooltip_velocity, tooltip_acceleration = self._read_trajectory(self._tooltip_trajectory, self._point_count)
             self._point_count += 1
             complete = False
@@ -61,23 +66,17 @@ class trajectoryHandler:
             complete = True
             self._point_count = 0
             
-        return drone_pose, drone_velocity, drone_acceleration, tooltip_pose, tooltip_velocity, tooltip_acceleration, complete
+        return self.drone_pose, self.drone_velocity, self.drone_acceleration, tooltip_pose, tooltip_velocity, tooltip_acceleration, complete
 
     def follow_transition_trajectory(self):
-        header = self._drone_trajectory.header
-
-        drone_pose = PoseStamped(header=header)
-        drone_velocity = TwistStamped(header=header)
-        drone_acceleration = TwistStamped(header=header)
-
         if self._point_count < len(self._transition_trajectory.points):   
-            drone_pose, drone_velocity, drone_acceleration = self._read_trajectory(self._transition_trajectory, self._point_count)
+            self.drone_pose, self.drone_velocity, self.drone_acceleration = self._read_trajectory(self._transition_trajectory, self._point_count)
             self._point_count += 1
             complete = False
         else: 
             complete = True
             self._point_count = 0
-        return drone_pose, drone_velocity, drone_acceleration, complete
+        return self.drone_pose, self.drone_velocity, self.drone_acceleration, complete
 
     def get_print_start_pose(self):
         header = self._drone_trajectory.header
@@ -89,19 +88,20 @@ class trajectoryHandler:
 
     def generate_transition(self, start_pose, end_pose):
         self._point_count = 0 #ensure point count is reset in case last trajectory was interrupted
-        if start_pose.header.frame_id != end_pose.header.frame_id:
-            rospy.logerr("Cannot interpolate between poses in different reference frames.")
-        else:
-            poses = PoseArray()
-            poses.header.stamp = rospy.Time.now()
-            poses.header.frame_id = start_pose.header.frame_id
-            poses.poses.append(start_pose.pose)
-            poses.poses.append(end_pose.pose)        
-            self._transition_trajectory = self._TOPPRA_interpolation(poses)
-            # tip_trajectory = self._offset_tip_trajectory(self._transition_trajectory)
-            publish_viz_trajectory(self._transition_trajectory, self._pub_dronetransitionpath_viz)
-            # publish_viz_trajectory(tip_trajectory, self._pub_tooltransitionpath_viz)
-            # return trajectory
+        poses = PoseArray()
+        poses.header.stamp = rospy.Time.now()
+        poses.header.frame_id = start_pose.header.frame_id
+        if start_pose.pose != end_pose.pose:
+            if start_pose.header.frame_id != end_pose.header.frame_id:
+                rospy.logerr("Cannot interpolate between poses in different reference frames.")
+            else:
+                poses.poses.append(start_pose.pose)
+                poses.poses.append(end_pose.pose)        
+                self._transition_trajectory = self._TOPPRA_interpolation(poses)
+                # tip_trajectory = self._offset_tip_trajectory(self._transition_trajectory)
+                publish_viz_trajectory(self._transition_trajectory, self._pub_dronetransitionpath_viz)
+                # publish_viz_trajectory(tip_trajectory, self._pub_tooltransitionpath_viz)
+                # return trajectory
 
     def generate_print_layer(self, layer_number):
         self._point_count = 0 #ensure point count is reset in case last trajectory was interrupted

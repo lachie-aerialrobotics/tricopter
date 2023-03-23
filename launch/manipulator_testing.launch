@@ -22,7 +22,7 @@
     </rosparam>
 
     <!-- CONTROLLER -->
-    <!-- <include file="$(find tricopter)/launch/flight_controller/geometric_controller.launch"/> -->
+    <!-- <include file="$(find tricopter)/launch/flight_controller/ethz_pid_controller.launch"/> -->
     
     <include file="$(find tricopter)/launch/vicon/vicon_groundtruth.launch"/>
 
