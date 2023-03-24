@@ -286,7 +286,7 @@ class printStateMachine(object):
 
         self.pub_tooltip_state.publish(String(self.tooltip_state))
         self.pub_tooltip_pose.publish(self.tooltip_pose)
-        # self.pub_tooltip_twist.publish(self.tooltip_twist)
+        self.pub_tooltip_twist.publish(self.tooltip_twist)
 
     #callbacks save topics to current object for use later
     def _state_cb(self, state_msg):
