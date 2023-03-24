@@ -221,7 +221,7 @@ class printStateMachine(object):
             self.startPrint()
 
     def during_Print(self):
-        self.tooltip_state = "STAB_delta"
+        self.tooltip_state = "STAB_6DOF"
         self.pose, self.velocity, self.acceleration, self.tooltip_pose, self.tooltip_twist, self.tooltip_accel, complete = self.tH_print.follow_print_trajectory()
         if complete:
             self.layer += 1
