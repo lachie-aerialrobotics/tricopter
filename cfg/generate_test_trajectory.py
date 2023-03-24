@@ -31,11 +31,12 @@ f.write('waypoints:\n\n')
 f.write('  n_layers: '+str(n_layers)+'\n\n')
 for i in range(n_layers):
     f.write('  layer'+str(i)+':\n')
-    z = layer_height * i
+    
     for j in range(n_points+1):
         theta = theta_inc * j
         x = radius * np.sin(theta)
         y = radius * np.cos(theta)*np.sin(theta)
+        z = radius * np.cos(theta)*np.sin(theta)
         pose = [x, y, z, 0.0, 0.0, 0.0]
         f.write('    point'+str(j)+': '+str(pose)+'\n')
     f.write('\n')
