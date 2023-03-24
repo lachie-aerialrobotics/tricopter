@@ -6,12 +6,13 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /PointCloud22
         - /PointCloud25
         - /TF1
         - /TF1/Frames1
         - /Odometry1
       Splitter Ratio: 0.5
-    Tree Height: 496
+    Tree Height: 933
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -60,7 +61,7 @@ Visualization Manager:
       Marker Topic: /damage_markers
       Name: MarkerArray
       Namespaces:
-        {}
+        "": true
       Queue Size: 0
       Value: true
     - Alpha: 1
@@ -195,8 +196,8 @@ Visualization Manager:
     - Alpha: 0.30000001192092896
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 3.1917977333068848
-        Min Value: -2.084977388381958
+        Max Value: 5.059506893157959
+        Min Value: -3.9245147705078125
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -265,17 +266,43 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        base_link_lio_sam:
+        base_link:
+          Value: true
+        base_link_frd:
           Value: true
         camera_init:
           Value: false
         map:
           Value: false
+        map_ned:
+          Value: true
         mocap:
+          Value: true
+        odom:
+          Value: true
+        odom_ned:
+          Value: true
+        os_imu:
+          Value: true
+        os_lidar:
           Value: true
         os_sensor:
           Value: true
-        os_sensor_lio_sam:
+        platform:
+          Value: true
+        platform_tracked:
+          Value: true
+        stewart_base:
+          Value: true
+        tooltip:
+          Value: true
+        tooltip_init:
+          Value: true
+        tooltip_tracked:
+          Value: true
+        tricopter_tracked:
+          Value: true
+        workspace_center:
           Value: true
       Marker Alpha: 1
       Marker Scale: 1
@@ -286,10 +313,29 @@ Visualization Manager:
       Tree:
         map:
           camera_init:
+            odom:
+              odom_ned:
+                {}
             os_sensor:
-              {}
-          mocap:
+              base_link:
+                base_link_frd:
+                  {}
+                stewart_base:
+                  workspace_center:
+                    tooltip_init:
+                      {}
+              os_imu:
+                {}
+              os_lidar:
+                {}
+          map_ned:
             {}
+          mocap:
+            platform_tracked:
+              tooltip_tracked:
+                {}
+            tricopter_tracked:
+              {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -439,7 +485,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 14.337358474731445
+      Distance: 5.084955215454102
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -455,17 +501,17 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5747972130775452
+      Pitch: 0.21479704976081848
       Target Frame: <Fixed Frame>
-      Yaw: 5.858148574829102
+      Yaw: 5.173149108886719
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1006
+  Height: 1443
   Hide Left Dock: false
   Hide Right Dock: true
-  QMainWindow State: 000000ff00000000fd0000000400000000000001f7000002e8fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b000000b000fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000b0fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000006e000002e80000018200fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f000005bdfc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d000005bd0000013200fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000007800000005efc0100000002fb0000000800540069006d0065010000000000000780000006dc00fffffffb0000000800540069006d006501000000000000045000000000000000000000057d000002e800000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000400000000000001f70000049dfc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b000000b000fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000b0fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000006e0000049d0000018200fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f000005bdfc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d000005bd0000013200fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000009ae0000005efc0100000002fb0000000800540069006d00650100000000000009ae000006dc00fffffffb0000000800540069006d00650100000000000004500000000000000000000007ab0000049d00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -474,6 +520,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: true
-  Width: 1920
-  X: 3840
-  Y: 0
+  Width: 2478
+  X: 679
+  Y: 153
