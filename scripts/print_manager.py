@@ -221,7 +221,7 @@ class printStateMachine(object):
             self.startPrint()
 
     def during_Print(self):
-        self.tooltip_state = "STAB_6DOF"
+        self.tooltip_state = "STAB_delta"
         self.pose, self.velocity, self.acceleration, self.tooltip_pose, self.tooltip_twist, self.tooltip_accel, complete = self.tH_print.follow_print_trajectory()
         if complete:
             self.layer += 1
@@ -286,7 +286,7 @@ class printStateMachine(object):
 
         self.pub_tooltip_state.publish(String(self.tooltip_state))
         self.pub_tooltip_pose.publish(self.tooltip_pose)
-        # self.pub_tooltip_twist.publish(self.tooltip_twist)
+        self.pub_tooltip_twist.publish(self.tooltip_twist)
 
     #callbacks save topics to current object for use later
     def _state_cb(self, state_msg):
