@@ -4,9 +4,9 @@ import rospy
 import numpy as np
 
 n_layers = 5
-n_points = 48
-r1 = 0.3
-r2 = 0.33
+n_points = 40
+r1 = 0.2
+r2 = 0.25
 layer_height = 0.03
 theta_inc = 2 * np.pi / n_points
 n=0
