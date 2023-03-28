@@ -3,7 +3,7 @@
     <arg name="bag" default = "true"/>
 
     <include file="$(find tricopter)/launch/lidar/lidar_mapping.launch">
-        <arg name="lidar_type" default = "ouster"/>
+        <arg name="lidar_type" default = "mid360"/>
         <arg name="relocalize" default = "false"/>
     </include>
     

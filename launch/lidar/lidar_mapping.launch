@@ -69,4 +69,7 @@
             <include file="$(find fast_lio)/launch/mapping_ouster64.launch"/>      
         </group> -->
     </group> 
+    <group if="$(eval lidar_type == 'mid360')">
+        <include file="$(find tricopter)/launch/lidar/mid360_test.launch"/>
+    </group>
 </launch>
