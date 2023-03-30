@@ -13,14 +13,14 @@
         /mavros/vision_pose/tf/listen: true
         /mavros/vision_pose/tf/frame_id: map
         /mavros/vision_pose/tf/child_frame_id: base_link
-        /mavros/vision_pose/tf/rate_limit: 300
+        /mavros/vision_pose/tf/rate_limit: 20
     </rosparam>
     <include file="$(find tricopter)/launch/flight_controller/mavros_node.launch"/>
     <rosparam>
         /mavros/vision_pose/tf/listen: true
         /mavros/vision_pose/tf/frame_id: map
         /mavros/vision_pose/tf/child_frame_id: base_link
-        /mavros/vision_pose/tf/rate_limit: 300
+        /mavros/vision_pose/tf/rate_limit: 20
     </rosparam>
 
     <!-- CONTROLLER -->
@@ -36,8 +36,8 @@
 
      <!-- TRAJECTORY -->
     <!-- <rosparam file="$(find tricopter)/cfg/forward_backwards.yaml" /> -->
-    <!-- <rosparam file="$(find tricopter)/cfg/laminiscate_points.yaml" /> -->
-    <rosparam file="$(find tricopter)/cfg/fake_print_points.yaml" />
+    <rosparam file="$(find tricopter)/cfg/laminiscate_points.yaml" />
+    <!-- <rosparam file="$(find tricopter)/cfg/fake_print_points.yaml" /> -->
     <rosparam file="$(find tricopter)/cfg/print_config.yaml" />
     <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="0 1.5 1.5 1.570796 0 1.91 map printing_plane" />
     <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="0 0.0 1.0 1.570796 0 1.570796 map printing_plane" /> -->
