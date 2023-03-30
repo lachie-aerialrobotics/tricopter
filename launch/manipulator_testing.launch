@@ -2,12 +2,12 @@
 <launch>
     <arg name="bag" default = "true"/>
 
-    <!-- <include file="$(find tricopter)/launch/lidar/lidar_mapping.launch">
+    <include file="$(find tricopter)/launch/lidar/lidar_mapping.launch">
         <arg name="lidar_type" default = "ouster"/>
         <arg name="relocalize" default = "false"/>
-    </include> -->
+    </include>
 
-    <include file="$(find tricopter)/launch/vicon/vicon_localization.launch"/>
+    <!-- <include file="$(find tricopter)/launch/vicon/vicon_localization.launch"/> -->
     
     <rosparam>
         /mavros/vision_pose/tf/listen: true
@@ -24,9 +24,8 @@
     </rosparam>
 
     <!-- CONTROLLER -->
-    <!-- <include file="$(find tricopter)/launch/flight_controller/ethz_pid_controller.launch"/> -->
     
-    <!-- <include file="$(find tricopter)/launch/vicon/vicon_groundtruth.launch"/> -->
+    <include file="$(find tricopter)/launch/vicon/vicon_groundtruth.launch"/>
 
     <node name="controller" pkg="tricopter" type="trajectory_controller.py" required="true" output="screen"/>
 
@@ -39,12 +38,12 @@
     <rosparam file="$(find tricopter)/cfg/laminiscate_points.yaml" />
     <!-- <rosparam file="$(find tricopter)/cfg/fake_print_points.yaml" /> -->
     <rosparam file="$(find tricopter)/cfg/print_config.yaml" />
-    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="0 1.5 1.5 1.570796 0 1.91 map printing_plane" />
-    <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="0 0.0 1.0 1.570796 0 1.570796 map printing_plane" /> -->
+    <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="0 1.5 1.5 1.570796 0 1.91 map printing_plane" /> -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="0 0.0 1.0 1.570796 0 1.570796 map printing_plane" />
     <node name="trajectory_services" pkg="tricopter" type="trajectory_services.py" required="true" output="screen"/> 
     <node name="print_manager" pkg="tricopter" type="print_manager.py" output="screen" respawn="true"/>
 
     <group if="$(arg bag)">
-        <node pkg="rosbag" type="record" name="rosbag_record" args="-o $(env HOME)/bags/ -e '(.*)mavros(.*)' '(.*)vicon(.*)' /usb_cam/image_raw/compressed /Odometry '/platform(.*)' '(.*)tooltip(.*)' '/servo(.*)' /tf /tf_static /printer/state /manipulator/state"/>
+        <node pkg="rosbag" type="record" name="rosbag_record" args="-o $(env HOME)/bags/ -e '(.*)mavros(.*)' '(.*)vicon(.*)' /usb_cam/image_raw/compressed /Odometry '/platform(.*)' '(.*)tooltip(.*)' '/servo(.*)' /tf /tf_static /printer/state /manipulator/state '/setpoint(.*)'"/>
     </group>
 </launch>
