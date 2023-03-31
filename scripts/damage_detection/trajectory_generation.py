@@ -57,6 +57,7 @@ class TrajectoryGeneration:
 
         # get repair pose according to desired index
         repair_pose = self.pose_array.poses[req.damage_index]
+        repair_pose.position.z += 0.2
 
         # get current tooltip pose by tf lookup
         # get tf from drone frame to tooltip frame
