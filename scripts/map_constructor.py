@@ -59,7 +59,7 @@ convert_rgbFloat_to_tuple = lambda rgb_float: convert_rgbUint32_to_tuple(
 )
 
 # Convert the datatype of point cloud from Open3D to ROS PointCloud2 (XYZRGB only)
-def convertCloudFromOpen3dToRos(open3d_cloud, frame_id="odom"):
+def convertCloudFromOpen3dToRos(open3d_cloud, frame_id="map"):
     # Set "header"
     header = Header()
     header.stamp = rospy.Time.now()
