@@ -19,7 +19,7 @@ from tricopter.srv import *
     
 class OffboardSetpoints:
     def __init__(self):
-        self.map_frame = rospy.get_param('/damage_detection/map_frame')
+        self.odom_frame = rospy.get_param('/damage_detection/odom_frame')
         self.trajectory_frequency = rospy.get_param('/trajectory_planner/frequency')
 
         # init publishers and subscribers
@@ -88,13 +88,13 @@ class OffboardSetpoints:
                     # rospy.loginfo('Time: '+str(self.drone_trajectory.points[self.i].time_from_start.to_sec()))
             else:
                 drone_pose = PoseStamped()
-                drone_pose.header.frame_id = self.map_frame
+                drone_pose.header.frame_id = self.odom_frame
                 drone_pose.header.stamp = rospy.Time.now()
                 drone_pose.pose.position = self.drone_trajectory.points[0].transforms[0].translation
                 drone_pose.pose.orientation = self.drone_trajectory.points[0].transforms[0].rotation
 
                 tip_pose = PoseStamped()
-                tip_pose.header.frame_id = self.map_frame
+                tip_pose.header.frame_id = self.odom_frame
                 tip_pose.header.stamp = rospy.Time.now()
                 tip_pose.pose.position = self.tooltip_trajectory.points[0].transforms[0].translation
                 tip_pose.pose.orientation = self.tooltip_trajectory.points[0].transforms[0].rotation

@@ -17,6 +17,7 @@ class DamageDetection:
         # get config values from parameter server
         map_topic_name = rospy.get_param('/damage_detection/map_topic_name')
         self.map_frame = rospy.get_param('/damage_detection/map_frame')
+        self.odom_frame = rospy.get_param('/damage_detection/odom_frame')
         mesh_path = rospy.get_param('/damage_detection/model_dir')
         model_samples = rospy.get_param('/damage_detection/model_samples')
         self.voxel_size = rospy.get_param('/damage_detection/icp_voxel_size')
@@ -154,6 +155,7 @@ class DamageDetection:
 
                 # compute the centroid of the cluster
                 centroid = np.asarray(cluster_pcd.get_center())
+                centroid[2] += 0.2 #huuuuuuge fudge
 
                 # we now have a single point for each identified damaged area
                 # next we compute the closest distance to the model and then calculate normal vector

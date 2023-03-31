@@ -23,7 +23,7 @@
     
     <include file="$(find tricopter)/launch/vicon/vicon_groundtruth.launch"/>
 
-    <node name="controller" pkg="tricopter" type="trajectory_controller.py" required="true" output="screen"/>
+    <!-- <node name="controller" pkg="tricopter" type="trajectory_controller.py" required="true" output="screen"/> -->
 
     <include file="$(find delta_2)/launch/stabilise.launch">
         <arg name="sim" value="false"/>

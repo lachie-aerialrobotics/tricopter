@@ -2,7 +2,8 @@
 <launch>
     <rosparam>
         /damage_detection/map_topic_name: /map
-        /damage_detection/map_frame: camera_init
+        /damage_detection/map_frame: map
+        /damage_detection/odom_frame: camera_init
         /damage_detection/model_samples: 500000
         /damage_detection/icp_voxel_size: 0.03
         /damage_detection/icp_max_iterations: 100
