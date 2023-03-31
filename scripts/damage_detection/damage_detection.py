@@ -155,7 +155,6 @@ class DamageDetection:
 
                 # compute the centroid of the cluster
                 centroid = np.asarray(cluster_pcd.get_center())
-                centroid[2] += 0.2 #huuuuuuge fudge
 
                 # we now have a single point for each identified damaged area
                 # next we compute the closest distance to the model and then calculate normal vector

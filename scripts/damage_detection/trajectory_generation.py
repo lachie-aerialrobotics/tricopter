@@ -17,6 +17,7 @@ class TrajectoryGeneration:
         self.tip_frame = rospy.get_param('/trajectory_planner/tooltip_frame')
         self.drone_frame = rospy.get_param('/trajectory_planner/drone_frame')
         self.map_frame = rospy.get_param('/damage_detection/map_frame')
+        self.odom_frame = rospy.get_param('/damage_detection/odom_frame')
         self.trajectory_frequency = rospy.get_param('/trajectory_planner/frequency')
         self.max_vel = rospy.get_param('/trajectory_planner/max_vel')
         self.max_acc = rospy.get_param('/trajectory_planner/max_acc')
@@ -64,7 +65,7 @@ class TrajectoryGeneration:
         got_tf = False
         while not got_tf:
             try:
-                tf = tfBuffer.lookup_transform(self.map_frame, self.tip_frame, time=self.mavros_pose.header.stamp, timeout=rospy.Duration(1))
+                tf = tfBuffer.lookup_transform(self.odom_frame, self.tip_frame, time=self.mavros_pose.header.stamp, timeout=rospy.Duration(1))
                 got_tf = True
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
                 rospy.loginfo("tf dropped - retrying..")
@@ -74,7 +75,7 @@ class TrajectoryGeneration:
         start_pose.orientation = tf.transform.rotation
 
         pose_array = PoseArray()
-        pose_array.header.frame_id = self.map_frame
+        pose_array.header.frame_id = self.odom_frame
         pose_array.header.stamp = rospy.Time.now()
         pose_array.poses.append(start_pose)
         pose_array.poses.append(repair_pose)

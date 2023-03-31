@@ -64,7 +64,7 @@ Visualization Manager:
       Marker Topic: /damage_markers
       Name: MarkerArray
       Namespaces:
-        "": true
+        {}
       Queue Size: 0
       Value: true
     - Alpha: 1
@@ -199,8 +199,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 6.316565036773682
-        Min Value: -1.6355414390563965
+        Max Value: 6.3217291831970215
+        Min Value: -0.7629202604293823
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -452,6 +452,22 @@ Visualization Manager:
       Topic: /Odometry
       Unreliable: false
       Value: true
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz/Pose
+      Color: 255; 25; 0
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Pose
+      Queue Size: 10
+      Shaft Length: 1
+      Shaft Radius: 0.05000000074505806
+      Shape: Arrow
+      Topic: /mavros/setpoint_position/local
+      Unreliable: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 0; 0; 0
@@ -480,7 +496,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.578286647796631
+      Distance: 5.406136512756348
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -496,9 +512,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.37133118510246277
+      Pitch: 0.5213310718536377
       Target Frame: <Fixed Frame>
-      Yaw: 2.6476759910583496
+      Yaw: 2.3276753425598145
     Saved: ~
 Window Geometry:
   Displays:
