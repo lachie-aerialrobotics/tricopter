@@ -37,7 +37,7 @@
         </rosparam>
     </group>
     <group unless="$(arg relocalize)">
-        <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2camera_init" args="0 0 0.2 0 0 0 map camera_init" />       
+        <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2camera_init" args="0 0 -0.2 0 0 0 map camera_init" />       
     </group>
 
     <group if="$(eval lidar_type == 'livox')">
