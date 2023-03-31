@@ -36,7 +36,7 @@ class MapConstructor:
         self.pcd = self.pcd.voxel_down_sample(voxel_size=0.002)
         # cl, ind = self.pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=0.1)
         # self.pcd = self.pcd.select_by_index(ind)
-        pc2 = convertCloudFromOpen3dToRos(self.pcd, 'camera_init')
+        pc2 = convertCloudFromOpen3dToRos(self.pcd, 'map')
         self.pub_map.publish(pc2)
 
 # The data structure of each point in ros PointCloud2: 16 bits = x + y + z + rgb
