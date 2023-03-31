@@ -95,7 +95,7 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: false
-    - Alpha: 0.5
+    - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
         Max Value: 10
@@ -116,7 +116,7 @@ Visualization Manager:
       Queue Size: 0
       Selectable: true
       Size (Pixels): 3
-      Size (m): 0.009999999776482582
+      Size (m): 0.05000000074505806
       Style: Flat Squares
       Topic: /damage_points
       Unreliable: false
@@ -135,7 +135,7 @@ Visualization Manager:
       Color: 138; 226; 52
       Color Transformer: FlatColor
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
@@ -150,7 +150,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
     - Alpha: 0.5
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -199,8 +199,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 6.554050922393799
-        Min Value: -0.6474384665489197
+        Max Value: 6.316565036773682
+        Min Value: -1.6355414390563965
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -480,7 +480,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.802649974822998
+      Distance: 2.578286647796631
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -488,17 +488,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -1.0030556917190552
-        Y: -1.483989953994751
-        Z: 0.6063726544380188
+        X: 1.9351376295089722
+        Y: 0.014088453724980354
+        Z: 0.9888681769371033
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.2563311755657196
+      Pitch: 0.37133118510246277
       Target Frame: <Fixed Frame>
-      Yaw: 0.8976762294769287
+      Yaw: 2.6476759910583496
     Saved: ~
 Window Geometry:
   Displays:
