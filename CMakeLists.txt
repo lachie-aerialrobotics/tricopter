@@ -77,6 +77,8 @@ add_service_files(
    detectDamage.srv
    repairTrajectory.srv
    stateMachine.srv
+   initPrint.srv
+   generateLayer.srv
 #   Service1.srv
 #   Service2.srv
 )

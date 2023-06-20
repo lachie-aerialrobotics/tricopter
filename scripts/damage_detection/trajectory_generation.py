@@ -3,7 +3,6 @@ import rospy
 import tf2_ros
 import tf2_geometry_msgs
 import numpy as np
-import ros_numpy as rnp
 import toppra as ta
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 from geometry_msgs.msg import PoseStamped, Pose, PoseArray, TransformStamped, Transform, Twist, Vector3, Quaternion

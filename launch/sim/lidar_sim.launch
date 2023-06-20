@@ -5,11 +5,11 @@
     <arg name="y" default="0"/>
     <arg name="z" default="0.5"/>
     <rosparam>
-        /lidar_sim/rate: 0.5
+        /lidar_sim/rate: 1
         /lidar_sim/map_frame: map
         /lidar_sim/lidar_frame: body
         /lidar_sim/noise_mu: 0.0
-        /lidar_sim/noise_sigma: 0.01
+        /lidar_sim/noise_sigma: 0.05
         /lidar_sim/world_samples: 2500000
     </rosparam>
     <node name="lidar_sim" pkg="tricopter" type="lidar_sim.py" required="false" output="screen">

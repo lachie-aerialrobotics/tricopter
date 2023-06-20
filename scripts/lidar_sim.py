@@ -69,6 +69,8 @@ class LidarSim:
             # add to map
             self.pcd_map += pcd_view
 
+            o3d.io.write_point_cloud("/home/lachie/aam_ws/src/tricopter/scans/map.pcd", self.pcd_map, print_progress=True)
+
             #start timer callback
             self.timer = rospy.Timer(rospy.Duration(1/self.lidar_rate), self.timer_callback)
             rospy.spin()

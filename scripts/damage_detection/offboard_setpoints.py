@@ -6,7 +6,6 @@ import os
 import tf2_ros
 import tf2_geometry_msgs
 import numpy as np
-import ros_numpy as rnp
 import toppra as ta
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 from std_msgs.msg import Header, String
