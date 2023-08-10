@@ -4,9 +4,6 @@
     <arg name="world_name" default="empty"/> <!-- ARLarena or DroneHub or empty-->
     <arg name="viz" default = "true"/>
 
-     
-    
-    
     <!-- DRONE SPAWN POINT -->
     <arg name="x" default="1.0"/>
     <arg name="y" default="0"/>
@@ -32,10 +29,10 @@
     <!-- <include file="$(find tricopter)/launch/flight_controller/ethz_pid_controller.launch"/> -->
 
     <!-- MANIPULATOR -->
-    <include file="$(find delta_2)/launch/stabilise.launch">
+    <!-- <include file="$(find delta_2)/launch/stabilise.launch">
         <arg name="model_name" value="$(arg vehicle_name)"/>
         <arg name="sim" value="true"/>
-    </include>
+    </include> -->
     <!-- <node name="mode_switch" pkg="delta_2" type="mode_switch.py" required="true" output="screen"/> -->
 
     <!-- TRAJECTORY -->
