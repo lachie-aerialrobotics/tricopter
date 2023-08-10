@@ -3,6 +3,9 @@
     <arg name="vehicle_name" default="hex_stewart"/> <!-- hex, hex_delta or hex_stewart -->
     <arg name="world_name" default="empty"/> <!-- ARLarena or DroneHub or empty-->
     <arg name="viz" default = "true"/>
+
+     
+    
     
     <!-- DRONE SPAWN POINT -->
     <arg name="x" default="1.0"/>
@@ -37,15 +40,16 @@
 
     <!-- TRAJECTORY -->
     <!-- <rosparam file="$(find tricopter)/cfg/forward_backwards.yaml" /> -->
-    <!-- <rosparam file="$(find tricopter)/cfg/laminiscate_points.yaml" /> -->
+    <rosparam file="$(find tricopter)/cfg/laminiscate_points.yaml" />
     <!-- <rosparam file="$(find tricopter)/cfg/cylinder_points.yaml" /> -->
-    <rosparam file="$(find tricopter)/cfg/fake_print_points.yaml" />
+    <!-- <rosparam file="$(find tricopter)/cfg/fake_print_points.yaml" /> -->
     <rosparam file="$(find tricopter)/cfg/print_config.yaml" />
-    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="0 0 1.0 1.570796 0 1.91 map printing_plane" />
-    <node name="trajectory_services" pkg="tricopter" type="trajectory_services.py" required="true" output="screen"/> 
+    <node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2print" args="0 0 1.0 1.570796 0 1.570796 map printing_plane" />
+   <node name="trajectory_services" pkg="tricopter" type="trajectory_services.py" required="true" output="screen"/> 
     <node name="print_manager" pkg="tricopter" type="print_manager.py" output="screen" respawn="true"/>
 
-
+<node pkg="tf2_ros" type="static_transform_publisher" name="transform_map2odom" args="0 0 0 0 0 0 map odom" />
+<node pkg="tf2_ros" type="static_transform_publisher" name="transform_base2base" args="0 0 0 0 0 0 base_link hex::base_link" />
     <!-- RVIZ AND RQT-->
     <group if="$(arg viz)">
         <node type="rviz" name="rviz" pkg="rviz" args="-d $(find tricopter)/rviz/printing.rviz"/>

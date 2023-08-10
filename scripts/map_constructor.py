@@ -8,6 +8,7 @@ import ros_numpy as rnp
 
 from sensor_msgs.msg import PointCloud2, PointField
 from std_msgs.msg import Header
+from std_srvs.srv import Empty, EmptyRequest, EmptyResponse
 
 from ctypes import * # convert float to uint32
 
@@ -15,30 +16,36 @@ import sensor_msgs.point_cloud2 as pc2
 
 class MapConstructor:
     def __init__(self):
+        self.voxel_size = 0.001
+        self.skip = 4
+
         self.pcd = o3d.geometry.PointCloud()
         self.pcd_new = PointCloud2()
+        self.i = 0
         #init publisher
         self.pub_map = rospy.Publisher('/map', PointCloud2, queue_size=1)
         #init subscriber
         sub_cloud = rospy.Subscriber('/cloud_registered', PointCloud2, self.cloud_cb, queue_size=1)
 
-        rospy.wait_for_message('/cloud_registered', PointCloud2)
-        sp_timer = rospy.Timer(rospy.Duration(2.0), self.timer_cb, reset=True)
+        clear_map_service = rospy.Service('clear_map', Empty, self.clear_map)
 
         rospy.spin()
 
     def cloud_cb(self, msg):
-        self.pcd_new = msg
+        if np.remainder(self.i, self.skip) == 0:
+            self.pcd_new = msg
+            self.pcd = self.pcd + convertCloudFromRosToOpen3d(self.pcd_new)
+            self.pcd = self.pcd.voxel_down_sample(voxel_size=self.voxel_size)
+            pc2 = convertCloudFromOpen3dToRos(self.pcd, 'map')
+            self.pub_map.publish(pc2)
+        self.i+=1
 
-    def timer_cb(self, event):
-        pcd_o3d_new = convertCloudFromRosToOpen3d(self.pcd_new)
-        self.pcd = self.pcd + pcd_o3d_new.translate((0,0,-0.15))
-        self.pcd = self.pcd.voxel_down_sample(voxel_size=0.002)
-        # cl, ind = self.pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=0.1)
-        # self.pcd = self.pcd.select_by_index(ind)
-        pc2 = convertCloudFromOpen3dToRos(self.pcd, 'map')
-        self.pub_map.publish(pc2)
-
+    def clear_map(self, req):
+        self.pcd = o3d.geometry.PointCloud()
+        rospy.loginfo("Map cleared!")
+        resp = EmptyResponse()
+        return resp
+        
 # The data structure of each point in ros PointCloud2: 16 bits = x + y + z + rgb
 FIELDS_XYZ = [
     PointField(name='x', offset=0, datatype=PointField.FLOAT32, count=1),

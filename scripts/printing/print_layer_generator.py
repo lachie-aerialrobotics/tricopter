@@ -6,6 +6,7 @@ import scipy as sp
 import trimesh as tm
 import tf2_ros
 import copy
+import fetch_print_region as fpr
 import ros_numpy as rnp
 from std_msgs.msg import Header
 from sensor_msgs.msg import PointCloud2
@@ -20,19 +21,9 @@ class PrintLayerGenerator:
         map_topic_name = "/map"
         self.estimated_layer_height = 0.05
 
-        # get print location from config and broadcast static transform
-        print_origin_tf = get_print_origin()
-        self.print_frame = print_origin_tf.child_frame_id
-        self.map_frame = print_origin_tf.header.frame_id
+        self.bbox, self.print_frame, self.map_frame = fpr.fetch_print_region()
 
-        # get mesh
-        mesh = o3d.geometry.TriangleMesh.create_cylinder(radius=0.3, height=0.5, resolution=100, split=50)
-        mesh = mesh.translate(np.asarray([0, 0, 0.23]))
-        self.mesh = mesh
-
-        # get bounding box to crop pointcloud
-        self.bbox = get_crop_region(self.mesh)
-        self.bbox = transform_o3d(self.bbox, print_origin_tf)
+        self.mesh = fpr.get_mesh()
 
         # init tf lookups
         self.tfBuffer = tf2_ros.Buffer(rospy.Duration(10.0))
