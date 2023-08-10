@@ -2,7 +2,7 @@
 <launch>   
     <arg name="lidar_type" default = "mid360"/>
 
-    <arg name="lidar_freq" default="10" />
+    <arg name="lidar_freq" default="100" />
     <include file="$(find livox_ros_driver2)/launch_ROS1/msg_MID360.launch">
         <arg name="publish_freq" value="$(arg lidar_freq)" />
     </include>
