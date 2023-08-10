@@ -4,6 +4,7 @@
     <arg name="world_name" default="empty"/> <!-- ARLarena or DroneHub or empty-->
     <arg name="viz" default = "true"/>
 
+
     <!-- DRONE SPAWN POINT -->
     <arg name="x" default="1.0"/>
     <arg name="y" default="0"/>

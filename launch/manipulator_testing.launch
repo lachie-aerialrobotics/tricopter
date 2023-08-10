@@ -3,7 +3,7 @@
     <arg name="bag" default = "true"/>
 
     <include file="$(find tricopter)/launch/lidar/lidar_mapping.launch">
-        <arg name="lidar_type" default = "ouster"/>
+        <arg name="lidar_type" default = "mid360"/>
         <arg name="relocalize" default = "false"/>
     </include>
 
@@ -25,13 +25,13 @@
 
     <!-- CONTROLLER -->
     
-    <include file="$(find tricopter)/launch/vicon/vicon_groundtruth.launch"/>
+    <!-- <include file="$(find tricopter)/launch/vicon/vicon_groundtruth.launch"/> -->
 
     <node name="controller" pkg="tricopter" type="trajectory_controller.py" required="true" output="screen"/>
 
-    <include file="$(find delta_2)/launch/stabilise.launch">
+    <!-- <include file="$(find delta_2)/launch/stabilise.launch">
         <arg name="sim" value="false"/>
-    </include>
+    </include> -->
 
      <!-- TRAJECTORY -->
     <!-- <rosparam file="$(find tricopter)/cfg/forward_backwards.yaml" /> -->
