@@ -29,9 +29,9 @@
 
     <node name="controller" pkg="tricopter" type="trajectory_controller.py" required="true" output="screen"/>
 
-    <!-- <include file="$(find delta_2)/launch/stabilise.launch">
+    <include file="$(find delta_2)/launch/stabilise.launch">
         <arg name="sim" value="false"/>
-    </include> -->
+    </include>
 
      <!-- TRAJECTORY -->
     <!-- <rosparam file="$(find tricopter)/cfg/forward_backwards.yaml" /> -->

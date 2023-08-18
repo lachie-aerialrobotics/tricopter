@@ -18,8 +18,8 @@ from trajectory_msgs.msg import MultiDOFJointTrajectory, MultiDOFJointTrajectory
 class PrintLayerGenerator:
     def __init__(self):
         # get config values from parameter server
-        map_topic_name = "/map"
-        self.estimated_layer_height = 0.05
+        map_topic_name = "/aft_pgo_map"
+        self.estimated_layer_height = 0.1
 
         self.bbox, self.print_frame, self.map_frame = fpr.fetch_print_region()
 
@@ -202,18 +202,26 @@ def material_model(layer_height, distance=0.1, flow_rate=0.1, expansion_ratio=20
     return speed
 
 def get_velocities(path, heights):
+    use_material_model = rospy.get_param('/print_slicer/use_material_model')
+    speed_default = rospy.get_param('/print_slicer/print_speed')
     n = np.shape(path)[0]
     velocities = np.zeros((n,3))
     for i in range(n):
-        speed = material_model(heights[i])
-        velocities[i] = speed * path[i]/np.linalg.norm(path[i])
+        if use_material_model:
+            speed = material_model(heights[i])
+        else:
+            speed = speed_default
+        if i == 0:
+            velocities[i] = np.zeros(3)
+        else:
+            velocities[i] = speed * (path[i] - path[i-1]) / np.linalg.norm(path[i] - path[i-1])
     return velocities
 
 def traj_from_arrays(positions, velocities):
     trajectory = MultiDOFJointTrajectory()
     trajectory.header.stamp = rospy.Time.now()
     n = np.shape(positions)[0]
-    t = 0
+
     for i in range(n):
         trans = Transform()
         trans.translation.x = positions[i,0]
@@ -241,7 +249,10 @@ def traj_from_arrays(positions, velocities):
         accel.angular.y = 0
         accel.angular.z = 0
 
-        t += np.linalg.norm(positions[i,:]) / np.linalg.norm(velocities[i,:])
+        if i == 0:
+            t = 0
+        else:
+            t += np.linalg.norm(positions[i,:] - positions[i,:]) / np.linalg.norm(velocities[i,:])
 
         trajectory_point = MultiDOFJointTrajectoryPoint()
         trajectory_point.transforms.append(trans)
@@ -282,8 +293,8 @@ def intersection_finder(pcd, mesh, layer_height):
     path = mesh_plane_intersection(mesh, np.asarray([0,0,new_layer_height]), np.asarray([0,0,1]))
     offsets = get_offsets(path, pcd)
     velocities = get_velocities(path, offsets)
-    print(velocities)
-    return traj_from_arrays(path, velocities)
+    trajectory = traj_from_arrays(path, velocities)
+    return trajectory
 
 def quaternion_from_matrix(matrix=np.eye(3)):
     r = sp.spatial.transform.Rotation.from_matrix(matrix)

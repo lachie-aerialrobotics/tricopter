@@ -5,28 +5,31 @@ import numpy as np
 import scipy as sp
 import tf2_ros
 import os
+import tf2_geometry_msgs
 import ros_numpy as rnp
 from std_msgs.msg import Header
 from sensor_msgs.msg import PointCloud2
-from geometry_msgs.msg import PoseStamped, TransformStamped
+from geometry_msgs.msg import PoseStamped, TransformStamped, Transform
 from tricopter.srv import *
+from std_srvs.srv import Empty, EmptyRequest, EmptyResponse
     
 class PrintPlaneFinder:
     def __init__(self):
         # get config values from parameter server
-        map_topic_name = "/map"
+        map_topic_name = "/aft_pgo_map"
         self.drone_frame = "base_link"
+        self.odom_frame = "camera_init"
         self.map_frame = "map"
         self.print_frame = "print_origin"
-        self.min_bound = np.asarray([0, -1.5, -1.5])
-        self.max_bound = np.asarray([3, 1.5, 1.5])
+        self.min_bound = np.asarray([0, -0.2, -0.2])
+        self.max_bound = np.asarray([100, 0.2, 0.2])
 
         self.plane_model = [0, 0, 1, 0]
         self.print_origin = PoseStamped()
 
         # init tf lookups
         
-        self.tfBuffer = tf2_ros.Buffer(rospy.Duration(10.0))
+        self.tfBuffer = tf2_ros.Buffer(rospy.Duration(2.0))
         listener = tf2_ros.TransformListener(self.tfBuffer)
 
         # init publishers
@@ -45,7 +48,7 @@ class PrintPlaneFinder:
         rospy.Timer(rospy.Duration(0.03), self.timer_cb, reset=True)
 
         # init services
-        print_init_service = rospy.Service('init_print', initPrint, self.init_print)
+        print_init_service = rospy.Service('init_print', Empty, self.init_print)
 
         rospy.spin()
 
@@ -67,49 +70,64 @@ class PrintPlaneFinder:
         if plane_model is not None: self.plane_model = plane_model #complete assignment if None was not returned
         
         # publish cropped pointcloud for visualisation
-        map_cropped_msg = o3d_to_pc2(map_cropped, Header(stamp=rospy.Time.now(), frame_id=self.map_frame))
+        map_cropped_msg = o3d_to_pc2(map_cropped, Header(stamp=rospy.Time.now(), frame_id=self.odom_frame))
         self.map_cropped_pub.publish(map_cropped_msg)
 
     def timer_cb(self, event):
         drone_t_vec, drone_t_quat = self.get_drone_tf()
 
         # find print origin on detected plane
-        print_origin = closest_point_on_plane(self.plane_model, init_point=drone_t_vec)
-        R = align_axis(drone_t_vec - print_origin)
-
-        # create a tf frame representing the print origin - also publish a pose message to make visualisation easier
-        br = tf2_ros.TransformBroadcaster()
-        t = TransformStamped()
-        t.header.stamp = rospy.Time.now()
-        t.header.frame_id = self.map_frame
-        t.child_frame_id = self.print_frame
-        t.transform.translation.x = print_origin[0]
-        t.transform.translation.y = print_origin[1]
-        t.transform.translation.z = print_origin[2]
+        # print_origin = closest_point_on_plane(self.plane_model, init_point=drone_t_vec)
+        line_model = get_line_from_pose(drone_t_vec, drone_t_quat)
+        print_origin = plane_line_intersection(self.plane_model, line_model)
+        R = align_axis(get_plane_normal(self.plane_model, print_origin, drone_t_vec))
         q = quaternion_from_matrix(R)
-        t.transform.rotation.x = q[0]
-        t.transform.rotation.y = q[1]
-        t.transform.rotation.z = q[2]
-        t.transform.rotation.w = q[3]
-        br.sendTransform(t)
 
-        p = PoseStamped()
-        p.header.stamp = rospy.Time.now()
-        p.header.frame_id = self.map_frame
-        p.pose.position.x = print_origin[0]
-        p.pose.position.y = print_origin[1]
-        p.pose.position.z = print_origin[2]
-        p.pose.orientation.x = q[0]
-        p.pose.orientation.y = q[1]
-        p.pose.orientation.z = q[2]
-        p.pose.orientation.w = q[3]
-        self.print_origin = p
-        self.print_origin_pub.publish(p)
+        
+        try:# transform from odom frame to map frame
+            tf_map2odom = self.tfBuffer.lookup_transform(self.map_frame, self.odom_frame, rospy.Time.now(), timeout=rospy.Duration(1))
+            
+            t = Transform()
+            t.translation.x = print_origin[0]
+            t.translation.y = print_origin[1]
+            t.translation.z = print_origin[2]
+            t.rotation.x = q[0]
+            t.rotation.y = q[1]
+            t.rotation.z = q[2]
+            t.rotation.w = q[3]
+        
+            t = do_transform_transform(t, tf_map2odom)
+
+            ts = TransformStamped()
+            ts.header.stamp = rospy.Time.now()
+            ts.header.frame_id = self.map_frame
+            ts.child_frame_id = self.print_frame
+            ts.transform = t
+
+            # create a tf frame representing the print origin - also publish a pose message to make visualisation easier
+            br = tf2_ros.TransformBroadcaster()
+            br.sendTransform(ts)
+
+            p = PoseStamped()
+            p.header.stamp = rospy.Time.now()
+            p.header.frame_id = self.map_frame
+            p.pose.position.x = ts.transform.translation.x
+            p.pose.position.y = ts.transform.translation.y
+            p.pose.position.z = ts.transform.translation.z
+            p.pose.orientation.x = ts.transform.rotation.x
+            p.pose.orientation.y = ts.transform.rotation.y
+            p.pose.orientation.z = ts.transform.rotation.z
+            p.pose.orientation.w = ts.transform.rotation.w
+            self.print_origin = p
+            self.print_origin_pub.publish(p)
+        except:
+            rospy.logwarn("map to odom tf not found")
+        
 
     def get_drone_tf(self):
         # get drone position from tf tree
         try:
-            drone_tf = self.tfBuffer.lookup_transform(self.map_frame, self.drone_frame, rospy.Time.now(), timeout=rospy.Duration(1))
+            drone_tf = self.tfBuffer.lookup_transform(self.odom_frame, self.drone_frame, rospy.Time.now(), timeout=rospy.Duration(1))
             drone_t_vec, drone_t_quat = transform_to_numpy(drone_tf)
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             rospy.loginfo("tf dropped...")
@@ -119,13 +137,11 @@ class PrintPlaneFinder:
     
     def init_print(self, req):
         # populate response with latest collected print origin
-        resp = initPrintResponse()
-        resp.print_origin = self.print_origin
+        resp = EmptyResponse()
         # publish saved origin for visualisation
         self.print_origin_saved_pub.publish(self.print_origin)
         # save data to file for re-use
-        if req.save_to_file:
-            write_pose_to_yaml(self.print_origin, self.print_frame)
+        write_pose_to_yaml(self.print_origin, self.print_frame)
         return resp
 
 def write_pose_to_yaml(pose=PoseStamped(), child_frame_id="", dir="../../cfg/print_config/"):
@@ -258,7 +274,7 @@ def quaternion_from_matrix(matrix=np.eye(3)):
     q = r.as_quat()
     return q
 
-def get_best_plane(pc, threshold=0.01, ransac_n=10, num_iterations=100):
+def get_best_plane(pc, threshold=0.01, ransac_n=50, num_iterations=100):
     # fit a plane to a pointcloud using RANSAC
 
     #check sufficient points exist, else return None
@@ -269,6 +285,53 @@ def get_best_plane(pc, threshold=0.01, ransac_n=10, num_iterations=100):
     else:
         plane_model = None
     return plane_model
+
+def get_line_from_pose(vec, quat):
+    p = np.asarray([1,0,0]) # assume x-axis is desired direction
+    r = sp.spatial.transform.Rotation.from_quat(quat)
+    [x0, y0, z0] = vec
+    [a, b, c] = r.apply(p)
+    # x=x0+at, y=y0+bt, z=z0+ct
+    return [x0, y0, z0, a, b, c]
+
+def plane_line_intersection(plane_model, line_model):
+    [A, B, C, D] = plane_model
+    [x0, y0, z0, a, b, c] = line_model
+    t = (-D - A*x0 - B*y0 - C*z0) / (A*a + B*b + C*c)
+    return np.asarray([x0 + a*t, y0 + b*t, z0 + c*t])
+
+def get_plane_normal(plane_model, point=np.asarray([1,0,0]), origin=np.asarray([0,0,0])):
+    [A, B, C, D] = plane_model
+    normal = ([A,B,C])
+
+    # ensure normal points toward user
+    vec = (origin - point) / np.linalg.norm(origin - point)
+    dir = np.dot(vec, np.asarray([A,B,C]))
+    if dir >= 0:
+        normal = np.asarray([A,B,C])
+    else:
+        normal = -np.asarray([A,B,C])
+    return normal
+
+def do_transform_transform(transform1, transform2):
+    #if either input is not ...Stamped() version of message, do conversion:
+    if isinstance(transform1, Transform):
+        transform1 = TransformStamped(transform=transform1)
+    if isinstance(transform2, Transform):
+        transform2 = TransformStamped(transform=transform2)
+    #check that type is now correct, if not output an error readable by humans:
+    if isinstance(transform1, TransformStamped) and isinstance(transform2, TransformStamped):
+        pose = PoseStamped()
+        pose.pose.position = transform1.transform.translation
+        pose.pose.orientation = transform1.transform.rotation
+        pose_transformed = tf2_geometry_msgs.do_transform_pose(pose, transform2)
+        transform1_transformed = Transform()
+        transform1_transformed.translation = pose_transformed.pose.position
+        transform1_transformed.rotation = pose_transformed.pose.orientation
+        return transform1_transformed
+    else:
+        rospy.logerr("Incorrect types used in do_transform_transform()")
+        rospy.logerr("Must be Tranform() or TransformStamped()")
 
 if __name__ == "__main__":
     rospy.init_node('print_plane_init_service_client')
