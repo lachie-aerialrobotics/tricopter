@@ -6,3 +6,9 @@ relocalize:
   FOV_max: 50
   FOV: 6.28319 # 1.02974
   max_iterations: 200
+  map_frame_id: camera_init_map
+  odom_frame_id: camera_init
+
+print_slicer:
+  use_material_model: false
+  print_speed: 0.2

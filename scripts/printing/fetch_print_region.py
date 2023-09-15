@@ -61,7 +61,7 @@ def get_crop_region(mesh):
     return bbox
 
 def get_mesh():
-    mesh = o3d.geometry.TriangleMesh.create_cylinder(radius=0.2, height=0.5, resolution=100, split=50)
+    mesh = o3d.geometry.TriangleMesh.create_cylinder(radius=0.2, height=0.8, resolution=100, split=50)
     mesh = mesh.translate(np.asarray([0, 0, 0.23]))
     return mesh
 

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="vehicle_name" default="hex_stewart"/> <!-- hex, hex_delta or hex_stewart -->
+    <arg name="vehicle_name" default="iris"/> <!-- hex, hex_delta or hex_stewart -->
     <arg name="world_name" default="ARLarena"/> <!-- ARLarena or DroneHub -->
     <arg name="viz" default="true"/>
     <arg name="init" default="true"/>
@@ -65,6 +65,12 @@
         <rosparam file="$(find tricopter)/cfg/print_config/print_origin.yaml" />
         <node name="print_layer_generator" pkg="tricopter" type="print_layer_generator.py" required="true" output="screen"/>
     </group>
+
+    <!---->
+    <node name="controller" pkg="tricopter" type="trajectory_controller.py" required="true" output="screen"/>
+    <node name="trajectory_services" pkg="tricopter" type="trajectory_services.py" required="true" output="screen"/> 
+    <node name="print_manager" pkg="tricopter" type="print_manager.py" output="screen" respawn="true"/>
+
 
     <!-- RVIZ AND RQT-->
     <group if="$(arg viz)">

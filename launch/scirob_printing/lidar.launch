@@ -42,7 +42,7 @@
                 <param name="cube_side_length" type="double" value="1000" /> <!--1000-->
                 <param name="runtime_pos_log_enable" type="bool" value="0" /> <!--1-->
             </node>
-            <node pkg="tf2_ros" type="static_transform_publisher" name="transform_ground2lidar" args="$(arg x_ground2lidar) $(arg y_ground2lidar) $(arg z_ground2lidar) $(arg R_ground2lidar) $(arg P_ground2lidar) $(arg Y_ground2lidar) ground_plane camera_init" />
+            <node pkg="tf2_ros" type="static_transform_publisher" name="transform_ground2lidar" args="$(arg x_ground2lidar) $(arg y_ground2lidar) $(arg z_ground2lidar) $(arg R_ground2lidar) $(arg P_ground2lidar) $(arg Y_ground2lidar) map camera_init" />
         </group>
         <group unless="$(arg init_map)">
             <node pkg="point_lio" type="pointlio_mapping" name="laserMapping" output="screen">
@@ -58,7 +58,7 @@
                 <param name="cube_side_length" type="double" value="1000" />
                 <param name="runtime_pos_log_enable" type="bool" value="0" />
             </node>
-            <node pkg="tf2_ros" type="static_transform_publisher" name="transform_ground2lidar" args="$(arg x_ground2lidar) $(arg y_ground2lidar) $(arg z_ground2lidar) $(arg R_ground2lidar) $(arg P_ground2lidar) $(arg Y_ground2lidar) ground_plane map" />
+            <node pkg="tf2_ros" type="static_transform_publisher" name="transform_ground2lidar" args="$(arg x_ground2lidar) $(arg y_ground2lidar) $(arg z_ground2lidar) $(arg R_ground2lidar) $(arg P_ground2lidar) $(arg Y_ground2lidar) map camera_init_map" />
         </group>        
 
     <!-- SC-A-LOAM -->
@@ -70,7 +70,7 @@
             <node pkg="fast_lio_localization" type="global_localization.py" name="global_localization" output="screen" />
             <node pkg="fast_lio_localization" type="transform_fusion.py" name="transform_fusion" output="screen" />
             <node pkg="pcl_ros" type="pcd_to_pointcloud" name="map_publisher" output="screen"
-                args="$(arg map_path) 1 _frame_id:=map cloud_pcd:=/map_init" />
+                args="$(arg map_path) 1 _frame_id:=camera_init_map cloud_pcd:=/map_init" />
         </group>
 
     <!-- PRINTING -->

@@ -6,8 +6,9 @@ import scipy as sp
 import trimesh as tm
 import tf2_ros
 import copy
-import fetch_print_region as fpr
+# import fetch_print_region as fpr
 import ros_numpy as rnp
+import tf2_geometry_msgs
 from std_msgs.msg import Header
 from sensor_msgs.msg import PointCloud2
 from geometry_msgs.msg import PoseStamped, TransformStamped, Transform, Twist
@@ -20,13 +21,15 @@ class PrintLayerGenerator:
         # get config values from parameter server
         map_topic_name = "/aft_pgo_map"
         self.estimated_layer_height = 0.1
+        self.scan_frame = 'camera_init'
 
-        self.bbox, self.print_frame, self.map_frame = fpr.fetch_print_region()
+        
 
-        self.mesh = fpr.get_mesh()
+        # self.bbox, self.print_frame, self.map_frame = fetch_print_origin()
+
 
         # init tf lookups
-        self.tfBuffer = tf2_ros.Buffer(rospy.Duration(10.0))
+        self.tfBuffer = tf2_ros.Buffer(rospy.Duration(20.0))
         listener = tf2_ros.TransformListener(self.tfBuffer)
 
         # init publishers
@@ -47,45 +50,41 @@ class PrintLayerGenerator:
 
     def map_cb(self, msg):
         # get current map
-        self.map = msg
+        self.scan = msg
     
     def generate_layer(self, req):
-        map = pc2_to_o3d(self.map)
+        print_origin_tf = get_print_origin()
+        self.print_frame = print_origin_tf.child_frame_id
+        self.map_frame = print_origin_tf.header.frame_id
+        
+        tf = self.tfBuffer.lookup_transform(self.scan_frame, self.map_frame, rospy.Time.now(), timeout=rospy.Duration(5))
+        print_origin_tf = do_transform_transform(print_origin_tf, tf)
+        print_origin_tf.header.frame_id = self.scan_frame
+        print_origin_tf.child_frame_id = self.print_frame
+        print_origin_tf.header.stamp = rospy.Time.now()
+
+        mesh = get_mesh()
+        bbox = get_crop_region(mesh)
+        bbox = transform_o3d(bbox, print_origin_tf)
+        map = pc2_to_o3d(self.scan)
+
         # crop map to region on interest
-        print_detected = map.crop(self.bbox)
+        print_detected = map.crop(bbox)
 
         # get tf from map frame to printing plane and transform the pointcloud to have compatible coordinates with mesh
-        tf = self.tfBuffer.lookup_transform(self.print_frame, self.map_frame, rospy.Time.now(), timeout=rospy.Duration(1))
+        tf = self.tfBuffer.lookup_transform(self.print_frame, self.scan_frame, rospy.Time.now(), timeout=rospy.Duration(1))
         print_detected = transform_o3d(print_detected, tf)
-        print_detected = clean_pcd(print_detected)
+        # print_detected = clean_pcd(print_detected)
 
         self.print_scan_pub.publish(o3d_to_pc2(print_detected, Header(stamp=rospy.Time.now(), frame_id=self.print_frame)))
 
-        traj = intersection_finder(print_detected, self.mesh, self.estimated_layer_height)
+        traj = intersection_finder(print_detected, mesh, self.estimated_layer_height)
         traj.header.frame_id = self.print_frame
         publish_viz_trajectory(traj, self.trajectory_viz_pub)
         
         resp = generateLayerResponse()
         resp.trajectory = traj
         return resp
-    
-def get_print_origin():
-    print_origin_tf = TransformStamped()
-    print_origin_tf.header.stamp = rospy.Time.now()
-    print_origin_tf.header.frame_id = rospy.get_param("print_transform/frame_id")
-    print_origin_tf.child_frame_id = rospy.get_param("print_transform/child_frame_id")
-    print_origin_tf.transform.translation.x = rospy.get_param("print_transform/translation/x")
-    print_origin_tf.transform.translation.y = rospy.get_param("print_transform/translation/y")
-    print_origin_tf.transform.translation.z = rospy.get_param("print_transform/translation/z")
-    print_origin_tf.transform.rotation.x = rospy.get_param("print_transform/orientation/x")
-    print_origin_tf.transform.rotation.y = rospy.get_param("print_transform/orientation/y")
-    print_origin_tf.transform.rotation.z = rospy.get_param("print_transform/orientation/z")
-    print_origin_tf.transform.rotation.w = rospy.get_param("print_transform/orientation/w")
-
-    br= tf2_ros.StaticTransformBroadcaster()
-    br.sendTransform(print_origin_tf)
-
-    return print_origin_tf
 
 def transform_o3d(pc, tf=TransformStamped()):
     v, quat_wxyz = transform_to_numpy(tf, quat_order='wxyz')      
@@ -145,10 +144,10 @@ def get_crop_region(mesh):
     bbox = o3d.geometry.OrientedBoundingBox.create_from_axis_aligned_bounding_box(bbox)
     return bbox
 
-def clean_pcd(pcd, nb_neighbours=20, std_ratio=0.2):
-    cl, ind = pcd.remove_statistical_outlier(nb_neighbours,std_ratio)
-    pcd = pcd.select_by_index(ind, invert=False)
-    return pcd
+# def clean_pcd(pcd, nb_neighbours=20, std_ratio=0.2):
+#     cl, ind = pcd.remove_statistical_outlier(nb_neighbours,std_ratio)
+#     pcd = pcd.select_by_index(ind, invert=False)
+#     return pcd
 
 def get_print_height(pcd, n_points=20):
     points = np.asarray(pcd.points)
@@ -176,8 +175,8 @@ def continuous_path_from_segments(layer_segments):
                 if np.allclose(point, layer_segments[k,l]) and not np.any(np.equal(indicies,k)):
                     segment = layer_segments[k]
                     point = segment[l]
-                    indicies.append(k)
-    return path
+                    indicies.append(k) 
+    return path[1::2] #remove duplicate nodes - probably could have been done in the loop
 
 def mesh_plane_intersection(mesh, plane_origin=[0,0,0], plane_normal=[0,0,1]):
     #convert model to trimesh
@@ -214,14 +213,19 @@ def get_velocities(path, heights):
         if i == 0:
             velocities[i] = np.zeros(3)
         else:
-            velocities[i] = speed * (path[i] - path[i-1]) / np.linalg.norm(path[i] - path[i-1])
+            edge = path[i] - path[i-1]
+            edge_norm = np.linalg.norm(edge)
+            if edge_norm > 0:
+                velocities[i] = speed * edge / edge_norm
+            else:
+                velocities[i] = 0
     return velocities
 
 def traj_from_arrays(positions, velocities):
     trajectory = MultiDOFJointTrajectory()
     trajectory.header.stamp = rospy.Time.now()
     n = np.shape(positions)[0]
-
+    
     for i in range(n):
         trans = Transform()
         trans.translation.x = positions[i,0]
@@ -252,12 +256,12 @@ def traj_from_arrays(positions, velocities):
         if i == 0:
             t = 0
         else:
-            t += np.linalg.norm(positions[i,:] - positions[i,:]) / np.linalg.norm(velocities[i,:])
+            t += np.linalg.norm(positions[i,:] - positions[i-1,:]) / np.linalg.norm(velocities[i,:])
 
         trajectory_point = MultiDOFJointTrajectoryPoint()
         trajectory_point.transforms.append(trans)
         trajectory_point.velocities.append(vel)
-        trajectory_point.accelerations.append(accel)
+        trajectory_point.accelerations.append(accel)   
         trajectory_point.time_from_start = rospy.Duration(t)
 
         trajectory.points.append(trajectory_point)
@@ -289,17 +293,98 @@ def publish_viz_trajectory(trajectory, publisher):
 
 def intersection_finder(pcd, mesh, layer_height):
     print_height = get_print_height(pcd)
+    # print(print_height)
     new_layer_height = layer_height + print_height
     path = mesh_plane_intersection(mesh, np.asarray([0,0,new_layer_height]), np.asarray([0,0,1]))
+    # print('path')
+    # print(path)
     offsets = get_offsets(path, pcd)
+    # print('offsets')
+    # print(offsets)
     velocities = get_velocities(path, offsets)
+    # print('velocities')
+    # print(velocities)
     trajectory = traj_from_arrays(path, velocities)
+    # print('trajectory')
+    # print(trajectory)
     return trajectory
 
 def quaternion_from_matrix(matrix=np.eye(3)):
     r = sp.spatial.transform.Rotation.from_matrix(matrix)
     q = r.as_quat()
     return q
+
+def get_print_origin():
+    print_origin_tf = TransformStamped()
+    print_origin_tf.header.stamp = rospy.Time.now()
+    print_origin_tf.header.frame_id = rospy.get_param("print_transform/frame_id")
+    print_origin_tf.child_frame_id = rospy.get_param("print_transform/child_frame_id")
+    print_origin_tf.transform.translation.x = rospy.get_param("print_transform/translation/x")
+    print_origin_tf.transform.translation.y = rospy.get_param("print_transform/translation/y")
+    print_origin_tf.transform.translation.z = rospy.get_param("print_transform/translation/z")
+    print_origin_tf.transform.rotation.x = rospy.get_param("print_transform/orientation/x")
+    print_origin_tf.transform.rotation.y = rospy.get_param("print_transform/orientation/y")
+    print_origin_tf.transform.rotation.z = rospy.get_param("print_transform/orientation/z")
+    print_origin_tf.transform.rotation.w = rospy.get_param("print_transform/orientation/w")
+
+    br= tf2_ros.StaticTransformBroadcaster()
+    br.sendTransform(print_origin_tf)
+
+    return print_origin_tf
+
+def transform_to_numpy(transform=TransformStamped(), quat_order='xyzw'):
+    t_vec = np.asarray([transform.transform.translation.x,
+                        transform.transform.translation.y,
+                        transform.transform.translation.z])
+    if quat_order == 'xyzw':
+        t_quat = np.asarray([transform.transform.rotation.x,
+                            transform.transform.rotation.y,
+                            transform.transform.rotation.z,
+                            transform.transform.rotation.w])
+    elif quat_order == 'wxyz':
+        t_quat = np.asarray([transform.transform.rotation.w,
+                            transform.transform.rotation.x,
+                            transform.transform.rotation.y,
+                            transform.transform.rotation.z])
+    return t_vec, t_quat
+
+def transform_o3d(pc, tf=TransformStamped()):
+    v, quat_wxyz = transform_to_numpy(tf, quat_order='wxyz')      
+    pc.translate(v)
+    pc.rotate(pc.get_rotation_matrix_from_quaternion(quat_wxyz), center=v)
+    return pc
+
+def get_crop_region(mesh):
+    mesh_scaled = copy.deepcopy(mesh)
+    mesh_scaled = mesh_scaled.scale(1.5, center=np.asarray([0,0,0]))
+    bbox = mesh_scaled.get_axis_aligned_bounding_box()
+    bbox = o3d.geometry.OrientedBoundingBox.create_from_axis_aligned_bounding_box(bbox)
+    return bbox
+
+def get_mesh():
+    mesh = o3d.geometry.TriangleMesh.create_cylinder(radius=0.2, height=0.8, resolution=100, split=50)
+    mesh = mesh.translate(np.asarray([0, 0, 0.23]))
+    return mesh
+
+def do_transform_transform(transform1, transform2):
+    #if either input is not ...Stamped() version of message, do conversion:
+    if isinstance(transform1, Transform):
+        transform1 = TransformStamped(transform=transform1)
+    if isinstance(transform2, Transform):
+        transform2 = TransformStamped(transform=transform2)
+    #check that type is now correct, if not output an error readable by humans:
+    if isinstance(transform1, TransformStamped) and isinstance(transform2, TransformStamped):
+        pose = PoseStamped()
+        pose.pose.position = transform1.transform.translation
+        pose.pose.orientation = transform1.transform.rotation
+        pose_transformed = tf2_geometry_msgs.do_transform_pose(pose, transform2)
+        transform1_transformed = TransformStamped()
+        transform1_transformed.transform.translation = pose_transformed.pose.position
+        transform1_transformed.transform.rotation = pose_transformed.pose.orientation
+        return transform1_transformed
+    else:
+        rospy.logerr("Incorrect types used in do_transform_transform()")
+        rospy.logerr("Must be Tranform() or TransformStamped()")
 
 
 if __name__ == "__main__":

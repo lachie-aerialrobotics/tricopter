@@ -18,8 +18,8 @@ class PrintPlaneFinder:
         # get config values from parameter server
         map_topic_name = "/aft_pgo_map"
         self.drone_frame = "base_link"
-        self.odom_frame = "camera_init"
-        self.map_frame = "map"
+        self.odom_frame = rospy.get_param('/relocalize/odom_frame_id')
+        self.map_frame = 'map'
         self.print_frame = "print_origin"
         self.min_bound = np.asarray([0, -0.2, -0.2])
         self.max_bound = np.asarray([100, 0.2, 0.2])

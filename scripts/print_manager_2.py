@@ -1,7 +1,4 @@
-#! /usr/bin/env python3
-
 import rospy
-
 from std_msgs.msg import String
 from geometry_msgs.msg import PoseStamped, TwistStamped, Vector3, Quaternion
 from mavros_msgs.msg import State, ExtendedState
@@ -12,12 +9,11 @@ from misc_functions import *
 
 
 class printStateMachine(object):
-    states = ['Takeoff', 'Landing', 'Home', 'Move', 'Print', 'TolCheck', 'Ground', 'Manual']
+    states = ['Takeoff', 'Landing', 'Home', 'Move', 'Print', 'Ground', 'Manual']
 
     transitions = [
         {'trigger': 'startTakeoff',     'source': ['Ground', 'Manual'],                         'dest': 'Takeoff',  'after':   'on_startTakeoff'  },
-        {'trigger': 'arriveAtPrint',    'source': 'Move',                           'dest': 'TolCheck', 'after':   'on_arriveAtPrint' },
-        {'trigger': 'startPrint',       'source': 'TolCheck',                       'dest': 'Print',    'before':  'on_startPrint'    },
+        {'trigger': 'startPrint',       'source': 'Move',                       'dest': 'Print',    'before':  'on_startPrint'    },
         {'trigger': 'arriveAtHome',     'source': 'Move',                           'dest': 'Home',     'after':   'on_arriveAtHome'  },
         {'trigger': 'goToHome',         'source': ['Takeoff', 'Print', 'Manual'],   'dest': 'Move',     'before':  'on_goToHome'      },
         {'trigger': 'goToPrint',        'source': 'Home',                           'dest': 'Move',     'before':  'on_goToPrint'     },
@@ -32,15 +28,10 @@ class printStateMachine(object):
         self.rate = rospy.get_param('/print_planner/setpoint_rate')
         self.tol_speed = rospy.get_param('/print_planner/tol_speed')
         self.takeoff_hgt = rospy.get_param('/print_planner/tol_height')   
-        self.max_vel_print = rospy.get_param('/print_planner/print_vel')
-        self.max_acc_print = rospy.get_param('/print_planner/print_max_accel')
         self.max_vel_move = rospy.get_param('/print_planner/transition_vel')
         self.max_acc_move = rospy.get_param('/print_planner/transition_max_accel')
         self.max_yawrate = rospy.get_param('/print_planner/max_yawrate')
-        self.max_yawrate_dot = rospy.get_param('/print_planner/max_yawrate_dot')       
-        self.vel_tol = rospy.get_param('/print_planner/start_speed_tolerance')
-        self.pos_tol = rospy.get_param('/print_planner/start_position_tolerance')       
-        self.layer = rospy.get_param('/print_planner/first_layer')
+        self.max_yawrate_dot = rospy.get_param('/print_planner/max_yawrate_dot')             
         self.offset = rospy.get_param('/print_planner/offset')
 
         # initial values
@@ -177,7 +168,7 @@ class printStateMachine(object):
         self.moveCompletionTransition = self.arriveAtHome
 
     def on_arriveAtPrint(self):
-        rospy.loginfo("Arrived at print start - waiting for velocity/position tolerances")
+        rospy.loginfo("Arrived at print")
 
     def on_manualTakeover(self):
         rospy.loginfo("Manual takeover")
@@ -209,16 +200,6 @@ class printStateMachine(object):
         self.pose, self.velocity, self.acceleration, complete = self.tH_move.follow_transition_trajectory()
         if complete:
             self.moveCompletionTransition()
-
-    def during_TolCheck(self):
-        # self.tooltip_state = "HOME"
-        self.pose = self.print_start_pose
-        self.velocity.twist.linear = Vector3(0,0,0)
-        self.velocity.twist.angular = Vector3(0,0,0)
-        # tolerances_satisfied = True
-        tolerances_satisfied = tolerance_checker(self.local_pose, self.local_velocity, self.print_start_pose, self.pos_tol, self.vel_tol)
-        if tolerances_satisfied:
-            self.startPrint()
 
     def during_Print(self):
         self.tooltip_state = "STAB_6DOF"
