@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="vehicle_name" default="hex_stewart"/> <!-- hex, hex_delta or hex_stewart -->
+    <arg name="vehicle_name" default="hex"/> <!-- hex, hex_delta or hex_stewart -->
     <arg name="world_name" default="ARLarena"/> <!-- ARLarena or DroneHub -->
     <arg name="viz" default = "true"/>
     
